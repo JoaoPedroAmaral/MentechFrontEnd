@@ -1,0 +1,16 @@
+RNS PARA FAZER
+- Campos de subtipos todos devem ser preenchidos, Crie um alert sobre isso
+- Campos de Gravidade todos devem ser preenchidos, Crie um alert sobre isso
+- Gravidade, Subtipo e Criterio Diagnostico Repetido
+- Transtorno Repetido
+- REEDITAR O TELEFONE
+
+
+- Paciente Repetido
+- Responsavel Repetido para o mesmo Paciente
+- Telefone Repetido para o mesmo Paciente
+
+LEMBRAR DE MELHORAR O CSS ASSIM QUE TIVER FUNÇOES FEITAS, ATÉ LÁ REAPROVEITAR O CSS QUE JA TEM
+
+
+FIM DA EDIÇAO DO CSS NA TRANSTORNOPAGE

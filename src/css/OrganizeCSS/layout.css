@@ -1,0 +1,120 @@
+:root {
+  --primary--color: #49a0ad;
+  --background-color: #f5f5f5;
+  --border-color: #6cc5ab;
+  --btn-color: #b399d4;
+  --yellowBtn-color: #ffb347;
+  --placeholder-color: #959a90;
+  --border-radius: 5px;
+  --poppins-font: "Poppins", sans-serif;
+}
+
+.FlexCenterMid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.FlexCenterStart {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+.FlexCenterEnd {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.FlexCenterBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.FlexCenterAround {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.FlexCenterEvenly {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.FLexUpMid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.FlexUpStart {
+  display: flex;
+  justify-content: start;
+  align-items: flex-start;
+}
+.FlexUpEnd {
+  display: flex;
+  justify-content: end;
+  align-items: flex-start;
+}
+.FlexUpBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.FlexUpAround {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.FlexUpEvenly {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+.FlexDownMid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.FlexDownStart {
+  display: flex;
+  justify-content: start;
+  align-items: flex-end;
+}
+.FlexDownEnd {
+  display: flex;
+  justify-content: end;
+  align-items: flex-end;
+}
+.FlexDownBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.FlexDownAround {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+.FlexDownEvenly {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+
+.BoxLoginPage {
+  width: 500px;
+  height: 46vh;
+  margin-top: 20px;
+  padding-top: 5vh;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  border: 3px solid var(--btn-color);
+}
+
+
+.inactiveArea.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}

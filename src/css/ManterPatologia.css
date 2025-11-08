@@ -1,0 +1,100 @@
+
+.MP_PatologiaArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.MP_btnCriarPatologia{
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    background-color: #caa7f8;
+    border: none;
+    cursor: pointer;
+}
+
+.MP_btnCriarPatologia:hover{
+    background-color: #b399d4;
+}
+
+.MP_btnCriarPatologia:active{
+    background-color: #caa7f8;
+}
+
+.MP_TrashIcon{  
+    width: 20px;
+    height: 20px;
+}
+
+
+.MP_title{
+    color: #f5f5f5;
+    margin: 0;
+    padding-left: 10px;
+}
+
+.MP_areaGraficos{
+  height: 170px;
+  width: 30vw;
+  background-color: #f5f5f5;
+  border: 3px solid #B6E3D7;
+  border-radius: 4px;
+  overflow-y: auto;
+}
+
+.MP_areaGraficos::-webkit-scrollbar-thumb {
+  background-color: #caa7f8;
+  border: 2px solid transparent; /* Cor do fundo do thumb */
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+
+.MP_areaGraficos::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Efeito hover */
+.MP_areaGraficos::-webkit-scrollbar-button:hover {
+  cursor: pointer; /* Cor mais escura no hover */
+}
+
+/* Setas individuais (opcional) */
+.MP_areaGraficos::-webkit-scrollbar-button:vertical:start {
+  background-image: url("../Images/sort.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 30px;
+}
+
+.MP_areaGraficos::-webkit-scrollbar-button:vertical:end {
+  background-image: url("../Images/sortD.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 30px;
+}
+
+.MP_LIPatologia{
+  text-align: start;
+  display: flex;
+  align-items: center;
+}
+
+.MP_text{
+  margin: 0;
+}
+
+.opaco {
+  opacity: 0.5;
+}
+
+.MP_components{
+  width: 80%;
+  margin-right:20px ;
+}

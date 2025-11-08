@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Silkscreen:wght@400;700&display=swap");
+
+:root {
+  --primary--color: #49a0ad;
+  --background-color: #f5f5f5;
+  --border-color: #6cc5ab;
+  --btn-color: #b399d4;
+  --yellowBtn-color: #ffb347;
+  --placeholder-color: #959a90;
+  --border-radius: 5px;
+  --fira-font: "Fira Sans", sans-serif;
+  --poppins-font: "Poppins", sans-serif;
+}
+
+.Logo {
+  width: 150px;
+}
+
+.Title {
+  font-family: var(--fira-font);
+  font-weight: bold;
+  font-style: normal;
+  font-size: 30px;
+  color: var(--background-color);
+  margin: 0;
+}
+
+.TextCenter {
+  text-align: center;
+}
+.TextLeft {
+  text-align: left;
+}
+.TextRight {
+  text-align: right;
+}
+
+.TextBold {
+  font-weight: bold;
+}
+
+.ImgCircle {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.1s ease;
+}
+
+
+.HiddenCheckbox{
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+
+.HiddenCheckbox:checked + label .StateAtivo {
+  display: none !important;
+}
+
+.HiddenCheckbox:checked + label .StateInativo {
+  display:block !important;
+  color: var(--background-color);
+}
+
+.HiddenCheckbox:checked + label {
+  background-color: #caa7f8;
+  border: 3px solid #B399D4;
+}
+
+.HiddenCheckbox:checked + label .Slider {
+  right: calc(10px - 27px/2 + 10px);
+  top: calc(64% - 32px/2);
+  background: #f5f5f5;
+}
+
+.StateAtivo, .StateInativo {
+  width: 100%;
+  color: #474747;
+}
+
+.Slider {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: calc(98px - 27px/2 - 10px);
+  top: calc(64% - 32px/2);
+  border-radius: 50%;
+  background: var(--yellowBtn-color);
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}

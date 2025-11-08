@@ -1,0 +1,87 @@
+.electron-swal-popup {
+    background: #e6e5e5 !important;
+    border-radius: 12px !important;
+    border: 3px solid #FFB347;
+  }
+  
+  .electron-swal-title {
+    color: #f8fafc !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+  }
+  
+  .electron-swal-content {
+    color: #e2e8f0 !important;
+    font-size: 1rem !important;
+  }
+  
+  .electron-swal-confirm-btn {
+    background-color: #FFB347 !important;
+    padding: 8px 24px !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .electron-swal-confirm-btn:hover {
+    background-color: #FFB347 !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  .electron-swal-cancel-btn {
+    background-color: #FFB347 !important;
+    padding: 8px 24px !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .electron-swal-cancel-btn:hover {
+    background-color: #dc2626 !important;
+    transform: translateY(-1px) !important;
+  }
+
+
+
+
+
+/* DELETE TRANSTORNO */
+.swal-icon{
+  color: #FFB347 !important;
+  border-color:#FFB347 !important ;
+}
+
+.swal2-popup {
+  border-radius: 12px !important;
+  border: 5px solid #FFB347 !important;
+  background-color: #e6e5e5 !important;
+}
+
+.swal-confirm-delete-btn {
+  background-color: #ef4444 !important;
+  padding: 8px 24px !important;
+  margin-right: 10px !important;
+}
+
+.swal-cancel-btn {
+  background-color: #64748b !important;
+  padding: 8px 24px !important;
+}
+
+.swal2-title {
+  color: #000 !important;
+  font-size: 1.5rem !important;
+}
+
+.swal2-html-container {
+  color: #000 !important;
+  font-size: 1.1rem !important;
+}
+
+div:where(.swal2-icon).swal2-success .swal2-success-ring{
+  border:.25em solid #26dc44
+}
+
+div:where(.swal2-icon).swal2-success [class^=swal2-success-line]{
+  background-color: #26dc44;
+}

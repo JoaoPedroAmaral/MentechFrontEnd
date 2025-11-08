@@ -1,0 +1,1155 @@
+.F_BODY{
+  width: 1100px;
+}
+
+.F_Title {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  color: var(--background-color);
+}
+
+.F_gerenciarTranstornoTitle {
+  margin: 0 0 20px 0;
+  padding: 0;
+}
+
+.F_CriarTranstornoContainer{
+  display: flex;
+  justify-content: space-between;
+}
+
+.F_BtnCampos {
+  display: flex;
+  justify-content: left;
+  align-items: flex-start;
+  border-bottom: 3px solid #caa7f8;
+}
+.F_btnCad{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 35px;
+  margin-right: 2%;
+  background-color: #b399d4;
+  cursor: pointer;
+  font-weight: bold;
+  border: 3px solid #caa7f8;
+  color: #f5f5f5;
+  border-bottom: none;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.F_btnCad:hover {
+  background-color: #9273b9;
+}
+
+.F_checkbox:checked + .F_btnCad {
+  background-color: #f5f5f5;
+  color: black;
+}
+.F_checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.F_TranstornoArea,
+.F_DiagnosticoArea,
+.F_SubtipoArea {
+  width: 660px;
+  height: 500px;
+}
+
+.F_CriarTranstornoInputSup{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.F_CriarTranstornoInputObrigatorio p{
+  color: #f5f5f5;  
+  font-weight: bold;
+  margin: 5px;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.F_NomeAreaTranstorno, .F_CIDAreaTranstorno, .F_InputCD{
+  border: 3px solid #FFB347;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-family: "Poppins", sans-serif;
+}
+
+.F_NomeAreaTranstorno:focus, .F_CIDAreaTranstorno:focus, .F_SecAreaTranstorno:focus, .F_SecAreaGravidade:focus  {
+  outline: none;
+  border: 3px solid #caa7f8;
+  box-shadow: 0 0 5px #caa7f8;
+}
+
+.F_SecAreaTranstorno, .F_SecAreaGravidade{
+  border: 3px solid #6cc5ab;
+  height: 140px;
+  border-radius: 10px;
+  padding: 10px;
+  font-family: "Poppins", sans-serif;
+  width: 320px;
+  resize: none;
+}
+
+.F_NomeAreaTranstorno{
+  width: 350px;
+  resize: none;
+}
+
+.F_CIDAreaTranstorno{
+  width: 110px;
+}
+
+.F_AreaSecundaria{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.F_GravidadeAreaTranstorno, .F_SubtipoTranstorno, .F_CID11SubtipoTranstorno{
+  border: 3px solid #6cc5ab;
+  border-radius: 10px;
+  width: 250px;
+  padding: 5px 10px;
+  font-family: "Poppins", sans-serif;
+}
+
+.F_GravidadeAreaTranstorno:focus, .F_InputCD:focus, .F_SubtipoTranstorno:focus, .F_CID11SubtipoTranstorno:focus {
+  outline: none;
+  border: 3px solid #caa7f8;
+  box-shadow: 0 0 5px #caa7f8;
+}
+
+.F_CriarTranstornoInputSec p{
+  color: #f5f5f5;
+  font-weight: bold;
+  margin: 5px;
+  text-align: center;
+}
+
+.F_SecAreaGravidade{
+  width: 250px;
+}
+
+.F_AreaGravidade{
+  border: 3px solid #6cc5ab;
+  width: 300px;
+  height: 400px;
+  overflow-y: auto;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #caa7f8;
+  border: 2px solid transparent; /* Cor do fundo do thumb */
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Efeito hover */
+::-webkit-scrollbar-button:hover {
+  cursor: pointer; /* Cor mais escura no hover */
+}
+
+/* Setas individuais (opcional) */
+::-webkit-scrollbar-button:vertical:start {
+  background-image: url("../Images/sort.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 30px;
+}
+
+::-webkit-scrollbar-button:vertical:end {
+  background-image: url("../Images/sortD.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 30px;
+}
+
+.F_AreaGravidade p {
+  width: 290px;
+  margin: 20px 0 0 0px;
+  text-align: center;
+}
+
+.F_CriarTranstornoInputSec div{
+  display: flex;
+  margin-left:10px;
+  align-items: center;
+}
+
+.F_CriarTranstornoInputSec .F_NomeAreaTranstorno{
+  width: 300px;
+}
+
+.F_BtnGravidade, .F_BtnAddCD{
+  background-color: #b399d4;
+  font-weight: bold;
+  color: #f5f5f5;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+}
+.F_BtnGravidade:hover, .F_BtnAddCD:hover {
+  background-color: #9273b9;
+}
+
+.F_BtnGravidade:active, .F_BtnAddCD:active {
+  background-color: #b399d4;
+}
+
+.F_TrashIcon{
+  width: 20px;
+  height: 20px;
+}
+
+/*AREA UPDATE E DELETE*/
+.F_TranstornoList {
+  border: 3px solid #caa7f8;
+  width: 400px;
+  background-color: #f5f5f5;
+  padding: 0 5px;
+  margin: 10px 0;
+}
+
+.F_LineWhiteArea {
+  height: 500px;
+  display: flex;
+  width: 3px;
+  align-items: center;
+}
+
+.F_LineWhite {
+  background-color: #caa7f8;
+  width: 2px;
+  height: 98%;
+  border-radius: 100%;
+}
+.F_TranstornoElementoList {
+  list-style-type: none;
+  font-size: 12px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+}
+
+.F_SearchElement {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.F_SearchTranstorno {
+  border: 3px solid black;
+  height: 30px;
+  width: 70%;
+  border-radius: 5px;
+  padding: 0 10px;
+  margin:10px 0 0 0;
+}
+
+.F_btnSearchTranstorno {
+  width: 30px;
+  height: 30px;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.F_iconSearch {
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+
+.F_NavTranstorno {
+  margin: 10px 0;
+  height: 400px;
+}
+
+.F_ULTranstorno {
+  overflow-y: auto;
+  height: 400px;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.F_Ampliar {
+  background-image: url("../Images/ampliar.png");
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  border: none;
+}
+.F_Ampliar:hover {
+  transform: scale(1.2);
+}
+
+.F_Ampliar:active {
+  transform: scale(1);
+}
+
+.F_AdicionarArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+}
+.F_BtnConfirmArea{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.F_btnTranstornos, .F_BtnConfirm {
+  height: 40px;
+  width: 180px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  background-color: #b399d4;
+ font-family: "Poppins", sans-serif; 
+  font-weight: bold;
+  transition: transform 0.1s ease;
+}
+
+.F_btnTranstornos:hover, .F_BtnConfirm:hover {
+  background-color: #9273b9;
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.F_btnTranstornos:active, .F_BtnConfirm:active {
+  transform: scale(0.9);
+}
+
+.F_DataTranstornoArea {
+    position: fixed;
+    top: 0px;
+    display: flex;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(1, 1, 1, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.F_DataTranstorno {
+  width: 900px;
+  height: 600px;
+  background-color: #f5f5f5;
+  border: 3px solid #caa7f8;
+}
+
+.F_exitArea {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.F_exitBtnData {
+  height: 30px;
+  width: 40px;
+  transition: transform 0.1s ease;
+  font-size: larger;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: transparent;
+}
+
+.F_exitBtnData:hover {
+  background-color: #ffb347;
+}
+
+.F_exitBtnData:active {
+  background-color: #f3ce9a;
+}
+
+
+.F_GravidadeTitle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin: 30px 0 10px 0;
+}
+
+
+.F_TitlesCriteriosEDiferenciais{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.F_TranstornoInfos, .F_AvisoArea{
+  overflow-y: auto;
+  margin: 0 10px;
+  padding: 0 10px;
+  border: 3px solid #caa7f8;
+  height: 500px;
+}
+
+.F_AvisoArea{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #474747;
+  text-align: center;
+}
+
+.F_TitleTranstorno{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+}
+
+.F_CriterioDiagTitle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin: 30px 0 10px 0;
+}
+
+.F_ULCD{
+  padding: 0;
+  margin: 0;
+}
+
+.F_LiCD{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style-type: circle;
+  padding-left: 20px;
+  padding: 10px;
+  border: solid 1px #b399d4;
+}
+
+.F_LiCD p{
+  margin: 0;
+}
+
+.F_CDTopic{
+  width: 500px;
+}
+
+.F_SubTipoTitle{
+  margin: 30px 0 10px 0;
+}
+
+.F_ButtonsArea{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+}
+
+
+.F_aviso_G{
+  text-align: center;
+}
+
+.F_aviso_CD{
+  margin: 0;
+}
+
+
+/*CRITERIO DIAGNOSTICO*/
+.F_CriarDiagnosticoInputSup, .F_SubtipoAreaTranstorno{
+  overflow-y: auto;
+  height: 160px;
+  border: 3px solid #6cc5ab;
+  margin: 10px 0;
+}
+
+.F_TitleCDAndDiferencial{
+  width: 630px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  font-weight: bold;
+  margin: 0;
+}
+
+.F_TitleCD, .F_TitleDiferencial{
+  margin: 10px 0;
+  padding: 0;
+  color:#f5f5f5
+}
+
+.F_TitleCD{
+  width: 70%;
+}
+.F_TitleDiferencial{
+  width: 30%;
+}
+
+.F_CriarCDInputObligatorio{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 630px;
+}
+
+.F_CDArea{
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.F_DiferencialArea{
+  width: 30%;
+  display: flex;
+  justify-content: center;
+}
+
+.F_InputCD{
+  width: 350px;
+}
+
+
+.F_CheckBoxCD{
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: #6cc5ab;
+  width: 25px;
+  height: 25px;
+  border: 2px solid #b399d4;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+}
+
+.F_CheckBoxCD::before{
+  content: "";
+  width: 15px;
+  height: 15px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em #b399d4;
+}
+
+.F_CheckBoxCD:checked::before{
+  transform: scale(1);
+}
+
+.F_AreaBtnAddCD, .F_AreaBtnAddST{
+  display: flex;
+  align-items: center;
+  width: 70%;
+  margin: 0 30px;
+}
+
+.F_ApoioRiscoAndGenero{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  color: #f5f5f5;
+  font-weight: bold;
+}
+
+.F_ApoioRiscoAndGenero p, .F_FatorDeRiscoPrognostico p{
+  margin: 6px 0;
+}
+
+.F_ApoioDiagArea{
+  width: 400px;
+  height: 242px;
+}
+
+.F_DiagnosticoGen{
+  width: 200px;
+  height: 240px;
+}
+
+.F_FatorDeRiscoPrognostico{
+  text-align: center;
+  color: #f5f5f5;
+  font-weight: bold;
+}
+
+.F_FatorDeRisco{
+  width: 635px;
+  height: 75px;
+}
+
+
+/*SUBTIPO*/
+.F_SubtipoAreaTranstorno{
+  height: 465px;
+  padding: 5px;
+  justify-content: center;
+  text-align: center;
+}
+
+.F_SubtipoNameCID, .F_DataPaciente{
+  display: flex;
+  justify-content: space-around;
+}
+
+.F_CriarSubtipoInputSec{
+  width: 625px;
+}
+
+.F_CriarSubtipoInputSec p{
+  color: #f5f5f5;
+  font-weight: bold;
+  margin: 10px 0 0 0;
+}
+
+.F_SubtipoTranstorno{
+  width: 350px;
+}
+
+.F_CID11SubtipoTranstorno{
+  width: 110px;
+}
+
+.F_OBSSubtipo{
+  width: 600px;
+  height: 200px;
+}
+
+.F_AreaBtnAddST{
+  margin: 0;
+}
+
+/*EDIT*/
+.F_EditingGravidade {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.F_EditInput, .F_EditTextarea {
+  width: 80%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.F_EditTextarea {
+  min-height: 80px;
+}
+
+.F_EditingButtons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.F_BtnRemove {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.F_btnAdd {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+
+/*CAMPOS EDIT GRAVIDADE, CRITERIOS DIAG, SUBTIPO*/
+/* Estilos para a seção de edição */
+.F_EditingSection {
+  margin-top: 1rem;
+  border: 1px solid #eee;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.F_EditingItem {
+  position: relative;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.F_EditingRow {
+  margin-bottom: 0.5rem;
+}
+
+.F_EditingRow label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.F_EditingCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.F_RemoveButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  background-color: red;
+  border-radius: 100%;
+}
+
+.F_RemoveButton img{
+  width: 50px;
+  height: 50px;
+}
+
+.F_AddButton {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.F_List {
+  list-style: none;
+  padding: 0;
+}
+
+.F_ListItem {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.F_ItemTitle {
+  font-weight: 500;
+  margin: 0;
+}
+
+.F_ItemTitle span {
+  color: #666;
+  font-weight: normal;
+}
+
+.F_ItemDescription {
+  margin: 0.25rem 0 0 0;
+  color: #555;
+}
+
+.F_NoItems {
+  color: #999;
+  font-style: italic;
+}
+
+.BorderArea{
+  border: 3px solid #6cc5ab;
+}
+
+.grid-pacientes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 25px;
+}
+
+.card-paciente:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-paciente {
+  display: flex;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-paciente:active {
+  transform: scale(0.9);
+}
+
+.iframes{
+  background: rgba(1, 1, 1, 0.5);
+}
+
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.simple-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background: #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.simple-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: left 0.3s ease;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+input[type="checkbox"]:checked + .simple-switch {
+  background: #4eed63;
+}
+
+input[type="checkbox"]:checked + .simple-switch::after {
+  left: 22px;
+}
+
+
+.meta-card {
+  background: transparent;
+  color: #f5f5f5;
+  padding: 10px;
+  border-radius: 8px;
+  border: solid 2px #6cc5ab;
+  transition: opacity 0.3s ease;
+  min-height: 200px;
+  width: 95% !important;
+}
+
+.meta-card.inactive {
+  opacity: 0.5;
+}
+
+.texto-truncado, .tooltip, .meta-card h3 {
+  margin-top: 0;
+  font-size: 0.75rem;
+}
+
+.texto-truncado {
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+  background-color: black;
+  color: white;
+  text-align: left;
+  padding: 5px 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 100;
+  bottom: 120%; /* acima do texto */
+  left: 0;
+  white-space: normal;
+  max-width: 300px;
+  pointer-events: none; /* evita que o mouse interfira */
+}
+
+.texto-truncado:hover + .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.toggle-ativo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.slick-slider{
+  height: 220px !important;
+}
+.slick-slide > div {
+  padding: 15px; /* espaçamento interno seguro */
+  box-sizing: border-box;
+}
+
+.slick-dots{
+  top: -18px;
+  bottom: inherit !important;
+}
+
+.slick-dots li.slick-active button:before, .slick-dots li button:before{
+  color: white !important;
+}
+
+.atividade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  color: #f5f5f5;
+}
+
+.atividade-table th,
+.atividade-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #6cc5ab;
+  text-align: left;
+}
+
+.atividade-table th {
+  background-color: #6cc5ab;
+  font-weight: bold;
+}
+
+.atividade-table tbody tr:hover {
+  background-color: #2a4d42;
+}
+
+.actions button {
+  margin-right: 5px;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-edit {
+  background-color: #4EED63;
+  color: #000;
+  width: 40px;
+}
+
+.btn-complete {
+  background-color: #63ED4E;
+  color: #000;
+  width: 40px;
+}
+
+.btn-delete {
+  background-color: #ff362b;
+  color: #fff;
+  width: 40px;
+}
+
+.actions button:hover {
+  opacity: 0.8;
+}
+
+.btn_graphic{
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn_graphic:hover{
+  transform: scale(1.1);
+}
+
+.actions button:disabled, .concluido {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.btn-undo {
+  background-color: #4EED63;
+  color: #000;
+  width: 40px
+}
+
+.Marker{
+  display: flex;
+}
+
+.Marker::marker {
+  content: '•';           /* bullet */
+  color: black;           /* cor do bullet */
+  font-size: 1em;         /* tamanho do bullet */
+  margin-right: 10px;     /* espaço entre bullet e texto */
+
+}
+
+.RedefinirSenhaContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #4fa8a8;
+  font-family: "Poppins", sans-serif;
+}
+
+.RedefinirSenhaBox {
+  background-color: #fff;
+  width: 380px;
+  padding: 40px;
+  border-radius: 12px;
+  border: 2px solid #c7a3f5;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.RedefinirSenhaTitle {
+  color: #333;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.RedefinirSenhaInput {
+  width: 80%;
+  padding: 12px 14px;
+  border: 2px solid #c7a3f5;
+  border-radius: 6px;
+  font-size: 15px;
+  outline: none;
+  color: #333;
+  transition: 0.2s ease;
+}
+
+.RedefinirSenhaInput:focus {
+  border-color: #a77ff2;
+  box-shadow: 0 0 6px rgba(199, 163, 245, 0.6);
+}
+
+.RedefinirSenhaButton {
+  width: 100%;
+  background-color: #c7a3f5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.RedefinirSenhaButton:hover {
+  background-color: #b38cf1;
+  transform: scale(1.02);
+}
+
+.RedefinirSenhaMessage {
+  margin-top: 20px;
+  font-size: 15px;
+  color: #333;
+}
+
+.select-cinza {
+  color: #959a90; 
+}
+.select-cinza:not(:has(option:checked:disabled)) {
+  color: black;
+}
+
+/* Adicione no seu arquivo CSS */
+.ImgPerfil {
+  position: relative;
+  overflow: hidden;
+}
+
+.ImgPerfil img {
+  transition: filter 0.3s ease;
+}
+
+.ImgPerfil:hover img {
+  filter: brightness(0.5);
+}
+
+.ImgPerfil::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background-image: url('../Images/EditarFormularioIcon.png'); /* 🎯 CAMINHO DO SEU ÍCONE */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* Mostrar ícone no hover */
+.ImgPerfil:hover::after {
+  opacity: 1;
+}
+
+.ant-picker-calendar-mode-switch{
+  display: none;
+}
+
+.ant-picker-calendar-header{
+  justify-content: center !important;
+}
+.ant-picker-panel{
+  border-radius: 8px !important;
+}
+
+.datepicker-sem-foco.ant-picker:hover {
+  border-color: #FFB347 !important;
+}
+
+.datepicker-sem-foco.ant-picker.ant-picker-focused,
+.datepicker-sem-foco.ant-picker:focus-within {
+  border-color: #b399d4 !important; 
+  box-shadow: none !important; 
+}

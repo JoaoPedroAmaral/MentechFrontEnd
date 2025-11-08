@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Silkscreen:wght@400;700&display=swap');
+
+:root{
+  --primary--color:#49a0ad;
+  --background-color:#f5f5f5;
+  --border-color:#6cc5ab;
+  --btn-color:#b399d4;
+  --yellowBtn-color:#ffb347;
+  --placeholder-color:#959a90;
+  --border-radius:12px;
+}
+
+body{
+  font-family: "Poppins", sans-serif;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid var(--primary--color);
+  pointer-events: none;
+}
+
+
+.LG_MentechLogin{
+  background-color: var(--primary--color); /* Cor da borda (azul) */
+  border-radius: 8px;
+  height: 100vh;
+}
+
+.hidden{
+  display: none !important;
+}
+
+/* POR ENQUANTO NAO FAZ FALTA */
+.LG_window-controls {
+  display: flex;
+  -webkit-app-region: no-drag;
+  justify-content: end;
+}
+
+.LG_window-controls button {
+  background: none;
+  border: none;
+  padding: 0 15px;
+  height: 30px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+}
+
+.LG_window-controls button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.LG_close:hover {
+  background: #FFB347 !important;
+  color: black;
+} 
+
+.LG_Area{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LG_ImgArea{
+  display: flex;
+  justify-content: center;
+}
+
+.LG_logo{
+  width: 150px;
+  user-select: none;
+}
+
+.LG_title{
+  font-family: "Fira Sans", sans-serif;
+  text-align: center;
+  font-weight: bold;
+  font-style: normal;
+  font-size: 30px;
+  color: #f5f5f5;
+  margin: 0;
+  user-select: none;
+}
+
+.LG_LoginArea, .LG_RegistreArea, .LG_EsqueciSenhaArea{
+  width: 500px;
+  height: 50vh;
+  margin-top: 20px;
+  padding-top: 5vh;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  border: 3px solid #caa7f8;
+}
+
+/*aqui a gente pode por em um Style*/
+.LG_RegistreArea{
+  height: 50vh;
+  overflow-y: auto;
+}
+
+
+.LG_RegistreArea::-webkit-scrollbar-thumb {
+  background-color: #caa7f8;
+  border: 2px solid transparent; 
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+
+.LG_RegistreArea::-webkit-scrollbar {
+  width: 10px;
+}
+
+
+.LG_RegistreArea::-webkit-scrollbar-button:hover {
+  cursor: pointer;
+}
+
+.LG_RegistreArea::-webkit-scrollbar-button:vertical:start {
+  background-image: url("../Images/sort.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 30px;
+}
+
+.LG_RegistreArea::-webkit-scrollbar-button:vertical:end {
+  background-image: url("../Images/sortD.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 30px;
+}
+
+/*Pode por no Style*/
+.LG_inputArea{
+  margin: 10px 50px;
+}
+
+.LG_inputArea p{
+  margin: 0;
+  font-weight: bold;
+}
+
+.LG_inputArea input{
+  width: 96%;
+  height: 25px;
+  border-radius: 5px;
+  border: 3px solid #caa7f8;
+  padding-left: 2%;/*Por no Style*/
+}
+
+.LG_inputArea input:focus{
+  border: 3px solid #FFB347;
+  outline: none;
+}
+
+
+.LG_SenhaArea{
+  display: flex;
+  align-items: center;
+}
+
+.LG_verSenha{
+  margin-left:10px;
+  width:40px;
+  height: 30px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.LG_pisca {
+  animation: piscarOlho 0.3s ease;
+}
+
+@keyframes piscarOlho {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.LG_ConfirmArea{
+  width: 100%;
+}
+
+.LG_ConfirmArea{
+  font-weight: bold;
+  text-align:center;
+}
+
+.LG_EsqueciASenha, .LG_ConfirmArea a{ 
+  color: #B399D4;
+  cursor: pointer;
+  user-select: none;
+}
+
+/*poe no Style*/
+.LG_EsqueciASenha{
+  margin-right: 55px;
+  margin-bottom: 30px;
+  text-align: end;
+}
+.LG_EsqueciASenha:hover, .LG_ConfirmArea a:hover{
+  text-decoration:underline;
+}
+
+.LG_entrar{
+  height: 40px;
+  width: 200px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #B399D4;
+  font-family: "Poppins", sans-serif;
+  font-weight: bold;
+  transition: transform 0.1s ease;
+  user-select: none;
+}
+
+.LG_entrar:hover{
+  background-color: #9273B9;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.LG_entrar:active{
+  transform: scale(0.9)
+}
+
+/*style*/
+.LG_RegistreBTN{
+  margin-top: 10px;
+}
+
+.LG_EsqueciSenhaTitleArea{
+  display: flex;
+  margin: 0 50px; /*poe no style*/
+  align-items:center;
+}
+
+.LG_EsqueciSenhaTitleArea h2{
+  margin: 0;
+}
+
+.LG_EsqueciSenhaTitleArea img{ /*style*/
+  width: 30px;
+  margin-right: 4vw;
+  cursor: pointer;
+}
+
+.LG_EsqueciSenhaEmail{
+  height: 40vh; /*style*/
+  display: flex;
+  align-items: center;
+}
+
+.LG_EsqueciSenhaInputArea{
+  margin-bottom: 30px; /*style*/
+}
+
+.draggable {
+  -webkit-app-region: drag;
+  user-select: none;
+}
