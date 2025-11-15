@@ -3,7 +3,7 @@ import logo from "../../Images/Logo.svg";
 import { useGlobal } from "../../global/GlobalContext.js";
 import { Tooltip } from "antd";
 
-const ListarPacientes = ({ CD_USUARIO, toggleIframe, setIsHavePaciente }) => {
+const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
   const [paciente, setPaciente] = useState([]);
   const [pacientesFiltrados, setPacientesFiltrados] = useState([]);
   const [busca, setBusca] = useState("");
@@ -12,8 +12,8 @@ const ListarPacientes = ({ CD_USUARIO, toggleIframe, setIsHavePaciente }) => {
   const { pacientesModificados } = useGlobal();
 
   useEffect(() => {
-    fetchPaciente(CD_USUARIO);
-  }, [CD_USUARIO, pacientesModificados]);
+    fetchPaciente(cd_usuario);
+  }, [cd_usuario, pacientesModificados]);
 
   useEffect(() => {
     aplicarFiltros();
@@ -22,7 +22,7 @@ const ListarPacientes = ({ CD_USUARIO, toggleIframe, setIsHavePaciente }) => {
   const fetchPaciente = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/paciente/por_usuario/${id}`
+        `https://mentechbackend.onrender.com/paciente/por_usuario/${id}`
       );
       const dataJson = await response.json();
 
@@ -43,37 +43,37 @@ const ListarPacientes = ({ CD_USUARIO, toggleIframe, setIsHavePaciente }) => {
 
     if (busca.trim() !== "") {
       resultado = resultado.filter((p) =>
-        p.NM_PACIENTE.toLowerCase().includes(busca.toLowerCase())
+        p.nm_paciente.toLowerCase().includes(busca.toLowerCase())
       );
     }
 
     switch (filtroSelecionado) {
       case "masculino":
-        resultado = resultado.filter((p) => p.NM_GENERO === "Masculino");
+        resultado = resultado.filter((p) => p.nm_genero === "Masculino");
         break;
       case "feminino":
-        resultado = resultado.filter((p) => p.NM_GENERO === "Feminino");
+        resultado = resultado.filter((p) => p.nm_genero === "Feminino");
         break;
       case "ativos":
-        resultado = resultado.filter((p) => p.ATIVO === "S");
+        resultado = resultado.filter((p) => p.ativo === "S");
         break;
       case "inativos":
-        resultado = resultado.filter((p) => p.ATIVO === "N");
+        resultado = resultado.filter((p) => p.ativo === "N");
         break;
       case "az":
-        resultado.sort((a, b) => a.NM_PACIENTE.localeCompare(b.NM_PACIENTE));
+        resultado.sort((a, b) => a.nm_paciente.localeCompare(b.nm_paciente));
         break;
       case "za":
-        resultado.sort((a, b) => b.NM_PACIENTE.localeCompare(a.NM_PACIENTE));
+        resultado.sort((a, b) => b.nm_paciente.localeCompare(a.nm_paciente));
         break;
       case "mais_novos":
         resultado.sort(
-          (a, b) => new Date(b.DT_NASCIMENTO) - new Date(a.DT_NASCIMENTO)
+          (a, b) => new Date(b.dt_nascimento) - new Date(a.dt_nascimento)
         );
         break;
       case "mais_velhos":
         resultado.sort(
-          (a, b) => new Date(a.DT_NASCIMENTO) - new Date(b.DT_NASCIMENTO)
+          (a, b) => new Date(a.dt_nascimento) - new Date(b.dt_nascimento)
         );
         break;
       default:
@@ -327,11 +327,11 @@ const ListarPacientes = ({ CD_USUARIO, toggleIframe, setIsHavePaciente }) => {
           pacientesFiltrados.map((p) => (
             <button
               className="BackgroundTransparent BorderNone UserSelectPointer"
-              key={p.CD_PACIENTE}
+              key={p.cd_paciente}
               onClick={() => {
                 localStorage.setItem(
-                  `ultimoPaciente_${CD_USUARIO}`,
-                  p.CD_PACIENTE
+                  `ultimoPaciente_${cd_usuario}`,
+                  p.cd_paciente
                 );
                 window.dispatchEvent(
                   new CustomEvent("atualizarUltimoPaciente")
@@ -360,12 +360,12 @@ const ListarPacientes = ({ CD_USUARIO, toggleIframe, setIsHavePaciente }) => {
                   }}
                 />
 
-                <Tooltip title={p.NM_PACIENTE} placement="top">
+                <Tooltip title={p.nm_paciente} placement="top">
                   <div
                     className="nome-paciente texto-truncado"
                     style={{ color: "white", fontSize: "14px", fontWeight: "bold", maxWidth: "150px" }}
                   >
-                    {p.NM_PACIENTE}
+                    {p.nm_paciente}
                   </div>
                 </Tooltip>
                 <div
@@ -375,7 +375,7 @@ const ListarPacientes = ({ CD_USUARIO, toggleIframe, setIsHavePaciente }) => {
                     marginTop: "4px",
                   }}
                 >
-                  {p.NM_GENERO}
+                  {p.nm_genero}
                 </div>
               </div>
             </button>

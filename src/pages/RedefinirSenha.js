@@ -22,14 +22,14 @@ function RedefinirSenha() {
   const redefinir = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/alterar_senha/${CD_ALTERAR_SENHA}`,
+        `https://mentechbackend.onrender.com/alterar_senha/${CD_ALTERAR_SENHA}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            CD_USUARIO: CD_USUARIO,
+            cd_usuario: CD_USUARIO,
             token: token,
-            NOVA_SENHA: novaSenha,
+            nova_senha: novaSenha,
           }),
         }
       );

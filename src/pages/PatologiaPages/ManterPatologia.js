@@ -3,19 +3,19 @@ import "../../css/ManterPatologia.css";
 import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
 import { showAlert } from "../../utils/alerts.js";
 
-const ManterPatologia = ({ CD_PACIENTE }) => {
+const ManterPatologia = ({ cd_paciente }) => {
   const [patologia, setPatologia] = useState([]);
   const [patologiaVazia, setPatologiaVazia] = useState(false);
   const [newPatologia, setNewPatologia] = useState({
-    CD_PACIENTE: parseInt(CD_PACIENTE),
-    DOENCA: "",
-    OBS_DOENCA: "",
-    CID11: "",
+    cd_paciente: parseInt(cd_paciente),
+    doenca: "",
+    obs_doenca: "",
+    cid11: "",
   });
 
   useEffect(() => {
     fetchPatologia();
-  }, [CD_PACIENTE]);
+  }, [cd_paciente]);
 
   const fetchPatologia = async () => {
     try {
@@ -26,7 +26,7 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
         return;
       }
       const response = await fetch(
-        `http://127.0.0.1:5000/patologia/${pacienteID}`
+        `https://mentechbackend.onrender.com/patologia/${pacienteID}`
       );
 
       const dataJson = await response.json();
@@ -54,12 +54,12 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
 
   const handleAddPatologia = async () => {
     try {
-      if (!newPatologia.DOENCA || !newPatologia.CID11) {
+      if (!newPatologia.doenca || !newPatologia.cid11) {
         await showAlert.warning("requisitos obrigatorios!");
         return null;
       }
 
-      const response = await fetch("http://127.0.0.1:5000/patologia", {
+      const response = await fetch("https://mentechbackend.onrender.com/patologia", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,10 +73,10 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
           data = await response.json();
           fetchPatologia()
           setNewPatologia({
-            CD_PACIENTE: parseInt(CD_PACIENTE),
-            DOENCA: "",
-            OBS_DOENCA: "",
-            CID11: "",
+            cd_paciente: parseInt(cd_paciente),
+            doenca: "",
+            obs_doenca: "",
+            cid11: "",
           });
            await showAlert.success("Patologia cadastrado com sucesso!");
         } catch (e) {
@@ -84,7 +84,7 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
           console.error("Resposta não é JSON:", rawResponse);
           throw new Error("Resposta da API não é JSON válido");
         }
-        return data.CD_PACIENTE;
+        return data.cd_paciente;
       } else {
         throw new Error("Falha ao cadastrar patologia");
       }
@@ -96,7 +96,7 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
   };
 
   const deletePatologia = async (id) => {
-    await fetch(`http://127.0.0.1:5000/patologia/${id}`, { method: "DELETE" });
+    await fetch(`https://mentechbackend.onrender.com/patologia/${id}`, { method: "DELETE" });
     fetchPatologia();
   };
 
@@ -133,12 +133,12 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
                 <li key={index} className="MP_LIPatologia">
                   <div className="MP_components">
                     <p className="MP_text">
-                      <strong>{p.DOENCA}</strong>
+                      <strong>{p.doenca}</strong>
                     </p>
                     <p className="MP_text">
-                      <strong>CID: {p.CID11}</strong>
+                      <strong>CID: {p.cid11}</strong>
                     </p>
-                    <p className="MP_text">{p.OBS_DOENCA}</p>
+                    <p className="MP_text">{p.obs_doenca}</p>
                   </div>
                   <div>
                     <button onClick={() => deletePatologia(p.CD_PATOLOGIA)}>
@@ -197,11 +197,11 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
                           className="F_NomeAreaTranstorno"
                           placeholder="Ex: Dor de cabeça"
                           name="SINTOMA"
-                          value={newPatologia.DOENCA}
+                          value={newPatologia.doenca}
                           onChange={(e) =>
                             setNewPatologia({
                               ...newPatologia,
-                              DOENCA: e.target.value,
+                              doenca: e.target.value,
                             })
                           }
                           maxLength={90}
@@ -210,16 +210,16 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
                       </div>
 
                       <div className="F_CriarTranstornoInputObrigatorio TextCenter">
-                        <p>CID11*</p>
+                        <p>cid11*</p>
                         <input
                           className="F_CIDAreaTranstorno"
-                          name="CID11"
+                          name="cid11"
                           placeholder="Ex: 6A20.0"
-                          value={newPatologia.CID11}
+                          value={newPatologia.cid11}
                           onChange={(e) =>
                             setNewPatologia({
                               ...newPatologia,
-                              CID11: e.target.value,
+                              cid11: e.target.value,
                             })
                           }
                           maxLength={10}
@@ -230,13 +230,13 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
                         <p>Observação</p>
                         <textarea
                           className="F_SecAreaTranstorno"
-                          name="OBS_DOENCA"
+                          name="obs_doenca"
                           placeholder="Ex: Dores consecutivas em um curto periodo de tempo"
-                          value={newPatologia.OBS_DOENCA}
+                          value={newPatologia.obs_doenca}
                           onChange={(e) =>
                             setNewPatologia({
                               ...newPatologia,
-                              OBS_DOENCA: e.target.value,
+                              obs_doenca: e.target.value,
                             })
                           }
                         ></textarea>
@@ -249,7 +249,7 @@ const ManterPatologia = ({ CD_PACIENTE }) => {
           </div>
           <div className="F_AdicionarArea" style={{ marginTop: "5px" }}>
             <button className="F_btnTranstornos" onClick={handleAddPatologia}>
-              Adicionar Paciente
+              Adicionar Patologia
             </button>
           </div>
         </div>

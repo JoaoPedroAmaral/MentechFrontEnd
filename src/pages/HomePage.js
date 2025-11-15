@@ -27,8 +27,8 @@ const HomePage = ({ onLogout, userData }) => {
     useGlobal();
 
   useEffect(() => {
-    verificarSeTemPaciente(userData.CD_USUARIO);
-  }, [userData.CD_USUARIO]);
+    verificarSeTemPaciente(userData.cd_usuario);
+  }, [userData.cd_usuario]);
 
   useEffect(() => {
     const carregarDadosEssenciais = async (idParaCarregar) => {
@@ -44,7 +44,7 @@ const HomePage = ({ onLogout, userData }) => {
             : null;
 
         const responsavelId = primeiroResponsavel
-          ? primeiroResponsavel.CD_RESPONSAVEL
+          ? primeiroResponsavel.cd_responsavel
           : null;
 
         carregarTelefonePaciente(idParaCarregar, responsavelId);
@@ -58,7 +58,7 @@ const HomePage = ({ onLogout, userData }) => {
 
     if (isHavePaciente === true) {
       const pacienteId = localStorage.getItem(
-        `ultimoPaciente_${userData.CD_USUARIO}`
+        `ultimoPaciente_${userData.cd_usuario}`
       );
       const idParaCarregar = pacienteId || primeiroPacienteID;
 
@@ -71,7 +71,7 @@ const HomePage = ({ onLogout, userData }) => {
   useEffect(() => {
     const handleAtualizacao = () => {
       const novoValor = localStorage.getItem(
-        `ultimoPaciente_${userData.CD_USUARIO}`
+        `ultimoPaciente_${userData.cd_usuario}`
       );
       setPacienteSalvo(novoValor);
     };
@@ -84,12 +84,12 @@ const HomePage = ({ onLogout, userData }) => {
   const verificarSeTemPaciente = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/paciente/por_usuario/${id}`
+        `https://mentechbackend.onrender.com/paciente/por_usuario/${id}`
       );
       const data = await response.json();
 
       if (response.ok && data.length > 0) {
-        const primeiroPacienteID = data[0].CD_PACIENTE;
+        const primeiroPacienteID = data[0].cd_paciente;
         setPrimeiroPacienteID(primeiroPacienteID);
         setIsHavePaciente(true);
       } else {
@@ -103,7 +103,7 @@ const HomePage = ({ onLogout, userData }) => {
   const carregarEnderecoPaciente = async (pacienteID) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/endereco/${pacienteID}`
+        `https://mentechbackend.onrender.com/endereco/${pacienteID}`
       );
       const data = await response.json();
       if (data) {
@@ -117,7 +117,7 @@ const HomePage = ({ onLogout, userData }) => {
   const carregarResponsaveis = async (pacienteID) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/responsavel/${pacienteID}`
+        `https://mentechbackend.onrender.com/responsavel/${pacienteID}`
       );
       const data = await response.json();
       if (data) {
@@ -134,11 +134,11 @@ const HomePage = ({ onLogout, userData }) => {
   const carregarTelefonePaciente = async (pacienteID, responsavelID) => {
     try {
       const responsePaciente = await fetch(
-        `http://127.0.0.1:5000/telefone/por_paciente/${pacienteID}`
+        `https://mentechbackend.onrender.com/telefone/por_paciente/${pacienteID}`
       );
 
       const responseResponsavel = await fetch(
-        `http://127.0.0.1:5000/telefone/por_responsavel/${responsavelID}`
+        `https://mentechbackend.onrender.com/telefone/por_responsavel/${responsavelID}`
       );
 
       const dataPaciente = responsePaciente.ok
@@ -165,7 +165,7 @@ const HomePage = ({ onLogout, userData }) => {
       localStorage.setItem("ultimoPaciente", pacienteID);
 
       const response = await fetch(
-        `http://127.0.0.1:5000/paciente/${pacienteID}`
+        `https://mentechbackend.onrender.com/paciente/${pacienteID}`
       );
       const data = await response.json();
       setDadosPaciente(data);
