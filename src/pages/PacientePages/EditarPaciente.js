@@ -15,23 +15,23 @@ const EditarPaciente = ({
   const [paciente, setPaciente] = useState({});
   const [responsavel, setResponsavel] = useState([
     {
-      CD_PACIENTE: "",
-      NOME: "",
-      DT_NASCIMENTO: "",
-      CPF: "",
+      cd_paciente: "",
+      nome: "",
+      dt_nascimento: "",
+      cpf: "",
     },
   ]);
   const [generos, setGeneros] = useState([]);
   const [telefonesPaciente, setTelefonesPaciente] = useState([]);
   const [telefonesResponsavel, setTelefonesResponsavel] = useState([[]]);
   const [enderecos, setEnderecos] = useState({
-    CEP: "",
-    UF: "",
-    BAIRRO: "",
-    CIDADE: "",
-    LOGRADOURO: "",
-    COMPLEMENTO: "",
-    NUMERO: "",
+    cep: "",
+    uf: "",
+    bairro: "",
+    cidade: "",
+    logradouro: "",
+    complemento: "",
+    numero: "",
   });
   const carregouPaciente = useRef(false);
   const { pacienteEditado, setPacientesModificados, setPacienteEditado } = useGlobal();
@@ -44,13 +44,13 @@ const EditarPaciente = ({
       setEnderecos(enderecoPaciente);
 
       const telefonesPacientesFormatados = telefoneDados
-        .filter((tel) => tel.TIPO === "PACIENTE")
+        .filter((tel) => tel.tipo === "PACIENTE")
         .map(
           (tel) =>
-            `(${tel.DDD}) ${tel.NR_TELEFONE.slice(
+            `(${tel.ddd}) ${tel.nr_telefone.slice(
               0,
               5
-            )}-${tel.NR_TELEFONE.slice(5)}`
+            )}-${tel.nr_telefone.slice(5)}`
         );
       setTelefonesPaciente(telefonesPacientesFormatados);
 
@@ -62,15 +62,15 @@ const EditarPaciente = ({
         const telefones = telefoneDados
           .filter(
             (tel) =>
-              tel.TIPO === "RESPONSAVEL" &&
-              tel.CD_RESPONSAVEL === resp.CD_RESPONSAVEL
+              tel.tipo === "RESPONSAVEL" &&
+              tel.cd_responsavel === resp.cd_responsavel
           )
           .map(
             (tel) =>
-              `(${tel.DDD}) ${tel.NR_TELEFONE.slice(
+              `(${tel.ddd}) ${tel.nr_telefone.slice(
                 0,
                 5
-              )}-${tel.NR_TELEFONE.slice(5)}`
+              )}-${tel.nr_telefone.slice(5)}`
           );
 
         return telefones.length > 0 ? telefones : [];
@@ -82,16 +82,16 @@ const EditarPaciente = ({
         ? responsaveisDados.map((resp) => {
             let data = "";
 
-            if (resp.DT_NASCIMENTO?.includes("/")) {
-              const [dia, mes, ano] = resp.DT_NASCIMENTO.split("/");
+            if (resp.dt_nascimento?.includes("/")) {
+              const [dia, mes, ano] = resp.dt_nascimento.split("/");
               data = `${ano}-${mes}-${dia}`;
             } else {
-              data = resp.DT_NASCIMENTO;
+              data = resp.dt_nascimento;
             }
 
             return {
               ...resp,
-              DT_NASCIMENTO: data,
+              dt_nascimento: data,
             };
           })
         : [];
@@ -102,7 +102,7 @@ const EditarPaciente = ({
       } else {
         // cria um responsável vazio para renderizar os inputs
         setResponsavel([
-          { CD_PACIENTE: "", NOME: "", DT_NASCIMENTO: "", CPF: "" },
+          { cd_paciente: "", nome: "", dt_nascimento: "", cpf: "" },
         ]);
       }
       carregouPaciente.current = true;
@@ -116,21 +116,21 @@ const EditarPaciente = ({
   ]);
 
   useEffect(() => {
-    if (paciente.NM_GENERO && generos.length > 0) {
+    if (paciente.nm_genero && generos.length > 0) {
       const generoDoPaciente = generos.find(
-        (g) => g.NM_GENERO === paciente.NM_GENERO
+        (g) => g.nm_genero === paciente.nm_genero
       );
       if (
         generoDoPaciente &&
-        paciente.CD_GENERO !== generoDoPaciente.CD_GENERO
+        paciente.cd_genero !== generoDoPaciente.cd_genero
       ) {
         setPaciente((prev) => ({
           ...prev,
-          CD_GENERO: generoDoPaciente.CD_GENERO,
+          cd_genero: generoDoPaciente.cd_genero,
         }));
       }
     }
-  }, [paciente.NM_GENERO, generos]);
+  }, [paciente.nm_genero, generos]);
 
 
   const handleChangeFormulario = (e) => {
@@ -160,7 +160,7 @@ const EditarPaciente = ({
 
   const fetchGeneros = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/genero");
+      const response = await fetch("https://mentechbackend.onrender.com/genero");
       if (!response.ok) {
         throw new Error("Erro ao buscar gêneros");
       }
@@ -175,7 +175,7 @@ const EditarPaciente = ({
   const handleAddResponsavel = () => {
     setResponsavel((prev) => [
       ...prev,
-      { CD_PACIENTE: "", NOME: "", DT_NASCIMENTO: "", CPF: "" },
+      { cd_paciente: "", nome: "", dt_nascimento: "", cpf: "" },
     ]);
     setTelefonesResponsavel([...telefonesResponsavel, []]);
   };
@@ -192,20 +192,20 @@ const EditarPaciente = ({
   const alterarPaciente = async () => {
     try {
       if (
-        !paciente.NM_PACIENTE ||
-        !paciente.DT_NASCIMENTO ||
-        !paciente.SEXO ||
-        !enderecos.CEP
+        !paciente.nm_paciente ||
+        !paciente.dt_nascimento ||
+        !paciente.sexo ||
+        !enderecos.cep
       ) {
         await showAlert.warning("Preencha os campos obrigatórios!");
         return null;
       }
-      const { NM_GENERO, ...pacienteSemNomeGenero } = paciente;
-      const { ATIVO, ...pacientePayload } = pacienteSemNomeGenero;
-      const { CD_PACIENTE, ...pacienteData } = pacientePayload;
+      const { nm_genero, ...pacienteSemNomeGenero } = paciente;
+      const { ativo, ...pacientePayload } = pacienteSemNomeGenero;
+      const { cd_paciente, ...pacienteData } = pacientePayload;
 
       const response = await fetch(
-        `http://127.0.0.1:5000/paciente/${pacientePayload.CD_PACIENTE}`,
+        `https://mentechbackend.onrender.com/paciente/${pacientePayload.cd_paciente}`,
         {
           method: "PUT",
           headers: {
@@ -225,7 +225,7 @@ const EditarPaciente = ({
           throw new Error("Resposta da API não é JSON válido");
         }
         setPacientesModificados((prev) => !prev);
-        return data.CD_PACIENTE;
+        return data.cd_paciente;
       } else {
         throw new Error("Falha ao cadastrar transtorno");
       }
@@ -238,7 +238,7 @@ const EditarPaciente = ({
   const alterarResponsavel = async (pacienteID) => {
     try {
       const resposta = await fetch(
-        `http://127.0.0.1:5000/responsavel/${pacienteID}`
+        `https://mentechbackend.onrender.com/responsavel/${pacienteID}`
       );
 
       let dados;
@@ -252,7 +252,7 @@ const EditarPaciente = ({
       }
       if (dados.length > 0) {
         const deleteResponse = await fetch(
-          `http://127.0.0.1:5000/responsavel/paciente/${pacienteID}`,
+          `https://mentechbackend.onrender.com/responsavel/paciente/${pacienteID}`,
           {
             method: "DELETE",
           }
@@ -266,7 +266,7 @@ const EditarPaciente = ({
       }
 
       const responsavelValidos = responsavel.filter(
-        (r) => r.NOME && r.CPF && r.DT_NASCIMENTO
+        (r) => r.nome && r.cpf && r.dt_nascimento
       );
 
       if (responsavelValidos.length === 0) {
@@ -277,13 +277,14 @@ const EditarPaciente = ({
 
       for (const r of responsavelValidos) {
         const responsavelParaEnviar = {
-          CD_PACIENTE: pacienteID,
-          NOME: r.NOME,
-          CPF: r.CPF,
-          DT_NASCIMENTO: r.DT_NASCIMENTO,
+          cd_paciente: pacienteID,
+          nome: r.nome,
+          cpf: r.cpf,
+          dt_nascimento: r.dt_nascimento,
         };
+        console.log("Enviando responsável:", responsavelParaEnviar);
 
-        const response = await fetch("http://127.0.0.1:5000/responsavel", {
+        const response = await fetch("https://mentechbackend.onrender.com/responsavel", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -299,7 +300,7 @@ const EditarPaciente = ({
         }
 
         const data = await response.json();
-        const idGerado = data.CD_RESPONSAVEL;
+        const idGerado = data.cd_responsavel;
         responsavelIDs.push(idGerado);
       }
 
@@ -316,18 +317,18 @@ const EditarPaciente = ({
       const telefonesParaCadastrar = [];
 
       // 🔁 Etapa 1: apagar telefones existentes (do paciente e dos responsáveis)
-      await fetch(`http://127.0.0.1:5000/telefone/${pacienteID}`, {
+      await fetch(`https://mentechbackend.onrender.com/telefone/${pacienteID}`, {
         method: "DELETE",
       });
 
       // 👦 Telefones do paciente
       telefonesPaciente.forEach((tel) => {
         telefonesParaCadastrar.push({
-          CD_PACIENTE: pacienteID,
-          CD_RESPONSAVEL: null,
-          TIPO: "PACIENTE",
-          DDD: tel.substring(1, 3),
-          NR_TELEFONE: tel.replace(/\D/g, "").substring(2),
+          cd_paciente: pacienteID,
+          cd_responsavel: null,
+          tipo: "PACIENTE",
+          ddd: tel.substring(1, 3),
+          nr_telefone: tel.replace(/\D/g, "").substring(2),
         });
       });
 
@@ -335,11 +336,11 @@ const EditarPaciente = ({
       telefonesResponsavel.forEach((listaTel, index) => {
         listaTel.forEach((tel) => {
           telefonesParaCadastrar.push({
-            CD_PACIENTE: pacienteID,
-            CD_RESPONSAVEL: responsavelIDs[index],
-            TIPO: "RESPONSAVEL",
-            DDD: tel.substring(1, 3),
-            NR_TELEFONE: tel.replace(/\D/g, "").substring(2),
+            cd_paciente: pacienteID,
+            cd_responsavel: responsavelIDs[index],
+            tipo: "RESPONSAVEL",
+            ddd: tel.substring(1, 3),
+            nr_telefone: tel.replace(/\D/g, "").substring(2),
           });
         });
       });
@@ -351,7 +352,7 @@ const EditarPaciente = ({
 
       // 📨 Cadastrando novamente via POST
       for (const tel of telefonesParaCadastrar) {
-        const response = await fetch("http://127.0.0.1:5000/telefone", {
+        const response = await fetch("https://mentechbackend.onrender.com/telefone", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -378,14 +379,14 @@ const EditarPaciente = ({
   const alterarEndereco = async (pacienteID = "", responsavelIDs = []) => {
     try {
       const resposta = await fetch(
-        `http://127.0.0.1:5000/endereco/${pacienteID}`
+        `https://mentechbackend.onrender.com/endereco/${pacienteID}`
       );
       if (!resposta.ok) throw new Error("Erro ao buscar responsa");
       const dados = await resposta.json();
 
       if (dados) {
         const deleteResponse = await fetch(
-          `http://127.0.0.1:5000/endereco/${pacienteID}`,
+          `https://mentechbackend.onrender.com/endereco/${pacienteID}`,
           {
             method: "DELETE",
           }
@@ -401,20 +402,20 @@ const EditarPaciente = ({
       // 3. Preparar array de endereços para criar (paciente + responsáveis)
       const enderecosParaCriar = [];
 
-      if (enderecos.CEP) {
+      if (enderecos.cep) {
         // Endereço do paciente
         enderecosParaCriar.push({
-          CD_PACIENTE: pacienteID,
-          CD_RESPONSAVEL: null,
-          CEP: enderecos.CEP,
+          cd_paciente: pacienteID,
+          cd_responsavel: null,
+          cep: enderecos.cep,
           RUA: enderecos.RUA,
-          NUMERO: enderecos.NUMERO,
-          BAIRRO: enderecos.BAIRRO,
-          CIDADE: enderecos.CIDADE,
-          UF: enderecos.UF,
-          COMPLEMENTO: enderecos.COMPLEMENTO,
-          LOGRADOURO: enderecos.LOGRADOURO,
-          TIPO: "PACIENTE",
+          numero: enderecos.numero,
+          bairro: enderecos.bairro,
+          cidade: enderecos.cidade,
+          uf: enderecos.uf,
+          complemento: enderecos.complemento,
+          logradouro: enderecos.logradouro,
+          tipo: "PACIENTE",
         });
       }
 
@@ -422,24 +423,24 @@ const EditarPaciente = ({
         // Endereços dos responsáveis
         responsavelIDs.forEach((id) => {
           enderecosParaCriar.push({
-            CD_PACIENTE: pacienteID,
-            CD_RESPONSAVEL: id,
-            CEP: enderecos.CEP,
+            cd_paciente: pacienteID,
+            cd_responsavel: id,
+            cep: enderecos.cep,
             RUA: enderecos.RUA,
-            NUMERO: enderecos.NUMERO,
-            BAIRRO: enderecos.BAIRRO,
-            CIDADE: enderecos.CIDADE,
-            UF: enderecos.UF,
-            COMPLEMENTO: enderecos.COMPLEMENTO,
-            LOGRADOURO: enderecos.LOGRADOURO,
-            TIPO: "RESPONSAVEL",
+            numero: enderecos.numero,
+            bairro: enderecos.bairro,
+            cidade: enderecos.cidade,
+            uf: enderecos.uf,
+            complemento: enderecos.complemento,
+            logradouro: enderecos.logradouro,
+            tipo: "RESPONSAVEL",
           });
         });
       }
 
       // 4. Criar todos os endereços com POST
       for (const endereco of enderecosParaCriar) {
-        const postResponse = await fetch("http://127.0.0.1:5000/endereco", {
+        const postResponse = await fetch("https://mentechbackend.onrender.com/endereco", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(endereco),
@@ -494,12 +495,12 @@ const EditarPaciente = ({
               <input
                 className="F_NomeAreaTranstorno"
                 placeholder="Ex: Jonas Silva Miranda"
-                name="NM_PACIENTE"
-                value={paciente.NM_PACIENTE}
+                name="nm_paciente"
+                value={paciente.nm_paciente}
                 onChange={(e) =>
                   setPaciente({
                     ...paciente,
-                    NM_PACIENTE: e.target.value,
+                    nm_paciente: e.target.value,
                   })
                 }
                 maxLength={90}
@@ -518,9 +519,9 @@ const EditarPaciente = ({
               >
                 <select
                   className="F_NomeAreaTranstorno"
-                  name="TIP_SANG"
+                  name="tip_sang"
                   style={{ width: "100px" }}
-                  value={paciente.TIP_SANG}
+                  value={paciente.tip_sang}
                   onChange={handleChangeFormulario}
                 >
                   <option value="" disabled></option>
@@ -555,9 +556,9 @@ const EditarPaciente = ({
               <p style={{ textAlign: "start" }}>Sexo*</p>
               <select
                 className="F_NomeAreaTranstorno"
-                name="SEXO"
+                name="sexo"
                 style={{ width: "118px" }}
-                value={paciente.SEXO}
+                value={paciente.sexo}
                 onChange={handleChangeFormulario}
               >
                 <option value="" disabled></option>
@@ -582,12 +583,12 @@ const EditarPaciente = ({
                   className="F_NomeAreaTranstorno"
                   placeholder="Ex: XX/XX/XXXX"
                   type="Date"
-                  name="DT_NASC"
-                  value={paciente.DT_NASCIMENTO || ""}
+                  name="dt_nasc"
+                  value={paciente.dt_nascimento || ""}
                   onChange={(e) =>
                     setPaciente({
                       ...paciente,
-                      DT_NASC: e.target.value,
+                      dt_nasc: e.target.value,
                     })
                   }
                   style={{ width: "120px", color: "#000" }}
@@ -613,9 +614,9 @@ const EditarPaciente = ({
               <p style={{ textAlign: "start" }}>Gênero*</p>
               <select
                 className="F_NomeAreaTranstorno"
-                name="CD_GENERO"
+                name="cd_genero"
                 style={{ width: "180px" }}
-                value={paciente.CD_GENERO || 1}
+                value={paciente.cd_genero || 1}
                 onChange={handleChangeFormulario}
               >
                 <option value="" disabled>
@@ -623,11 +624,11 @@ const EditarPaciente = ({
                 </option>
                 {generos.map((genero) => (
                   <option
-                    key={genero.CD_GENERO}
-                    value={genero.CD_GENERO}
+                    key={genero.cd_genero}
+                    value={genero.cd_genero}
                     style={{ color: "#000" }}
                   >
-                    {genero.NM_GENERO}
+                    {genero.nm_genero}
                   </option>
                 ))}
               </select>
@@ -647,16 +648,16 @@ const EditarPaciente = ({
               }}
             >
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p style={{ textAlign: "start" }}>CEP*</p>
+                <p style={{ textAlign: "start" }}>cep*</p>
                 <input
                   className="F_NomeAreaTranstorno"
                   placeholder="Ex: 72871-581"
-                  name="CEP"
-                  value={enderecos?.CEP || ""}
+                  name="cep"
+                  value={enderecos?.cep || ""}
                   onChange={(e) =>
                     setEnderecos({
                       ...enderecos,
-                      CEP: formatarCEP(e.target.value),
+                      cep: formatarCEP(e.target.value),
                     })
                   }
                   maxLength={9}
@@ -665,14 +666,14 @@ const EditarPaciente = ({
               </div>
 
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p style={{ textAlign: "start" }}>UF</p>
+                <p style={{ textAlign: "start" }}>uf</p>
                 <input
                   className="F_GravidadeAreaTranstorno"
                   placeholder="Ex: DF"
-                  name="UF"
-                  value={enderecos?.UF || ""}
+                  name="uf"
+                  value={enderecos?.uf || ""}
                   onChange={(e) =>
-                    setEnderecos({ ...enderecos, UF: e.target.value })
+                    setEnderecos({ ...enderecos, uf: e.target.value })
                   }
                   maxLength={90}
                   style={{ width: "40px" }}
@@ -684,9 +685,9 @@ const EditarPaciente = ({
                   className="F_GravidadeAreaTranstorno"
                   placeholder="Ex: Chácaras Anhanguera"
                   name="Bairro"
-                  value={enderecos?.BAIRRO || ""}
+                  value={enderecos?.bairro || ""}
                   onChange={(e) =>
-                    setEnderecos({ ...enderecos, BAIRRO: e.target.value })
+                    setEnderecos({ ...enderecos, bairro: e.target.value })
                   }
                   maxLength={90}
                   style={{ width: "180px" }}
@@ -707,9 +708,9 @@ const EditarPaciente = ({
                   className="F_GravidadeAreaTranstorno"
                   placeholder="Ex: Belo Horizonte"
                   name="Cidade"
-                  value={enderecos?.CIDADE || ""}
+                  value={enderecos?.cidade || ""}
                   onChange={(e) =>
-                    setEnderecos({ ...enderecos, CIDADE: e.target.value })
+                    setEnderecos({ ...enderecos, cidade: e.target.value })
                   }
                   style={{ width: "150px" }}
                   maxLength={90}
@@ -721,9 +722,9 @@ const EditarPaciente = ({
                   className="F_GravidadeAreaTranstorno"
                   placeholder="Ex: 22"
                   name="Numero"
-                  value={enderecos?.NUMERO || ""}
+                  value={enderecos?.numero || ""}
                   onChange={(e) =>
-                    setEnderecos({ ...enderecos, NUMERO: e.target.value })
+                    setEnderecos({ ...enderecos, numero: e.target.value })
                   }
                   style={{ width: "50px" }}
                   maxLength={5}
@@ -736,9 +737,9 @@ const EditarPaciente = ({
                   className="F_GravidadeAreaTranstorno"
                   placeholder="Ex: Rua Paulo Freitas"
                   name="Logradouro"
-                  value={enderecos?.LOGRADOURO || ""}
+                  value={enderecos?.logradouro || ""}
                   onChange={(e) =>
-                    setEnderecos({ ...enderecos, LOGRADOURO: e.target.value })
+                    setEnderecos({ ...enderecos, logradouro: e.target.value })
                   }
                   style={{ width: "150px" }}
                   maxLength={90}
@@ -759,9 +760,9 @@ const EditarPaciente = ({
                   className="F_GravidadeAreaTranstorno"
                   placeholder="Ex: Condominio morada center, casa 52, 3º andarb "
                   name="Complemento"
-                  value={enderecos?.COMPLEMENTO || ""}
+                  value={enderecos?.complemento || ""}
                   onChange={(e) =>
-                    setEnderecos({ ...enderecos, COMPLEMENTO: e.target.value })
+                    setEnderecos({ ...enderecos, complemento: e.target.value })
                   }
                   style={{ width: "440px" }}
                   maxLength={90}
@@ -799,11 +800,11 @@ const EditarPaciente = ({
                       <input
                         className="F_GravidadeAreaTranstorno"
                         placeholder="Ex: Roberto Souza Silva"
-                        name="NOME"
-                        value={item.NOME}
+                        name="nome"
+                        value={item.nome}
                         onChange={(e) => {
                           const novosResponsaveis = [...responsavel];
-                          novosResponsaveis[index].NOME = e.target.value;
+                          novosResponsaveis[index].nome = e.target.value;
                           setResponsavel(novosResponsaveis);
                         }}
                         style={{ width: "200px" }}
@@ -819,11 +820,11 @@ const EditarPaciente = ({
                         className="F_GravidadeAreaTranstorno"
                         placeholder="Ex: XX/XX/XXXX"
                         type="Date"
-                        name="DT_NASCIMENTO"
-                        value={item.DT_NASCIMENTO}
+                        name="dt_nascimento"
+                        value={item.dt_nascimento}
                         onChange={(e) => {
                           const novosResponsaveis = [...responsavel];
-                          novosResponsaveis[index].DT_NASCIMENTO =
+                          novosResponsaveis[index].dt_nascimento =
                             e.target.value;
                           setResponsavel(novosResponsaveis);
                         }}
@@ -838,16 +839,16 @@ const EditarPaciente = ({
                     }}
                   >
                     <div className="F_CriarTranstornoInputObrigatorio">
-                      <p style={{ textAlign: "start" }}>CPF*</p>
+                      <p style={{ textAlign: "start" }}>cpf*</p>
                       <input
                         className="F_GravidadeAreaTranstorno"
                         placeholder="Ex: 057.421.581-65"
-                        name="CPF"
-                        value={item.CPF}
+                        name="cpf"
+                        value={item.cpf}
                         onChange={(e) => {
                           const cpfFormatado = formatarCPF(e.target.value);
                           const novosResponsaveis = [...responsavel];
-                          novosResponsaveis[index].CPF = cpfFormatado;
+                          novosResponsaveis[index].cpf = cpfFormatado;
                           setResponsavel(novosResponsaveis);
                         }}
                         style={{ width: "130px" }}

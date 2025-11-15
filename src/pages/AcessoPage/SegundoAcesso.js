@@ -29,7 +29,7 @@ import ManterHistorico from "../HistoricoPage/ManterHistorico.js";
 import { Grafico } from "../GraficoPage/Grafico.js";
 
 const SegundoAcesso = ({
-  userData, //VOU USAR PARA PUXAR O NOME E CIP DO USUÁRIO
+  userData, //VOU USAR PARA PUXAR O nome E cip DO USUÁRIO
   pacienteID,
   onLogout,
   dadosPaciente,
@@ -42,10 +42,10 @@ const SegundoAcesso = ({
   const { setPacienteEditado, setMetasModificadas } = useGlobal();
 
   useEffect(() => {
-    if (dadosPaciente?.ATIVO) {
-      setStatusAtivo(dadosPaciente.ATIVO !== "S");
+    if (dadosPaciente?.ativo) {
+      setStatusAtivo(dadosPaciente.ativo !== "S");
       toggleActiveStatusArea(!true);
-      if (dadosPaciente?.ATIVO === "N") {
+      if (dadosPaciente?.ativo === "N") {
         toggleActiveStatusArea(true);
       }
     }
@@ -68,17 +68,17 @@ const SegundoAcesso = ({
     iframe.classList.toggle("Hidden");
   };
 
-  const ddd = telefoneDados?.[0]?.DDD ?? "";
-  const numero = telefoneDados?.[0]?.NR_TELEFONE ?? "";
+  const ddd = telefoneDados?.[0]?.ddd ?? "";
+  const numeroTel = telefoneDados?.[0]?.nr_telefone ?? "";
   const primeiroTelefone =
-    ddd && numero ? `(${ddd}) ${numero.slice(0, 5)}-${numero.slice(5)}` : "--";
+    ddd && numeroTel ? `(${ddd}) ${numeroTel.slice(0, 5)}-${numeroTel.slice(5)}` : "--";
 
   const primeiroResponsavel = !responsaveisDados
     ? "carregando..."
     : responsaveisDados.error
     ? "--"
-    : responsaveisDados[0]?.NOME
-    ? responsaveisDados[0].NOME
+    : responsaveisDados[0]?.nome
+    ? responsaveisDados[0].nome
     : "--";
 
   const openDivArea = (idArea, listName) => {
@@ -102,7 +102,7 @@ const SegundoAcesso = ({
 
   const PUTStatusAtivo = async (id) => {
     const response = await fetch(
-      `http://127.0.0.1:5000/paciente/toggle/${id}`,
+      `https://mentechbackend.onrender.com/paciente/toggle/${id}`,
       {
         method: "PUT",
       }
@@ -129,13 +129,13 @@ const SegundoAcesso = ({
           className="FlexCenterEnd Draggable"
           style={{ width: "80%", margin: "6px 10px 0 0" }}
         >
-          <h4 style={{ margin: "0 10px" }}>{userData?.NM_USUARIO}</h4>
+          <h4 style={{ margin: "0 10px" }}>{userData?.nm_usuario}</h4>
           <img
             className="FlexCenterMid"
             style={{ width: "14px", height: "14px", margin: "0 10px" }}
             src={PsicologiaIcon}
           />
-          <h4 style={{ margin: "0 10px" }}>{userData?.CIP}</h4>
+          <h4 style={{ margin: "0 10px" }}>{userData?.cip}</h4>
         </div>
         <button
           className="BTNLogout  FlexCenterMid UserSelectNone TextCenter TextBold"
@@ -234,7 +234,7 @@ const SegundoAcesso = ({
                   className="TextBold"
                   style={{ color: "#f5f5f5", margin: "10px 0px 0px 0px" }}
                 >
-                  {dadosPaciente ? dadosPaciente.NM_PACIENTE : "CARREGANDO..."}
+                  {dadosPaciente ? dadosPaciente.nm_paciente : "CARREGANDO..."}
                 </h2>
                 <input
                   type="checkbox"
@@ -281,13 +281,13 @@ const SegundoAcesso = ({
                         margin: "6ox 10px 0 0",
                       }}
                     >
-                      <strong style={{ paddingRight: "3px" }}>CEP:</strong>
+                      <strong style={{ paddingRight: "3px" }}>cep:</strong>
                       {!enderecoPaciente
                         ? "carregando..."
                         : enderecoPaciente.error
                         ? "--"
-                        : enderecoPaciente.CEP
-                        ? enderecoPaciente.CEP
+                        : enderecoPaciente.cep
+                        ? enderecoPaciente.cep
                         : "--"}
                     </li>
 
@@ -300,13 +300,13 @@ const SegundoAcesso = ({
                         margin: "6ox 10px 0 0",
                       }}
                     >
-                      <strong style={{ paddingRight: "3px" }}>CIDADE:</strong>
+                      <strong style={{ paddingRight: "3px" }}>cidade:</strong>
                       {!enderecoPaciente
                         ? "carregando..."
                         : enderecoPaciente.error
                         ? "--"
-                        : enderecoPaciente.CIDADE
-                        ? enderecoPaciente.CIDADE
+                        : enderecoPaciente.cidade
+                        ? enderecoPaciente.cidade
                         : "--"}
                     </li>
                     <li
@@ -322,7 +322,7 @@ const SegundoAcesso = ({
                         NASCIMENTO:
                       </strong>
                       {dadosPaciente
-                        ? formatarDataParaExibir(dadosPaciente.DT_NASCIMENTO)
+                        ? formatarDataParaExibir(dadosPaciente.dt_nascimento)
                         : "--"}
                     </li>
                   </ol>
@@ -357,9 +357,9 @@ const SegundoAcesso = ({
                         margin: "6ox 10px 0 0",
                       }}
                     >
-                      <strong style={{ paddingRight: "3px" }}>SEXO:</strong>
+                      <strong style={{ paddingRight: "3px" }}>sexo:</strong>
                       {dadosPaciente
-                        ? dadosPaciente.SEXO == "F"
+                        ? dadosPaciente.sexo == "F"
                           ? "Feminino"
                           : "Masculino"
                         : "--"}
@@ -419,7 +419,7 @@ const SegundoAcesso = ({
             style={{ width: "100%", height: "90%" }}
           >
             <div>
-              <ManterPatologia CD_PACIENTE={pacienteID}></ManterPatologia>
+              <ManterPatologia cd_paciente={pacienteID}></ManterPatologia>
             </div>
           </div>
         </div>
@@ -633,7 +633,7 @@ const SegundoAcesso = ({
             </button>
           </div>
           <div className="FlexCenterMid">
-            <ManterAgenda CD_PACIENTE={pacienteID} />
+            <ManterAgenda cd_paciente={pacienteID} />
           </div>
         </div>
       </div>
@@ -656,7 +656,7 @@ const SegundoAcesso = ({
             </button>
           </div>
           <div className="FlexCenterMid">
-            <CadastrarPaciente CD_USUARIO={userData.CD_USUARIO} />
+            <CadastrarPaciente cd_usuario={userData.cd_usuario} />
           </div>
         </div>
       </div>
@@ -706,7 +706,7 @@ const SegundoAcesso = ({
           </div>
           <div className="FlexCenterMid">
             <ListarPacientes
-              CD_USUARIO={userData.CD_USUARIO}
+              cd_usuario={userData.cd_usuario}
               toggleIframe={() => toggleIframe("IframeListarPaciente")}
             />
           </div>
@@ -731,7 +731,7 @@ const SegundoAcesso = ({
             </button>
           </div>
           <div className="FlexCenterMid">
-            <ManterMedicamentos CD_PACIENTE={pacienteID} />
+            <ManterMedicamentos cd_paciente={pacienteID} />
           </div>
         </div>
       </div>

@@ -31,10 +31,10 @@ const ManterMeta = ({ pacienteID }) => {
 
         for (const meta of metasCarregadas) {
           const { atividades, percent } = await carregarAtividades(
-            meta.CD_META
+            meta.cd_meta
           );
-          novosPercent[meta.CD_META] = percent;
-          novasAtividades[meta.CD_META] = atividades;
+          novosPercent[meta.cd_meta] = percent;
+          novasAtividades[meta.cd_meta] = atividades;
         }
 
         setPercentMetas(novosPercent);
@@ -61,13 +61,13 @@ const ManterMeta = ({ pacienteID }) => {
   const carregarAtividades = async (metaID) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/atividade/por_meta/${metaID}`
+        `https://mentechbackend.onrender.com/atividade/por_meta/${metaID}`
       );
       if (!response.ok) throw new Error("Erro ao buscar atividades");
       const data = await response.json();
 
       const total = data.length;
-      const concluidas = data.filter((a) => a.RESULTADO === "Concluído").length;
+      const concluidas = data.filter((a) => a.resultado === "Concluído").length;
       const percent = total ? Math.round((concluidas / total) * 100) : 0;
 
       return { atividades: data, percent };
@@ -85,7 +85,7 @@ const ManterMeta = ({ pacienteID }) => {
   const carregarMetas = async (pacienteID) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/meta/por_paciente/${pacienteID}`
+        `https://mentechbackend.onrender.com/meta/por_paciente/${pacienteID}`
       );
       if (!response.ok) throw new Error("Erro ao buscar metas");
       const data = await response.json();
@@ -100,7 +100,7 @@ const ManterMeta = ({ pacienteID }) => {
   const toggleAtivoMeta = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/meta/alternar/${id}`,
+        `https://mentechbackend.onrender.com/meta/alternar/${id}`,
         {
           method: "PUT",
           headers: {
@@ -130,7 +130,7 @@ const ManterMeta = ({ pacienteID }) => {
 
   const handleRemoverMeta = async (id) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/meta/${id}`, {
+      const response = await fetch(`https://mentechbackend.onrender.com/meta/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +147,7 @@ const ManterMeta = ({ pacienteID }) => {
   const concluirMeta = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/paciente_meta/${id}`,
+        `https://mentechbackend.onrender.com/paciente_meta/${id}`,
         {
           method: "PUT",
           headers: {
@@ -185,58 +185,58 @@ const ManterMeta = ({ pacienteID }) => {
         <Slider {...settings}>
           {metas.map((meta) => (
             <div
-              key={meta.CD_META}
-              className={`meta-card ${meta.ATIVO === "S" ? "" : "inactive"}`}
+              key={meta.cd_meta}
+              className={`meta-card ${meta.ativo === "S" ? "" : "inactive"}`}
             >
               <div className="FlexCenterBetween">
                 <h3 style={{ height: "30px", margin: "10px 0" }}>
-                  {meta.META}
+                  {meta.meta}
                 </h3>
 
                 <div className="FlexCenterMid">
                   <button
-                    id={`btnDelete-${meta.CD_META}`}
+                    id={`btnDelete-${meta.cd_meta}`}
                     className={`F_BtnGravidade ${
-                      meta.ATIVO === "S" ? "Hidden" : ""
+                      meta.ativo === "S" ? "Hidden" : ""
                     }`}
-                    onClick={() => handleRemoverMeta(meta.CD_META)}
+                    onClick={() => handleRemoverMeta(meta.cd_meta)}
                   >
                     <img className="F_TrashIcon" src={iconTrash} />
                   </button>
                   <input
                     type="checkbox"
-                    id={`toggle-meta-${meta.CD_META}`}
-                    checked={meta.ATIVO === "S"}
+                    id={`toggle-meta-${meta.cd_meta}`}
+                    checked={meta.ativo === "S" || metasModificadas}
                     onChange={() => {
-                      toggleIframe(`btnDelete-${meta.CD_META}`);
-                      toggleAtivoMeta(meta.CD_META);
                       setMetasModificadas((prev) => !prev);
+                      toggleIframe(`btnDelete-${meta.cd_meta}`);
+                      toggleAtivoMeta(meta.cd_meta);
                     }}
                   />
                   <label
-                    htmlFor={`toggle-meta-${meta.CD_META}`}
+                    htmlFor={`toggle-meta-${meta.cd_meta}`}
                     className="simple-switch"
                   />
                 </div>
               </div>
-              <p>{meta.OBS_META}</p>
+              <p>{meta.obs_meta}</p>
               <div className="FlexCenterAround" style={{ marginTop: "10px" }}>
                 <div style={{ width: "33%" }}>
                   <p>
                     <strong>Cadastro:</strong>{" "}
-                    {formatarDataBR(meta.DT_CADASTRO)}
+                    {formatarDataBR(meta.dt_cadastro)}
                   </p>
                 </div>
                 <div style={{ width: "33%" }}>
                   <p>
                     <strong>Conclusão:</strong>{" "}
-                    {formatarDataBR(meta.DT_CONCLUSAO)}
+                    {formatarDataBR(meta.dt_conclusao)}
                   </p>
                 </div>
                 <div style={{ width: "33%" }}>
                   <p>
                     <strong>Previsão:</strong>{" "}
-                    {formatarDataBR(meta.DT_PREVISAO)}
+                    {formatarDataBR(meta.dt_previsao)}
                   </p>
                 </div>
               </div>
@@ -254,19 +254,19 @@ const ManterMeta = ({ pacienteID }) => {
                   className="btn_graphic"
                   onClick={() => {
                     toggleIframe("IframeAtividade");
-                    setMetaID(meta.CD_META);
+                    setMetaID(meta.cd_meta);
                   }}
                 >
                   <PieChart
                     data={[
                       {
                         title: "Concluído",
-                        value: percentMetas[meta.CD_META] || 0,
+                        value: percentMetas[meta.cd_meta] || 0,
                         color: "#4EED63",
                       },
                       {
                         title: "Pendentes",
-                        value: 100 - (percentMetas[meta.CD_META] || 0),
+                        value: 100 - (percentMetas[meta.cd_meta] || 0),
                         color: "#ff362b",
                       },
                     ]}
@@ -290,9 +290,9 @@ const ManterMeta = ({ pacienteID }) => {
                   />
                 </div>
                 <div>
-                  {percentMetas[meta.CD_META] === 100 && (
+                  {percentMetas[meta.cd_meta] === 100 && (
                     <button
-                      onClick={() => concluirMeta(meta.CD_META)}
+                      onClick={() => concluirMeta(meta.cd_meta)}
                       className="BTNPurple"
                       style={{
                         height: "30px",

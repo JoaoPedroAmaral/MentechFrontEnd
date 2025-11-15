@@ -28,42 +28,42 @@ const ManterTranstorno = () => {
   const [editingSubtipos, setEditingSubtipos] = useState([]);
 
   const [formTranstorno, setFormTranstorno] = useState({
-    NM_TRANSTORNO: "",
-    CID11: "",
-    APOIO_DIAG: "",
-    PREVALENCIA: "",
-    FATORES_RISCO_PROGNOSTICO: "",
-    DIAGNOSTICO_GENERO: "",
+    nm_transtorno: "",
+    cid11: "",
+    apoio_diag: "",
+    prevalencia: "",
+    fatores_risco_prognostico: "",
+    diagnostico_genero: "",
   });
 
   const [formgravidades, setFormGravidades] = useState([
     {
-      NM_GRAVIDADE: "",
-      GRAV_DESCRICAO: "",
+      nm_gravidade: "",
+      grav_descricao: "",
     },
   ]);
   const [formCriterioDiagnostico, setFormCriterioDiagnostico] = useState([
     {
-      CRITERIO_DIAGNOSTICO: "",
-      CRITERIO_DIFERENCIAL: "N",
+      criterio_diagnostico: "",
+      criterio_diferencial: "N",
     },
   ]);
   const [formSubTipo, setFormSubTipo] = useState([
     {
-      NM_SUBTIPO: "",
-      CID11: "",
-      OBS: "",
+      nm_subtipo: "",
+      cid11: "",
+      obs: "",
     },
   ]);
 
   const adicionarTranstorno = async () => {
     try {
-      if (!formTranstorno.NM_TRANSTORNO || !formTranstorno.CID11) {
-        alert("Nome do Transtorno e CID11 são obrigatórios!");
+      if (!formTranstorno.nm_transtorno || !formTranstorno.cid11) {
+        alert("Nome do Transtorno e cid11 são obrigatórios!");
         return;
       }
 
-      const response = await fetch("http://127.0.0.1:5000/transtorno", {
+      const response = await fetch("https://mentechbackend.onrender.com/transtorno", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const ManterTranstorno = () => {
 
         await showAlert.success("Transtorno cadastrado com sucesso!");
 
-        return data.CD_TRANSTORNO;
+        return data.cd_transtorno;
       } else {
         throw new Error("Falha ao cadastrar transtorno");
       }
@@ -96,7 +96,7 @@ const ManterTranstorno = () => {
   const adicionarGravidades = async (transtornoId) => {
     try {
       const gravidadesValidas = formgravidades.filter(
-        (g) => g.NM_GRAVIDADE && g.GRAV_DESCRICAO
+        (g) => g.nm_gravidade && g.grav_descricao
       );
 
       if (gravidadesValidas.length === 0) {
@@ -105,12 +105,12 @@ const ManterTranstorno = () => {
 
       for (const gravidade of gravidadesValidas) {
         const gravidadeParaEnviar = {
-          CD_TRANSTORNO: transtornoId,
-          NM_GRAVIDADE: gravidade.NM_GRAVIDADE,
-          GRAV_DESCRICAO: gravidade.GRAV_DESCRICAO,
+          cd_transtorno: transtornoId,
+          nm_gravidade: gravidade.nm_gravidade,
+          grav_descricao: gravidade.grav_descricao,
         };
 
-        const response = await fetch("http://127.0.0.1:5000/gravidade", {
+        const response = await fetch("https://mentechbackend.onrender.com/gravidade", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -136,7 +136,7 @@ const ManterTranstorno = () => {
   const adicionarCriterioDiagnostico = async (transtornoId) => {
     try {
       const criteriosValidos = formCriterioDiagnostico.filter(
-        (c) => c.CRITERIO_DIAGNOSTICO
+        (c) => c.criterio_diagnostico
       );
 
       if (criteriosValidos.length === 0) {
@@ -145,13 +145,13 @@ const ManterTranstorno = () => {
 
       for (const criteriosDiag of criteriosValidos) {
         const criterioParaEnviar = {
-          CD_TRANSTORNO: transtornoId,
-          CRITERIO_DIAGNOSTICO: criteriosDiag.CRITERIO_DIAGNOSTICO,
-          CRITERIO_DIFERENCIAL: criteriosDiag.CRITERIO_DIFERENCIAL,
+          cd_transtorno: transtornoId,
+          criterio_diagnostico: criteriosDiag.criterio_diagnostico,
+          criterio_diferencial: criteriosDiag.criterio_diferencial,
         };
 
         const response = await fetch(
-          "http://127.0.0.1:5000/criterio_diagnostico",
+          "https://mentechbackend.onrender.com/criterio_diagnostico",
           {
             method: "POST",
             headers: {
@@ -180,7 +180,7 @@ const ManterTranstorno = () => {
   const adicionarSubTipo = async (transtornoId) => {
     try {
       const subtiposValidos = formSubTipo.filter(
-        (s) => s.NM_SUBTIPO && s.CID11
+        (s) => s.nm_subtipo && s.cid11
       );
 
       if (subtiposValidos.length === 0) {
@@ -189,14 +189,14 @@ const ManterTranstorno = () => {
 
       for (const subtipos of subtiposValidos) {
         const subtipoParaEnviar = {
-          CD_TRANSTORNO: transtornoId,
-          NM_SUBTIPO: subtipos.NM_SUBTIPO,
-          CID11: subtipos.CID11,
-          OBS: subtipos.OBS,
+          cd_transtorno: transtornoId,
+          nm_subtipo: subtipos.nm_subtipo,
+          cid11: subtipos.cid11,
+          obs: subtipos.obs,
         };
 
         const response = await fetch(
-          "http://127.0.0.1:5000/subtipo_transtorno",
+          "https://mentechbackend.onrender.com/subtipo_transtorno",
           {
             method: "POST",
             headers: {
@@ -228,7 +228,7 @@ const ManterTranstorno = () => {
 
   const fetchTranstornos = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/transtorno");
+      const response = await fetch("https://mentechbackend.onrender.com/transtorno");
       const dataJson = await response.json();
 
       if (!Array.isArray(dataJson)) {
@@ -245,7 +245,7 @@ const ManterTranstorno = () => {
     setLoadingTranstorno(true);
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/transtorno_PorIdTranstorno/${id}`
+        `https://mentechbackend.onrender.com/transtorno_PorIdTranstorno/${id}`
       );
       const dataJson = await response.json();
 
@@ -265,7 +265,7 @@ const ManterTranstorno = () => {
     setcriterioDiagnostico(null);
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/criterio_diagnostico_PorIdTranstorno/${cdTranstorno}`
+        `https://mentechbackend.onrender.com/criterio_diagnostico_PorIdTranstorno/${cdTranstorno}`
       );
       const dataJson = await response.json();
 
@@ -285,7 +285,7 @@ const ManterTranstorno = () => {
     setGravidade([]);
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/gravidade_PorIdTranstorno/${cdTranstorno}`
+        `https://mentechbackend.onrender.com/gravidade_PorIdTranstorno/${cdTranstorno}`
       );
       const dataJson = await response.json();
 
@@ -303,7 +303,7 @@ const ManterTranstorno = () => {
     setSubTipo([]);
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/subtipo_transtorno_PorIdTranstorno/${cdTranstorno}`
+        `https://mentechbackend.onrender.com/subtipo_transtorno_PorIdTranstorno/${cdTranstorno}`
       );
       const dataJson = await response.json();
 
@@ -319,7 +319,7 @@ const ManterTranstorno = () => {
   };
 
   const deleteTranstorno = async (id) => {
-    await fetch(`http://127.0.0.1:5000/transtorno/${id}`, { method: "DELETE" });
+    await fetch(`https://mentechbackend.onrender.com/transtorno/${id}`, { method: "DELETE" });
     setCriteriosModificados((prev) => !prev);
     fetchTranstornos();
   };
@@ -330,7 +330,7 @@ const ManterTranstorno = () => {
   const handleAddGravidade = () => {
     setFormGravidades([
       ...formgravidades,
-      { NM_GRAVIDADE: "", GRAV_DESCRICAO: "" },
+      { nm_gravidade: "", grav_descricao: "" },
     ]);
   };
   const handleRemoveGravidade = (index) => {
@@ -347,26 +347,26 @@ const ManterTranstorno = () => {
       await adicionarSubTipo(transtornoId);
       fetchTranstornos();
       setFormTranstorno({
-        NM_TRANSTORNO: "",
-        CID11: "",
-        APOIO_DIAG: "",
-        PREVALENCIA: "",
-        FATORES_RISCO_PROGNOSTICO: "",
-        DIAGNOSTICO_GENERO: "",
+        nm_transtorno: "",
+        cid11: "",
+        apoio_diag: "",
+        prevalencia: "",
+        fatores_risco_prognostico: "",
+        diagnostico_genero: "",
       });
-      setFormGravidades([{ NM_GRAVIDADE: "", GRAV_DESCRICAO: "" }]);
+      setFormGravidades([{ nm_gravidade: "", grav_descricao: "" }]);
       setFormCriterioDiagnostico([
-        { CRITERIO_DIAGNOSTICO: "", CRITERIO_DIFERENCIAL: "N" },
+        { criterio_diagnostico: "", criterio_diferencial: "N" },
       ]);
-      setFormSubTipo([{ NM_SUBTIPO: "", CID11: "", OBS: "" }]);
+      setFormSubTipo([{ nm_subtipo: "", cid11: "", obs: "" }]);
     }
     fetchTranstornos();
   };
   const handleDelete = async () => {
     const success = await confirmDelete(
-      transtornoSelect?.NM_TRANSTORNO || "Este Transtorno",
+      transtornoSelect?.nm_transtorno || "Este Transtorno",
       async () => {
-        await deleteTranstorno(transtornoSelect.CD_TRANSTORNO);
+        await deleteTranstorno(transtornoSelect.cd_transtorno);
         fetchTranstornos(); // Atualiza a lista
       }
     );
@@ -380,13 +380,13 @@ const ManterTranstorno = () => {
     setIsEditing(true);
     setEditingTranstorno({
       ...transtornoSelect,
-      NM_TRANSTORNO: transtornoSelect.NM_TRANSTORNO || "",
-      CID11: transtornoSelect.CID11 || "",
-      APOIO_DIAG: transtornoSelect.APOIO_DIAG || "",
-      PREVALENCIA: transtornoSelect.PREVALENCIA || "",
-      FATORES_RISCO_PROGNOSTICO:
-        transtornoSelect.FATORES_RISCO_PROGNOSTICO || "",
-      DIAGNOSTICO_GENERO: transtornoSelect.DIAGNOSTICO_GENERO || "",
+      nm_transtorno: transtornoSelect.nm_transtorno || "",
+      cid11: transtornoSelect.cid11 || "",
+      apoio_diag: transtornoSelect.apoio_diag || "",
+      prevalencia: transtornoSelect.prevalencia || "",
+      fatores_risco_prognostico:
+        transtornoSelect.fatores_risco_prognostico || "",
+      diagnostico_genero: transtornoSelect.diagnostico_genero || "",
     });
     setEditingGravidades(gravidade ? [...gravidade] : []);
     setEditingCriterios(criterioDiagnostico ? [...criterioDiagnostico] : []);
@@ -396,9 +396,9 @@ const ManterTranstorno = () => {
     setEditingGravidades([
       ...editingGravidades,
       {
-        CD_GRAVIDADE: null,
-        NM_GRAVIDADE: "",
-        GRAV_DESCRICAO: "",
+        cd_gravidade: null,
+        nm_gravidade: "",
+        grav_descricao: "",
       },
     ]);
   };
@@ -410,26 +410,26 @@ const ManterTranstorno = () => {
 
   const handleSaveEdit = async () => {
     try {
-      if (!editingTranstorno.NM_TRANSTORNO || !editingTranstorno.CID11) {
-        await showAlert.error("Nome do Transtorno e CID11 são obrigatórios!");
+      if (!editingTranstorno.nm_transtorno || !editingTranstorno.cid11) {
+        await showAlert.error("Nome do Transtorno e cid11 são obrigatórios!");
         return;
       }
 
       const response = await fetch(
-        `http://127.0.0.1:5000/transtorno/${transtornoSelect.CD_TRANSTORNO}`,
+        `https://mentechbackend.onrender.com/transtorno/${transtornoSelect.cd_transtorno}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            NM_TRANSTORNO: editingTranstorno.NM_TRANSTORNO,
-            CID11: editingTranstorno.CID11,
-            APOIO_DIAG: editingTranstorno.APOIO_DIAG,
-            PREVALENCIA: editingTranstorno.PREVALENCIA,
-            FATORES_RISCO_PROGNOSTICO:
-              editingTranstorno.FATORES_RISCO_PROGNOSTICO,
-            DIAGNOSTICO_GENERO: editingTranstorno.DIAGNOSTICO_GENERO,
+            nm_transtorno: editingTranstorno.nm_transtorno,
+            cid11: editingTranstorno.cid11,
+            apoio_diag: editingTranstorno.apoio_diag,
+            prevalencia: editingTranstorno.prevalencia,
+            fatores_risco_prognostico:
+              editingTranstorno.fatores_risco_prognostico,
+            diagnostico_genero: editingTranstorno.diagnostico_genero,
           }),
         }
       );
@@ -441,33 +441,33 @@ const ManterTranstorno = () => {
       // Atualiza gravidades
       await updateRelatedData(
         "gravidade",
-        transtornoSelect.CD_TRANSTORNO,
+        transtornoSelect.cd_transtorno,
         editingGravidades,
-        ["NM_GRAVIDADE", "GRAV_DESCRICAO"]
+        ["nm_gravidade", "grav_descricao"]
       );
 
       // Atualiza critérios diagnósticos
       await updateRelatedData(
         "criterio_diagnostico",
-        transtornoSelect.CD_TRANSTORNO,
+        transtornoSelect.cd_transtorno,
         editingCriterios,
-        ["CRITERIO_DIAGNOSTICO", "CRITERIO_DIFERENCIAL"]
+        ["criterio_diagnostico", "criterio_diferencial"]
       );
 
       // Atualiza subtipos
       await updateRelatedData(
         "subtipo_transtorno",
-        transtornoSelect.CD_TRANSTORNO,
+        transtornoSelect.cd_transtorno,
         editingSubtipos,
-        ["NM_SUBTIPO", "CID11", "OBS"]
+        ["nm_subtipo", "cid11", "obs"]
       );
 
       await showAlert.success("Transtorno atualizado com sucesso!");
       setIsEditing(false);
-      fetchTranstornosByID(transtornoSelect.CD_TRANSTORNO);
-      fetchCriterioDiagnostico(transtornoSelect.CD_TRANSTORNO);
-      fetchGravidade(transtornoSelect.CD_TRANSTORNO);
-      fetchSubTipos(transtornoSelect.CD_TRANSTORNO);
+      fetchTranstornosByID(transtornoSelect.cd_transtorno);
+      fetchCriterioDiagnostico(transtornoSelect.cd_transtorno);
+      fetchGravidade(transtornoSelect.cd_transtorno);
+      fetchSubTipos(transtornoSelect.cd_transtorno);
       fetchTranstornos();
     } catch (error) {
       await showAlert.error(error.message);
@@ -476,7 +476,7 @@ const ManterTranstorno = () => {
 
   const updateRelatedData = async (endpoint, cdTranstorno, items, fields) => {
     await fetch(
-      `http://127.0.0.1:5000/${endpoint}/deletarPorTranstorno/${cdTranstorno}`,
+      `https://mentechbackend.onrender.com/${endpoint}/deletarPorTranstorno/${cdTranstorno}`,
       {
         method: "DELETE",
       }
@@ -484,7 +484,7 @@ const ManterTranstorno = () => {
 
     // Depois adiciona os novos (apenas os que têm dados válidos)
     for (const item of items) {
-      const payload = { CD_TRANSTORNO: cdTranstorno };
+      const payload = { cd_transtorno: cdTranstorno };
 
       fields.forEach((field) => {
         if (item[field] !== undefined && item[field] !== "") {
@@ -493,7 +493,7 @@ const ManterTranstorno = () => {
       });
 
       if (Object.keys(payload).length > 1) {
-        await fetch(`http://127.0.0.1:5000/${endpoint}`, {
+        await fetch(`https://mentechbackend.onrender.com/${endpoint}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -510,7 +510,7 @@ const ManterTranstorno = () => {
   };
   const filteredTranstornos = transtornos
     .filter((t) =>
-      removeAccents(t.NM_TRANSTORNO).includes(removeAccents(searchTerm))
+      removeAccents(t.nm_transtorno).includes(removeAccents(searchTerm))
     )
     .reverse();
 
@@ -571,29 +571,29 @@ const ManterTranstorno = () => {
                 <p>Nome do Transtorno*</p>
                 <input
                   className="F_NomeAreaTranstorno"
-                  name="NM_TRANSTORNO"
+                  name="nm_transtorno"
                   placeholder="Ex: Transtorno Obsessivo-Compulsivo (TOC)"
-                  value={formTranstorno.NM_TRANSTORNO}
+                  value={formTranstorno.nm_transtorno}
                   onChange={(e) =>
                     setFormTranstorno({
                       ...formTranstorno,
-                      NM_TRANSTORNO: e.target.value,
+                      nm_transtorno: e.target.value,
                     })
                   }
                   maxLength={90}
                 ></input>
               </div>
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p>CID11*</p>
+                <p>cid11*</p>
                 <input
                   className="F_CIDAreaTranstorno"
-                  name="CID11"
+                  name="cid11"
                   placeholder="Ex: 6A20.0"
-                  value={formTranstorno.CID11}
+                  value={formTranstorno.cid11}
                   onChange={(e) =>
                     setFormTranstorno({
                       ...formTranstorno,
-                      CID11: e.target.value,
+                      cid11: e.target.value,
                     })
                   }
                   maxLength={10}
@@ -606,13 +606,13 @@ const ManterTranstorno = () => {
                   <p>Fatores de risco / Prognóstico</p>
                   <textarea
                     className="F_SecAreaTranstorno"
-                    name="FATORES_RISCO_PROGNOSTICO"
+                    name="fatores_risco_prognostico"
                     placeholder="Ex: História familiar de transtornos de ansiedade, estresse ambiental."
-                    value={formTranstorno.FATORES_RISCO_PROGNOSTICO}
+                    value={formTranstorno.fatores_risco_prognostico}
                     onChange={(e) =>
                       setFormTranstorno({
                         ...formTranstorno,
-                        FATORES_RISCO_PROGNOSTICO: e.target.value,
+                        fatores_risco_prognostico: e.target.value,
                       })
                     }
                   ></textarea>
@@ -621,13 +621,13 @@ const ManterTranstorno = () => {
                   <p>Prevalência</p>
                   <textarea
                     className="F_SecAreaTranstorno"
-                    name="PREVALENCIA"
+                    name="prevalencia"
                     placeholder="Ex: A prevalência do TOC é de aproximadamente 1-2% da população geral."
-                    value={formTranstorno.PREVALENCIA}
+                    value={formTranstorno.prevalencia}
                     onChange={(e) =>
                       setFormTranstorno({
                         ...formTranstorno,
-                        PREVALENCIA: e.target.value,
+                        prevalencia: e.target.value,
                       })
                     }
                   ></textarea>
@@ -641,12 +641,12 @@ const ManterTranstorno = () => {
                       <div>
                         <input
                           className="F_GravidadeAreaTranstorno"
-                          name="NM_GRAVIDADE"
+                          name="nm_gravidade"
                           placeholder="Ex: Leve, Moderado, Grave"
-                          value={item.NM_GRAVIDADE}
+                          value={item.nm_gravidade}
                           onChange={(e) => {
                             const novasGravidades = [...formgravidades];
-                            novasGravidades[index].NM_GRAVIDADE =
+                            novasGravidades[index].nm_gravidade =
                               e.target.value;
                             setFormGravidades(novasGravidades);
                           }}
@@ -657,12 +657,12 @@ const ManterTranstorno = () => {
                       <div>
                         <textarea
                           className="F_SecAreaGravidade"
-                          name="GRAV_DESCRICAO"
+                          name="grav_descricao"
                           placeholder="Ex: O transtorno leve pode ser tratado com terapia cognitivo-comportamental."
-                          value={item.GRAV_DESCRICAO}
+                          value={item.grav_descricao}
                           onChange={(e) => {
                             const novasGravidades = [...formgravidades];
-                            novasGravidades[index].GRAV_DESCRICAO =
+                            novasGravidades[index].grav_descricao =
                               e.target.value;
                             setFormGravidades(novasGravidades);
                           }}
@@ -709,12 +709,12 @@ const ManterTranstorno = () => {
                       <div>
                         <input
                           className="F_InputCD"
-                          name="CRITERIO_DIAGNOSTICO"
+                          name="criterio_diagnostico"
                           placeholder="Ex: Presença de obsessões e/ou compulsões."
-                          value={CDiagnostico.CRITERIO_DIAGNOSTICO}
+                          value={CDiagnostico.criterio_diagnostico}
                           onChange={(e) => {
                             const novoCriterios = [...formCriterioDiagnostico];
-                            novoCriterios[index].CRITERIO_DIAGNOSTICO =
+                            novoCriterios[index].criterio_diagnostico =
                               e.target.value;
                             setFormCriterioDiagnostico(novoCriterios);
                           }}
@@ -727,10 +727,10 @@ const ManterTranstorno = () => {
                         className="F_CheckBoxCD"
                         type="checkbox"
                         style={{ display: "grid" }}
-                        checked={CDiagnostico.CRITERIO_DIFERENCIAL === "S"}
+                        checked={CDiagnostico.criterio_diferencial === "S"}
                         onChange={(e) => {
                           const novoCriterios = [...formCriterioDiagnostico];
-                          novoCriterios[index].CRITERIO_DIFERENCIAL = e.target
+                          novoCriterios[index].criterio_diferencial = e.target
                             .checked
                             ? "S"
                             : "N";
@@ -747,8 +747,8 @@ const ManterTranstorno = () => {
                         setFormCriterioDiagnostico([
                           ...formCriterioDiagnostico,
                           {
-                            CRITERIO_DIAGNOSTICO: "",
-                            CRITERIO_DIFERENCIAL: "N",
+                            criterio_diagnostico: "",
+                            criterio_diferencial: "N",
                           },
                         ]);
                       }}
@@ -778,13 +778,13 @@ const ManterTranstorno = () => {
                 <p>Apoio Diagnóstico</p>
                 <textarea
                   className="F_SecAreaTranstorno F_ApoioDiagArea"
-                  name="APOIO_DIAG"
+                  name="apoio_diag"
                   placeholder="Ex: O TOC pode ser diagnosticado com base na avaliação clínica e em questionários padronizados."
-                  value={formTranstorno.APOIO_DIAG}
+                  value={formTranstorno.apoio_diag}
                   onChange={(e) =>
                     setFormTranstorno({
                       ...formTranstorno,
-                      APOIO_DIAG: e.target.value,
+                      apoio_diag: e.target.value,
                     })
                   }
                 />
@@ -793,13 +793,13 @@ const ManterTranstorno = () => {
                 <p>Diagnóstico por Gênero</p>
                 <textarea
                   className="F_SecAreaTranstorno F_DiagnosticoGen"
-                  name="DIAGNOSTICO_GENERO"
+                  name="diagnostico_genero"
                   placeholder="Ex: O TOC pode se manifestar de maneira diferente em homens e mulheres."
-                  value={formTranstorno.DIAGNOSTICO_GENERO}
+                  value={formTranstorno.diagnostico_genero}
                   onChange={(e) =>
                     setFormTranstorno({
                       ...formTranstorno,
-                      DIAGNOSTICO_GENERO: e.target.value,
+                      diagnostico_genero: e.target.value,
                     })
                   }
                 />
@@ -821,27 +821,27 @@ const ManterTranstorno = () => {
                       <p>Subtipo</p>
                       <input
                         className="F_SubtipoTranstorno"
-                        name="NM_SUBTIPO"
+                        name="nm_subtipo"
                         placeholder="Ex: TOC com compulsões."
-                        value={subtipo.NM_SUBTIPO}
+                        value={subtipo.nm_subtipo}
                         onChange={(e) => {
                           const novosSubtipos = [...formSubTipo];
-                          novosSubtipos[index].NM_SUBTIPO = e.target.value;
+                          novosSubtipos[index].nm_subtipo = e.target.value;
                           setFormSubTipo(novosSubtipos);
                         }}
                         maxLength={90}
                       />
                     </div>
                     <div>
-                      <p>CID11</p>
+                      <p>cid11</p>
                       <input
                         className="F_CID11SubtipoTranstorno"
-                        name="CID11"
+                        name="cid11"
                         placeholder="Ex: 6A20.0"
-                        value={subtipo.CID11}
+                        value={subtipo.cid11}
                         onChange={(e) => {
                           const novosSubtipos = [...formSubTipo];
-                          novosSubtipos[index].CID11 = e.target.value;
+                          novosSubtipos[index].cid11 = e.target.value;
                           setFormSubTipo(novosSubtipos);
                         }}
                         maxLength={10}
@@ -854,10 +854,10 @@ const ManterTranstorno = () => {
                       className="F_SecAreaTranstorno F_OBSSubtipo"
                       name="Observaçoes subtipo"
                       placeholder="Ex: O TOC com compulsões pode incluir rituais de limpeza, verificação ou contagem."
-                      value={subtipo.OBS}
+                      value={subtipo.obs}
                       onChange={(e) => {
                         const novosSubtipos = [...formSubTipo];
-                        novosSubtipos[index].OBS = e.target.value;
+                        novosSubtipos[index].obs = e.target.value;
                         setFormSubTipo(novosSubtipos);
                       }}
                     />
@@ -870,9 +870,9 @@ const ManterTranstorno = () => {
                         setFormSubTipo([
                           ...formSubTipo,
                           {
-                            NM_SUBTIPO: "",
-                            CID11: "",
-                            OBS: "",
+                            nm_subtipo: "",
+                            cid11: "",
+                            obs: "",
                           },
                         ]);
                       }}
@@ -921,19 +921,19 @@ const ManterTranstorno = () => {
                     filteredTranstornos.map((t) => (
                       <li
                         className="F_TranstornoElementoList"
-                        key={t.CD_TRANSTORNO}
+                        key={t.cd_transtorno}
                       >
                         <button
                           className="F_Ampliar"
                           onClick={() => {
                             openData();
-                            fetchTranstornosByID(t.CD_TRANSTORNO);
-                            fetchCriterioDiagnostico(t.CD_TRANSTORNO);
-                            fetchGravidade(t.CD_TRANSTORNO);
-                            fetchSubTipos(t.CD_TRANSTORNO);
+                            fetchTranstornosByID(t.cd_transtorno);
+                            fetchCriterioDiagnostico(t.cd_transtorno);
+                            fetchGravidade(t.cd_transtorno);
+                            fetchSubTipos(t.cd_transtorno);
                           }}
                         ></button>
-                        <strong>{t.NM_TRANSTORNO || "Sem nome"}</strong>
+                        <strong>{t.nm_transtorno || "Sem nome"}</strong>
                       </li>
                     ))
                   ) : (
@@ -975,11 +975,11 @@ const ManterTranstorno = () => {
                     <>
                       <input
                         className="F_EditInput"
-                        value={editingTranstorno.NM_TRANSTORNO}
+                        value={editingTranstorno.nm_transtorno}
                         onChange={(e) =>
                           setEditingTranstorno({
                             ...editingTranstorno,
-                            NM_TRANSTORNO: e.target.value,
+                            nm_transtorno: e.target.value,
                           })
                         }
                         placeholder="ex: Transtorno Obsessivo-Compulsivo (TOC)"
@@ -988,14 +988,14 @@ const ManterTranstorno = () => {
                       />
                       <div className="F_EditGrid">
                         <div>
-                          <strong>CID11:</strong>
+                          <strong>cid11:</strong>
                           <input
                             className="F_EditInput"
-                            value={editingTranstorno.CID11}
+                            value={editingTranstorno.cid11}
                             onChange={(e) =>
                               setEditingTranstorno({
                                 ...editingTranstorno,
-                                CID11: e.target.value,
+                                cid11: e.target.value,
                               })
                             }
                             placeholder="ex: 6A20.0"
@@ -1007,11 +1007,11 @@ const ManterTranstorno = () => {
                           <strong>Apoio Diagnóstico:</strong>
                           <input
                             className="F_EditInput"
-                            value={editingTranstorno.APOIO_DIAG}
+                            value={editingTranstorno.apoio_diag}
                             onChange={(e) =>
                               setEditingTranstorno({
                                 ...editingTranstorno,
-                                APOIO_DIAG: e.target.value,
+                                apoio_diag: e.target.value,
                               })
                             }
                             placeholder="ex: O TOC pode ser diagnosticado com base na avaliação clínica e em questionários padronizados."
@@ -1022,11 +1022,11 @@ const ManterTranstorno = () => {
                           <strong>Prevalência:</strong>
                           <input
                             className="F_EditInput"
-                            value={editingTranstorno.PREVALENCIA}
+                            value={editingTranstorno.prevalencia}
                             onChange={(e) =>
                               setEditingTranstorno({
                                 ...editingTranstorno,
-                                PREVALENCIA: e.target.value,
+                                prevalencia: e.target.value,
                               })
                             }
                             placeholder="ex: A prevalência do TOC é de aproximadamente 1-2% da população geral."
@@ -1037,11 +1037,11 @@ const ManterTranstorno = () => {
                           <strong>Fatores de Risco/Prognóstico:</strong>
                           <input
                             className="F_EditInput"
-                            value={editingTranstorno.FATORES_RISCO_PROGNOSTICO}
+                            value={editingTranstorno.fatores_risco_prognostico}
                             onChange={(e) =>
                               setEditingTranstorno({
                                 ...editingTranstorno,
-                                FATORES_RISCO_PROGNOSTICO: e.target.value,
+                                fatores_risco_prognostico: e.target.value,
                               })
                             }
                             placeholder="ex: História familiar de transtornos de ansiedade, estresse ambiental."
@@ -1052,11 +1052,11 @@ const ManterTranstorno = () => {
                           <strong>Diagnóstico por Gênero:</strong>
                           <input
                             className="F_EditInput"
-                            value={editingTranstorno.DIAGNOSTICO_GENERO}
+                            value={editingTranstorno.diagnostico_genero}
                             onChange={(e) =>
                               setEditingTranstorno({
                                 ...editingTranstorno,
-                                DIAGNOSTICO_GENERO: e.target.value,
+                                diagnostico_genero: e.target.value,
                               })
                             }
                             placeholder="ex: O TOC pode se manifestar de maneira diferente em homens e mulheres."
@@ -1074,26 +1074,26 @@ const ManterTranstorno = () => {
                       }}
                     >
                       <h3 className="F_TitleTranstorno">
-                        {transtornoSelect.NM_TRANSTORNO}
+                        {transtornoSelect.nm_transtorno}
                       </h3>
                       <p>
-                        <strong>CID11:</strong> {transtornoSelect.CID11}
+                        <strong>cid11:</strong> {transtornoSelect.cid11}
                       </p>
                       <p>
                         <strong>Apoio Diagnóstico:</strong>{" "}
-                        {transtornoSelect.APOIO_DIAG}
+                        {transtornoSelect.apoio_diag}
                       </p>
                       <p>
                         <strong>Prevalência:</strong>{" "}
-                        {transtornoSelect.PREVALENCIA}
+                        {transtornoSelect.prevalencia}
                       </p>
                       <p>
                         <strong>Fatores de Risco/Prognóstico:</strong>{" "}
-                        {transtornoSelect.FATORES_RISCO_PROGNOSTICO}
+                        {transtornoSelect.fatores_risco_prognostico}
                       </p>
                       <p>
                         <strong>Diagnóstico por Gênero:</strong>{" "}
-                        {transtornoSelect.DIAGNOSTICO_GENERO}
+                        {transtornoSelect.diagnostico_genero}
                       </p>
                     </div>
                   )}
@@ -1108,10 +1108,10 @@ const ManterTranstorno = () => {
                           <div className="F_EditingRow">
                             <label>Nome da Gravidade*</label>
                             <input
-                              value={gravidade.NM_GRAVIDADE}
+                              value={gravidade.nm_gravidade}
                               onChange={(e) => {
                                 const novas = [...editingGravidades];
-                                novas[index].NM_GRAVIDADE = e.target.value;
+                                novas[index].nm_gravidade = e.target.value;
                                 setEditingGravidades(novas);
                               }}
                               placeholder="Ex: Leve, Moderado"
@@ -1122,10 +1122,10 @@ const ManterTranstorno = () => {
                           <div className="F_EditingRow">
                             <label>Descrição</label>
                             <textarea
-                              value={gravidade.GRAV_DESCRICAO}
+                              value={gravidade.grav_descricao}
                               onChange={(e) => {
                                 const novas = [...editingGravidades];
-                                novas[index].GRAV_DESCRICAO = e.target.value;
+                                novas[index].grav_descricao = e.target.value;
                                 setEditingGravidades(novas);
                               }}
                               placeholder="Descrição detalhada"
@@ -1151,7 +1151,7 @@ const ManterTranstorno = () => {
                       {gravidade.map((gravidadeLI) => (
                         <li
                           key={
-                            gravidadeLI.CD_GRAVIDADE || gravidadeLI.NM_GRAVIDADE
+                            gravidadeLI.cd_gravidade || gravidadeLI.nm_gravidade
                           }
                           style={{
                             padding: "10px 0",
@@ -1159,9 +1159,9 @@ const ManterTranstorno = () => {
                           }}
                         >
                           <p className="F_CDTopic">
-                            <strong>{gravidadeLI.NM_GRAVIDADE}</strong>
+                            <strong>{gravidadeLI.nm_gravidade}</strong>
                           </p>
-                          <p>{gravidadeLI.GRAV_DESCRICAO}</p>
+                          <p>{gravidadeLI.grav_descricao}</p>
                         </li>
                       ))}
                     </ul>
@@ -1183,10 +1183,10 @@ const ManterTranstorno = () => {
                         <div key={index} className="F_EditingItem">
                           <div className="F_EditingRow">
                             <input
-                              value={criterio.CRITERIO_DIAGNOSTICO}
+                              value={criterio.criterio_diagnostico}
                               onChange={(e) => {
                                 const novas = [...editingCriterios];
-                                novas[index].CRITERIO_DIAGNOSTICO =
+                                novas[index].criterio_diagnostico =
                                   e.target.value;
                                 setEditingCriterios(novas);
                               }}
@@ -1198,10 +1198,10 @@ const ManterTranstorno = () => {
                           <div className="F_EditingCheckbox">
                             <input
                               type="checkbox"
-                              checked={criterio.CRITERIO_DIFERENCIAL === "S"}
+                              checked={criterio.criterio_diferencial === "S"}
                               onChange={(e) => {
                                 const novas = [...editingCriterios];
-                                novas[index].CRITERIO_DIFERENCIAL = e.target
+                                novas[index].criterio_diferencial = e.target
                                   .checked
                                   ? "S"
                                   : "N";
@@ -1229,8 +1229,8 @@ const ManterTranstorno = () => {
                           setEditingCriterios([
                             ...editingCriterios,
                             {
-                              CRITERIO_DIAGNOSTICO: "",
-                              CRITERIO_DIFERENCIAL: "N",
+                              criterio_diagnostico: "",
+                              criterio_diferencial: "N",
                             },
                           ]);
                         }}
@@ -1244,16 +1244,16 @@ const ManterTranstorno = () => {
                         <li
                           className="F_LiCD"
                           key={
-                            criteriodiagnosticoLI.CD_CRITERIO ||
-                            criteriodiagnosticoLI.CRITERIO_DIAGNOSTICO
+                            criteriodiagnosticoLI.cd_criterio ||
+                            criteriodiagnosticoLI.criterio_diagnostico
                           }
                         >
                           <p className="F_CDTopic">
-                            {criteriodiagnosticoLI.CRITERIO_DIAGNOSTICO}
+                            {criteriodiagnosticoLI.criterio_diagnostico}
                           </p>
 
                           <p>
-                            {criteriodiagnosticoLI.CRITERIO_DIFERENCIAL === "S"
+                            {criteriodiagnosticoLI.criterio_diferencial === "S"
                               ? "Sim"
                               : "Não"}
                           </p>
@@ -1276,10 +1276,10 @@ const ManterTranstorno = () => {
                           <div className="F_EditingRow">
                             <label>Nome do Subtipo*</label>
                             <input
-                              value={subtipo.NM_SUBTIPO}
+                              value={subtipo.nm_subtipo}
                               onChange={(e) => {
                                 const novas = [...editingSubtipos];
-                                novas[index].NM_SUBTIPO = e.target.value;
+                                novas[index].nm_subtipo = e.target.value;
                                 setEditingSubtipos(novas);
                               }}
                               placeholder="Ex: TOC com compulsões"
@@ -1288,15 +1288,15 @@ const ManterTranstorno = () => {
                             />
                           </div>
                           <div className="F_EditingRow">
-                            <label>CID11*</label>
+                            <label>cid11*</label>
                             <input
-                              value={subtipo.CID11}
+                              value={subtipo.cid11}
                               onChange={(e) => {
                                 const novas = [...editingSubtipos];
-                                novas[index].CID11 = e.target.value;
+                                novas[index].cid11 = e.target.value;
                                 setEditingSubtipos(novas);
                               }}
-                              placeholder="Código CID11"
+                              placeholder="Código cid11"
                               required
                               maxLength={10}
                             />
@@ -1304,10 +1304,10 @@ const ManterTranstorno = () => {
                           <div className="F_EditingRow">
                             <label>Observações</label>
                             <textarea
-                              value={subtipo.OBS}
+                              value={subtipo.obs}
                               onChange={(e) => {
                                 const novas = [...editingSubtipos];
-                                novas[index].OBS = e.target.value;
+                                novas[index].obs = e.target.value;
                                 setEditingSubtipos(novas);
                               }}
                               placeholder="Detalhes adicionais"
@@ -1332,9 +1332,9 @@ const ManterTranstorno = () => {
                           setEditingSubtipos([
                             ...editingSubtipos,
                             {
-                              NM_SUBTIPO: "",
-                              CID11: "",
-                              OBS: "",
+                              nm_subtipo: "",
+                              cid11: "",
+                              obs: "",
                             },
                           ]);
                         }}
@@ -1346,21 +1346,21 @@ const ManterTranstorno = () => {
                     <ul>
                       {subTipo.map((subtipoLI) => (
                         <li
-                          key={subtipoLI.CD_SUBTIPO}
+                          key={subtipoLI.cd_subtipo}
                           style={{
                             padding: "10px 0",
                             borderBottom: "solid 1px #b399d4",
                           }}
                         >
                           <p className="F_CDTopic">
-                            <strong>{subtipoLI.NM_SUBTIPO}</strong>
+                            <strong>{subtipoLI.nm_subtipo}</strong>
                           </p>
                           <p>
-                            <strong>CID11:</strong> {subtipoLI.CID11}
+                            <strong>cid11:</strong> {subtipoLI.cid11}
                           </p>
-                          {subtipoLI.OBS && (
+                          {subtipoLI.obs && (
                             <p>
-                              <strong>Observações:</strong> {subtipoLI.OBS}
+                              <strong>Observações:</strong> {subtipoLI.obs}
                             </p>
                           )}
                         </li>

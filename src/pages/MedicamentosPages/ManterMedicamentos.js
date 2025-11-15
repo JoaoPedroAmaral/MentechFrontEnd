@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 
-const ManterMedicamentos = ({ CD_PACIENTE }) => {
+const ManterMedicamentos = ({ cd_paciente }) => {
   const [medicamentos, setMedicamentos] = useState([]);
   const [medicamentosData, setMedicamentosData] = useState({
-    NM_MEDICAMENTO: "",
-    DOSE: "",
-    DIAS_MINISTRACAO: "",
+    nm_medicamento: "",
+    dose: "",
+    dias_ministracao: "",
   });
 
 
   useEffect(() => {
-    fetchMedicamentos(CD_PACIENTE);
-  }, [CD_PACIENTE]);
+    fetchMedicamentos(cd_paciente);
+  }, [cd_paciente]);
 
-  const fetchMedicamentos = async (CD_PACIENTE) => {
+  const fetchMedicamentos = async (cd_paciente) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/medicamento/por_paciente/${CD_PACIENTE}`);
+      const response = await fetch(`https://mentechbackend.onrender.com/medicamento/por_paciente/${cd_paciente}`);
       if (!response.ok) {
         throw new Error("Erro ao buscar medicamentos");
       }
@@ -29,7 +29,7 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
 
   const createMedicamento = async (medicamentoData) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/medicamento", {
+      const response = await fetch("https://mentechbackend.onrender.com/medicamento", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,14 +42,14 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
       const data = await response.json();
       setMedicamentos((prevMedicamentos) => [...prevMedicamentos, data]);
 
-      const responseRelation = await fetch(`http://127.0.0.1:5000/paciente_medicamento`, {
+      const responseRelation = await fetch(`https://mentechbackend.onrender.com/paciente_medicamento`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          CD_PACIENTE: CD_PACIENTE,
-          CD_MEDICAMENTO: data.CD_MEDICAMENTO,
+          cd_paciente: cd_paciente,
+          cd_medicamento: data.cd_medicamento,
           ...medicamentoData,
         }),
       });
@@ -57,20 +57,20 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
         throw new Error("Erro ao criar relação entre paciente e medicamento");
       }
       await responseRelation.json();
-      fetchMedicamentos(CD_PACIENTE);
+      fetchMedicamentos(cd_paciente);
     } catch (error) {
       
     }
   }
-  const deleteMedicamento = async (CD_MEDICAMENTO) => {
+  const deleteMedicamento = async (cd_medicamento) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/medicamento/${CD_MEDICAMENTO}`, {
+      const response = await fetch(`https://mentechbackend.onrender.com/medicamento/${cd_medicamento}`, {
         method: "DELETE",
       });
       if (!response.ok) {
         throw new Error("Erro ao deletar medicamento");
       }
-      fetchMedicamentos(CD_PACIENTE);
+      fetchMedicamentos(cd_paciente);
     } catch (error) {
       console.error("Erro ao deletar medicamento:", error);
     }
@@ -86,7 +86,7 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
       <div className="Border ScrollBar" style={{ height: "200px" }}>
         {medicamentos.length > 0 ? (
           medicamentos.map((medicamento) => (
-            <ul key={medicamento.CD_MEDICAMENTO}>
+            <ul key={medicamento.cd_medicamento}>
               <li
                 className="TextBold"
                 style={{
@@ -96,8 +96,8 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
                 }}
               >
                 <div className="FlexCenterBetween actions " style={{ width: "90%" }}>
-                  <p>{`${medicamento.NM_MEDICAMENTO} (${medicamento.DOSE}) - Durante ${medicamento.DIAS_MINISTRACAO} dias`}</p>
-                  <button className="btn-delete" onClick={() => deleteMedicamento(medicamento.CD_MEDICAMENTO)}>🗑️</button>
+                  <p>{`${medicamento.nm_medicamento} (${medicamento.dose}) - Durante ${medicamento.dias_ministracao} dias`}</p>
+                  <button className="btn-delete" onClick={() => deleteMedicamento(medicamento.cd_medicamento)}>🗑️</button>
                 </div>
               </li>
             </ul>
@@ -118,8 +118,8 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
             placeholder="Nome do Medicamento"
             className="F_NomeAreaTranstorno"
             style={{ width : "250px" }}
-            value={medicamentosData.NM_MEDICAMENTO}
-            onChange={(e) => setMedicamentosData({ ...medicamentosData, NM_MEDICAMENTO: e.target.value })}
+            value={medicamentosData.nm_medicamento}
+            onChange={(e) => setMedicamentosData({ ...medicamentosData, nm_medicamento: e.target.value })}
           />
         </div>
         <div
@@ -132,8 +132,8 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
             placeholder="Dosagem do Medicamento"
             className="F_NomeAreaTranstorno"
             style={{ width : "250px" }}
-            value={medicamentosData.DOSE}
-            onChange={(e) => setMedicamentosData({ ...medicamentosData, DOSE: e.target.value })}
+            value={medicamentosData.dose}
+            onChange={(e) => setMedicamentosData({ ...medicamentosData, dose: e.target.value })}
           />
         </div>
         <div
@@ -147,8 +147,8 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
             placeholder="Dias"
             className="F_NomeAreaTranstorno"
             style={{ width : "250px" }}
-            value={medicamentosData.DIAS_MINISTRACAO}
-            onChange={(e) => setMedicamentosData({ ...medicamentosData, DIAS_MINISTRACAO: e.target.value })}
+            value={medicamentosData.dias_ministracao}
+            onChange={(e) => setMedicamentosData({ ...medicamentosData, dias_ministracao: e.target.value })}
           />
         </div>
       </div>
@@ -158,9 +158,9 @@ const ManterMedicamentos = ({ CD_PACIENTE }) => {
           onClick={() => {
             createMedicamento(medicamentosData);
             setMedicamentosData({
-              NM_MEDICAMENTO: "",
-              DOSE: "",
-              DIAS_MINISTRACAO: "",
+              nm_medicamento: "",
+              dose: "",
+              dias_ministracao: "",
             });
           }}
         >

@@ -9,31 +9,31 @@ dayjs.extend(customParseFormat);
 const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
   const { setMetasModificadas } = useGlobal();
   const [novaMeta, setNovaMeta] = useState({
-    DT_PREVISAO: "",
-    META: "",
-    OBS_META: "",
+    dt_previsao: "",
+    meta: "",
+    obs_meta: "",
   });
 
   const handleMeta = async () => {
-    if (!novaMeta.META || !novaMeta.DT_PREVISAO) {
-      await showAlert.error("Nome do Transtorno e CID11 são obrigatórios!");
+    if (!novaMeta.meta || !novaMeta.dt_previsao) {
+      await showAlert.error("Nome do Transtorno e cid11 são obrigatórios!");
       return;
     }
     try {
-      const response = await fetch("http://127.0.0.1:5000/meta", {
+      const response = await fetch("https://mentechbackend.onrender.com/meta", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          META: novaMeta.META,
-          OBS_META: novaMeta.OBS_META,
+          meta: novaMeta.meta,
+          obs_meta: novaMeta.obs_meta,
         }),
       });
 
       const dataJson = await response.json();
 
-      return dataJson.CD_META;
+      return dataJson.cd_meta;
     } catch (error) {
       console.error("Erro ao buscar transtornos:", error);
     }
@@ -42,22 +42,22 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
   const handleSubmit = async () => {
     const MetaID = await handleMeta();
     try {
-      const response = await fetch("http://127.0.0.1:5000/paciente_meta", {
+      const response = await fetch("https://mentechbackend.onrender.com/paciente_meta", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          CD_META: MetaID,
-          CD_PACIENTE: pacienteID,
-          DT_PREVISAO: novaMeta.DT_PREVISAO,
+          cd_meta: MetaID,
+          cd_paciente: pacienteID,
+          dt_previsao: novaMeta.dt_previsao,
         }),
       });
 
       setNovaMeta({
-        DT_PREVISAO: "",
-        META: "",
-        OBS_META: "",
+        dt_previsao: "",
+        meta: "",
+        obs_meta: "",
       });
 
       setMetasModificadas((prev) => !prev);
@@ -90,18 +90,18 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
             >
               <DatePicker
                 className="F_NomeAreaTranstorno datepicker-sem-foco"
-                name="DT_NASCIMENTO"
+                name="dt_nascimento"
                 placeholder="dd/mm/yyyy"
                 format="DD/MM/YYYY"
                 value={
-                  novaMeta.DT_PREVISAO
-                    ? dayjs(novaMeta.DT_PREVISAO, "DD/MM/YYYY")
+                  novaMeta.dt_previsao
+                    ? dayjs(novaMeta.dt_previsao, "DD/MM/YYYY")
                     : null
                 }
                 onChange={(date, dateString) => {
                   setNovaMeta({
                     ...novaMeta,
-                    DT_PREVISAO: dateString,
+                    dt_previsao: dateString,
                   });
                 }}
                 style={{ width: "140px" }}
@@ -118,12 +118,12 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
             <input
               className="F_NomeAreaTranstorno"
               placeholder="Ex: Melhorar a habilidade de socializar"
-              name="META"
-              value={novaMeta.META}
+              name="meta"
+              value={novaMeta.meta}
               onChange={(e) =>
                 setNovaMeta({
                   ...novaMeta,
-                  META: e.target.value,
+                  meta: e.target.value,
                 })
               }
               style={{ width: "320px" }}
@@ -138,13 +138,13 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
             <textarea
               className="F_NomeAreaTranstorno"
               style={{ width: "320px", height: "150px" }}
-              name="OBS_META"
+              name="obs_meta"
               placeholder="Ex: Melhorar as habilidades de interação social entre os colegas da escola."
-              value={novaMeta.OBS_META}
+              value={novaMeta.obs_meta}
               onChange={(e) =>
                 setNovaMeta({
                   ...novaMeta,
-                  OBS_META: e.target.value,
+                  obs_meta: e.target.value,
                 })
               }
             ></textarea>
