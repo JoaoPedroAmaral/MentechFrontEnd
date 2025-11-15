@@ -9,16 +9,16 @@ const ManterComportamento = ({ pacienteID }) => {
   const { criteriosModificados, setDiagnosticosModificados } = useGlobal();
 
   const buscarCriterios = () => {
-    fetch("http://127.0.0.1:5000/criterio_diagnostico")
+    fetch("https://mentechbackend.onrender.com/criterio_diagnostico")
       .then((res) => res.json())
       .then((data) => {
         const map = new Map();
         const criterioToTranstornos = {};
 
         data.forEach((item) => {
-          const criterio = item.CRITERIO_DIAGNOSTICO;
-          const cdTranstorno = item.CD_TRANSTORNO;
-          const isDiferencial = item.CRITERIO_DIFERENCIAL === "S";
+          const criterio = item.criterio_diagnostico;
+          const cdTranstorno = item.cd_transtorno;
+          const isDiferencial = item.criterio_diferencial === "S";
 
           if (!map.has(criterio)) {
             map.set(criterio, { diferencial: isDiferencial });
@@ -49,7 +49,7 @@ const ManterComportamento = ({ pacienteID }) => {
   };
 
   const listarComportamentos = (id) => {
-    fetch(`http://127.0.0.1:5000/comportamento_paciente/por_paciente/${id}`)
+    fetch(`https://mentechbackend.onrender.com/comportamento_paciente/por_paciente/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setCriterios(data);
@@ -60,13 +60,13 @@ const ManterComportamento = ({ pacienteID }) => {
   const adicionarComportamento = async (comportamento) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/comportamento_paciente`,
+        `https://mentechbackend.onrender.com/comportamento_paciente`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            CD_PACIENTE: pacienteID,
-            COMPORTAMENTO_PACIENTE: comportamento,
+            cd_paciente: pacienteID,
+            comportamento_paciente: comportamento,
           }),
         }
       );
@@ -83,7 +83,7 @@ const ManterComportamento = ({ pacienteID }) => {
   const deleteComportamento = async (cdComportamento) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/comportamento_paciente/${cdComportamento}`,
+        `https://mentechbackend.onrender.com/comportamento_paciente/${cdComportamento}`,
         {
           method: "DELETE",
         }
@@ -113,7 +113,7 @@ const ManterComportamento = ({ pacienteID }) => {
       <div className="FlexCenterEvenly" style={{ marginBottom: "15px" }}>
         <select
           className="F_NomeAreaTranstorno"
-          name="TIP_SANG"
+          name="tip_sang"
           style={{ width: "80%", overflowY: "auto" }}
         >
           {criteriosUnicos.map((item, index) => (
@@ -163,12 +163,12 @@ const ManterComportamento = ({ pacienteID }) => {
                 <p className="MP_text">
                   •{" "}
                   <strong style={{ marginLeft: "5px" }}>
-                    {item.COMPORTAMENTO_PACIENTE}
+                    {item.comportamento_paciente}
                   </strong>
                 </p>
                 <button
                   className="btn-delete"
-                  onClick={() => deleteComportamento(item.CD_COMPORTAMENTO_PACIENTE)}
+                  onClick={() => deleteComportamento(item.cd_comportamento_paciente)}
                 >
                   🗑️
                 </button>

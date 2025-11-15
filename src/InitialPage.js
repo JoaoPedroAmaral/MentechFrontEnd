@@ -27,7 +27,7 @@ export const LOADING_SCREEN = () =>  (
 export const carregarMensagemNegativa = async (nomeMensagem) => {
   try {
     const response = await fetch(
-      `http://127.0.0.1:5000/mensagemNegativa?msg=${encodeURIComponent(
+      `https://mentechbackend.onrender.com/mensagemNegativa?msg=${encodeURIComponent(
         nomeMensagem
       )}`
     );
@@ -48,14 +48,14 @@ const InitialPage = () => {
   const [animate, setAnimate] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [formLogin, setFormLogin] = useState({
-    EMAIL: "",
-    SENHA: "",
+    email: "",
+    senha: "",
   });
   const [formRegister, setFormRegister] = useState({
-    NM_USUARIO: "",
-    EMAIL: "",
-    SENHA: "",
-    CIP: "",
+    nm_usuario: "",
+    email: "",
+    senha: "",
+    cip: "",
   });
   const [userData, setUserData] = useState(null);
   const [stateLogin, setStateLogin] = useState("L");
@@ -85,13 +85,13 @@ const InitialPage = () => {
     const loginSalvo = localStorage.getItem("loginSalvo");
 
     if (loginSalvo) {
-      const { EMAIL, SENHA, manterConectado } = JSON.parse(loginSalvo);
+      const { email, senha, manterConectado } = JSON.parse(loginSalvo);
 
       if (manterConectado) {
-        setFormLogin({ EMAIL, SENHA });
+        setFormLogin({ email, senha });
         setManterConectado(true);
 
-        handleLoginAutomatico(EMAIL, SENHA).finally(() => {
+        handleLoginAutomatico(email, senha).finally(() => {
           setIsCheckingLogin(false);
         });
         return;
@@ -111,21 +111,21 @@ const InitialPage = () => {
 
     // Sempre limpa ao fazer logout
     localStorage.removeItem("loginSalvo");
-    localStorage.removeItem("CD_USUARIO");
-    setFormLogin({ EMAIL: "", SENHA: "" });
+    localStorage.removeItem("cd_usuario");
+    setFormLogin({ email: "", senha: "" });
     setManterConectado(false); // Desmarca o checkbox também
   };
 
   const handleLoginAutomatico = async (email, senha) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/usuario");
+      const response = await fetch("https://mentechbackend.onrender.com/usuario");
       const data = await response.json();
 
       let user = null;
 
       for (let i = 0; i < data.length; i++) {
-        if (data[i].EMAIL === email && data[i].SENHA === senha) {
-          user = { ...data[i], CIP: formatarCIP(data[i].CIP) };
+        if (data[i].email === email && data[i].senha === senha) {
+          user = { ...data[i], cip: formatarCIP(data[i].cip) };
           setUserData(user);
           break;
         }
@@ -134,7 +134,7 @@ const InitialPage = () => {
       if (user) {
         try {
           await fetch(
-            `http://127.0.0.1:5000/definir_usuario/${user.CD_USUARIO}`,
+            `https://mentechbackend.onrender.com/definir_usuario/${user.cd_usuario}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -145,7 +145,7 @@ const InitialPage = () => {
         }
 
         setIsLoggedIn(true);
-        localStorage.setItem("CD_USUARIO", user.CD_USUARIO);
+        localStorage.setItem("cd_usuario", user.cd_usuario);
       } else {
         localStorage.removeItem("loginSalvo");
         setManterConectado(false);
@@ -158,16 +158,16 @@ const InitialPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/usuario");
+      const response = await fetch("https://mentechbackend.onrender.com/usuario");
       const data = await response.json();
 
       let user = null;
       let erroExibido = false;
 
       for (let i = 0; i < data.length; i++) {
-        if (data[i].EMAIL === formLogin.EMAIL) {
-          if (data[i].SENHA === formLogin.SENHA) {
-            user = { ...data[i], CIP: formatarCIP(data[i].CIP) };
+        if (data[i].email === formLogin.email) {
+          if (data[i].senha === formLogin.senha) {
+            user = { ...data[i], cip: formatarCIP(data[i].cip) };
             setUserData(user);
             break;
           } else {
@@ -187,7 +187,7 @@ const InitialPage = () => {
 
       /*try {
         await fetch(
-          `http://127.0.0.1:5000/definir_usuario/${user.CD_USUARIO}`,
+          `https://mentechbackend.onrender.com/definir_usuario/${user.cd_usuario}`,
           {
             method: "POST",
             headers: {
@@ -205,8 +205,8 @@ const InitialPage = () => {
         localStorage.setItem(
           "loginSalvo",
           JSON.stringify({
-            EMAIL: formLogin.EMAIL,
-            SENHA: formLogin.SENHA,
+            email: formLogin.email,
+            senha: formLogin.senha,
             manterConectado: true,
           })
         );
@@ -217,7 +217,7 @@ const InitialPage = () => {
       }
 
       setIsLoggedIn(true);
-      localStorage.setItem("CD_USUARIO", user.CD_USUARIO);
+      localStorage.setItem("cd_usuario", user.cd_usuario);
     } catch (error) {
       console.error("Erro no handleLogin:", error);
       await showAlert.error("Falha no login!");
@@ -226,29 +226,29 @@ const InitialPage = () => {
 
   const registrarUsuario = async () => {
     try {
-      const getResponse = await fetch("http://127.0.0.1:5000/usuario");
+      const getResponse = await fetch("https://mentechbackend.onrender.com/usuario");
       const data = await getResponse.json();
 
       if (
-        !formRegister.EMAIL ||
-        !formRegister.CIP ||
-        !formRegister.NM_USUARIO ||
-        !formRegister.SENHA
+        !formRegister.email ||
+        !formRegister.cip ||
+        !formRegister.nm_usuario ||
+        !formRegister.senha
       ) {
         await showAlert.error("CAMPOS VAZIOS");
         return;
       }
       for (let i = 0; i < data.length; i++) {
         if (
-          data[i][4] === formRegister.CIP ||
-          data[i][3] === formRegister.EMAIL
+          data[i][4] === formRegister.cip ||
+          data[i][3] === formRegister.email
         ) {
           await showAlert.error("REGISTRO EXISTENTE");
           return;
         }
       }
 
-      const response = await fetch("http://127.0.0.1:5000/usuario", {
+      const response = await fetch("https://mentechbackend.onrender.com/usuario", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -299,12 +299,12 @@ const InitialPage = () => {
       let user = null;
 
       try {
-        const response = await fetch("http://127.0.0.1:5000/usuario");
+        const response = await fetch("https://mentechbackend.onrender.com/usuario");
         const data = await response.json();
 
         for (let i = 0; i < data.length; i++) {
-          if (data[i].EMAIL === email) {
-            user = { ...data[i], CIP: formatarCIP(data[i].CIP) };
+          if (data[i].email === email) {
+            user = { ...data[i], cip: formatarCIP(data[i].cip) };
             setUserForgotPassword(user); // ainda atualiza o estado para render
             break;
           }
@@ -320,10 +320,10 @@ const InitialPage = () => {
       }
 
       // Usa a variável `user`, não o estado
-      const response2 = await fetch("http://127.0.0.1:5000/alterar_senha", {
+      const response2 = await fetch("https://mentechbackend.onrender.com/alterar_senha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ CD_USUARIO: user.CD_USUARIO, EMAIL: email }),
+        body: JSON.stringify({ cd_usuario: user.cd_usuario, email: email }),
       });
 
       const data2 = await response2.json();
@@ -379,9 +379,9 @@ const InitialPage = () => {
                     <input
                       maxLength={90}
                       placeholder="ex: exemplo@gmail.com"
-                      value={formLogin.EMAIL}
+                      value={formLogin.email}
                       onChange={(e) =>
-                        setFormLogin({ ...formLogin, EMAIL: e.target.value })
+                        setFormLogin({ ...formLogin, email: e.target.value })
                       }
                       className="InputLogin"
                     />
@@ -391,9 +391,9 @@ const InitialPage = () => {
                     <div className="FlexCenterMid">
                       <input
                         maxLength={90}
-                        value={formLogin.SENHA}
+                        value={formLogin.senha}
                         onChange={(e) =>
-                          setFormLogin({ ...formLogin, SENHA: e.target.value })
+                          setFormLogin({ ...formLogin, senha: e.target.value })
                         }
                         type={showPassword ? "text" : "password"}
                         className="InputLogin"
@@ -488,11 +488,11 @@ const InitialPage = () => {
                     <input
                       maxLength={90}
                       placeholder="ex: João Silva"
-                      value={formRegister.NM_USUARIO}
+                      value={formRegister.nm_usuario}
                       onChange={(e) =>
                         setFormRegister({
                           ...formRegister,
-                          NM_USUARIO: e.target.value,
+                          nm_usuario: e.target.value,
                         })
                       }
                       className="InputLogin"
@@ -503,11 +503,11 @@ const InitialPage = () => {
                     <input
                       maxLength={90}
                       placeholder="ex: exemplo@gmail.com"
-                      value={formRegister.EMAIL}
+                      value={formRegister.email}
                       onChange={(e) =>
                         setFormRegister({
                           ...formRegister,
-                          EMAIL: e.target.value,
+                          email: e.target.value,
                         })
                       }
                       className="InputLogin"
@@ -517,13 +517,13 @@ const InitialPage = () => {
                     <p className="TextBold">Codigo CRP</p>
                     <input
                       maxLength={8}
-                      value={formRegister.CIP}
+                      value={formRegister.cip}
                       onChange={(e) => {
                         const formatted = formatarCIP(e.target.value);
 
                         setFormRegister({
                           ...formRegister,
-                          CIP: formatted,
+                          cip: formatted,
                         });
                       }}
                       className="InputLogin"
@@ -534,11 +534,11 @@ const InitialPage = () => {
                     <div className="FlexCenterMid">
                       <input
                         maxLength={90}
-                        value={formRegister.SENHA}
+                        value={formRegister.senha}
                         onChange={(e) =>
                           setFormRegister({
                             ...formRegister,
-                            SENHA: e.target.value,
+                            senha: e.target.value,
                           })
                         }
                         type={showPassword ? "text" : "password"}

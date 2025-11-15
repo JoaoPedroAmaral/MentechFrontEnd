@@ -19,7 +19,7 @@ export const Grafico = ({ pacienteID }) => {
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState([]);
   const [dadosGrafico, setDadosGrafico] = useState([]);
   const graficoVazio = [
-    { DT_ATUALIZACAO: new Date().toISOString().split("T")[0], placeholder: 0 },
+    { dt_atualizacao: new Date().toISOString().split("T")[0], placeholder: 0 },
   ];
   const dadosParaGrafico =
     dadosGrafico.length > 0 ? dadosGrafico : graficoVazio;
@@ -43,16 +43,16 @@ export const Grafico = ({ pacienteID }) => {
 
   useEffect(() => {
     carregarMetas(pacienteID);
-    if (metas[indiceAtual]?.CD_META) {
-      carregarAtividades(metas[indiceAtual]?.CD_META).then((data) => {
+    if (metas[indiceAtual]?.cd_meta) {
+      carregarAtividades(metas[indiceAtual]?.cd_meta).then((data) => {
         setHistoricoAtividades(data);
       });
     }
   }, [metasModificadas, pacienteID, atividadeModificada]);
 
   useEffect(() => {
-    if (metas[indiceAtual]?.CD_META) {
-      carregarAtividades(metas[indiceAtual]?.CD_META).then((data) => {
+    if (metas[indiceAtual]?.cd_meta) {
+      carregarAtividades(metas[indiceAtual]?.cd_meta).then((data) => {
         setHistoricoAtividades(data);
       });
     }
@@ -66,18 +66,18 @@ export const Grafico = ({ pacienteID }) => {
         const hist = await carregarHistoricoAtividade(id);
 
         hist.sort(
-          (a, b) => new Date(a.DT_ATUALIZACAO) - new Date(b.DT_ATUALIZACAO)
+          (a, b) => new Date(a.dt_atualizacao) - new Date(b.dt_atualizacao)
         );
 
         hist.forEach((h) => {
-          const dataKey = new Date(h.DT_ATUALIZACAO)
+          const dataKey = new Date(h.dt_atualizacao)
             .toISOString()
             .split("T")[0];
 
           if (!combinado[dataKey])
-            combinado[dataKey] = { DT_ATUALIZACAO: dataKey };
+            combinado[dataKey] = { dt_atualizacao: dataKey };
 
-          combinado[dataKey][h.NM_ATIVIDADE] = h.PERCENT_CONCLUSAO;
+          combinado[dataKey][h.nm_atividade] = h.percent_conclusao;
         });
       }
 
@@ -88,12 +88,12 @@ export const Grafico = ({ pacienteID }) => {
       const todasAtividades = new Set();
       Object.values(combinado).forEach((item) => {
         Object.keys(item).forEach((key) => {
-          if (key !== "DT_ATUALIZACAO") todasAtividades.add(key);
+          if (key !== "dt_atualizacao") todasAtividades.add(key);
         });
       });
 
       const dadosCompletos = todasDatas.map((data) => {
-        const entry = { DT_ATUALIZACAO: data };
+        const entry = { dt_atualizacao: data };
         todasAtividades.forEach((atividade) => {
           entry[atividade] = combinado[data][atividade];
         });
@@ -111,13 +111,13 @@ export const Grafico = ({ pacienteID }) => {
   const carregarAtividades = async (metaID) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/atividade/por_meta/${metaID}`
+        `https://mentechbackend.onrender.com/atividade/por_meta/${metaID}`
       );
       if (!response.ok) throw new Error("Erro ao buscar atividades");
       const data = await response.json();
 
       const total = data.length;
-      const concluidas = data.filter((a) => a.RESULTADO === "Concluído").length;
+      const concluidas = data.filter((a) => a.resultado === "Concluído").length;
       const percent = total ? Math.round((concluidas / total) * 100) : 0;
 
       return { atividades: data, percent };
@@ -130,7 +130,7 @@ export const Grafico = ({ pacienteID }) => {
   const carregarMetas = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/meta/por_paciente/${id}`
+        `https://mentechbackend.onrender.com/meta/por_paciente/${id}`
       );
       if (!response.ok) throw new Error("Erro ao buscar metas");
       const data = await response.json();
@@ -152,7 +152,7 @@ export const Grafico = ({ pacienteID }) => {
 
   const carregarHistoricoAtividade = async (atividadeId) => {
     const resp = await fetch(
-      `http://127.0.0.1:5000/percent_atividade/porAtividade/${atividadeId}`
+      `https://mentechbackend.onrender.com/percent_atividade/porAtividade/${atividadeId}`
     );
     const historico = await resp.json();
     return historico;
@@ -184,10 +184,10 @@ export const Grafico = ({ pacienteID }) => {
               className="texto-truncado"
               style={{ color: "white", margin: "0" }}
             >
-              {metas.length > 0 ? metas[indiceAtual].META : "Nenhuma meta"}
+              {metas.length > 0 ? metas[indiceAtual].meta : "Nenhuma meta"}
             </div>
             <div className="tooltip">
-              {metas.length > 0 ? metas[indiceAtual].META : "Nenhuma meta"}
+              {metas.length > 0 ? metas[indiceAtual].meta : "Nenhuma meta"}
             </div>
           </div>
 
@@ -240,19 +240,19 @@ export const Grafico = ({ pacienteID }) => {
               {historicoAtividades?.atividades?.length > 0 ? (
                 historicoAtividades.atividades.map((atividade, index) => {
                   const isChecked = atividadesSelecionadas.includes(
-                    atividade.CD_ATIVIDADE
+                    atividade.cd_atividade
                   );
 
                   const toggleAtividade = () => {
                     setAtividadesSelecionadas((prev) =>
                       isChecked
-                        ? prev.filter((id) => id !== atividade.CD_ATIVIDADE)
-                        : [...prev, atividade.CD_ATIVIDADE]
+                        ? prev.filter((id) => id !== atividade.cd_atividade)
+                        : [...prev, atividade.cd_atividade]
                     );
                   };
 
                   return (
-                    <tr key={atividade.CD_ATIVIDADE}>
+                    <tr key={atividade.cd_atividade}>
                       <td style={{ display: "flex", justifyContent: "center" }}>
                         <input
                           style={{ display: "inline-block" }}
@@ -262,10 +262,10 @@ export const Grafico = ({ pacienteID }) => {
                         />
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        <p>{atividade.NM_ATIVIDADE}</p>
+                        <p>{atividade.nm_atividade}</p>
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        <p>{atividade.RESULTADO}</p>
+                        <p>{atividade.resultado}</p>
                       </td>
                     </tr>
                   );
@@ -288,7 +288,7 @@ export const Grafico = ({ pacienteID }) => {
         <ResponsiveContainer width="90%" height={250}>
           <LineChart connectNulls={true} data={dadosParaGrafico}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="DT_ATUALIZACAO" tick={false} />
+            <XAxis dataKey="dt_atualizacao" tick={false} />
 
             <YAxis
               domain={[0, 100]}
@@ -339,10 +339,10 @@ export const Grafico = ({ pacienteID }) => {
 
             {atividadesSelecionadas.map((id, i) => {
               const atividade = historicoAtividades.atividades.find(
-                (a) => a.CD_ATIVIDADE === id
+                (a) => a.cd_atividade === id
               );
               const nomeAtividade =
-                atividade?.NM_ATIVIDADE || `Atividade_${id}`;
+                atividade?.nm_atividade || `Atividade_${id}`;
 
               return (
                 <Line

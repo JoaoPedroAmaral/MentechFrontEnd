@@ -13,7 +13,7 @@ import dayjs from "dayjs";
 
 const { Option } = Select;
 
-const ManterAgenda = ({ CD_PACIENTE }) => {
+const ManterAgenda = ({ cd_paciente }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [horarioInicio, setHorarioInicio] = useState(null);

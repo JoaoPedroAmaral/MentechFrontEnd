@@ -45,13 +45,13 @@ const PrimeiroAcesso = ({ onLogout, setIsHavePaciente, userData }) => {
           className="FlexCenterEnd Draggable"
           style={{ width: "80%", margin: "6px 10px 0 0" }}
         >
-          <h4 style={{ margin: "0 10px" }}>{userData?.NM_USUARIO}</h4>
+          <h4 style={{ margin: "0 10px" }}>{userData?.nm_usuario}</h4>
           <img
             className="FlexCenterMid"
             style={{ width: "14px", height: "14px", margin: "0 10px" }}
             src={PsicologiaIcon}
           />
-          <h4 style={{ margin: "0 10px" }}>{userData?.CIP}</h4>
+          <h4 style={{ margin: "0 10px" }}>{userData?.cip}</h4>
         </div>
         <button
           className="BTNLogout  FlexCenterMid UserSelectNone TextCenter TextBold"
@@ -153,7 +153,7 @@ const PrimeiroAcesso = ({ onLogout, setIsHavePaciente, userData }) => {
           </div>
           <div className="FlexCenterMid">
             <ListarPacientes
-              CD_USUARIO={userData.CD_USUARIO}
+              cd_usuario={userData.cd_usuario}
               toggleIframe={() => toggleIframe("IframeListarPaciente")}
               setIsHavePaciente={setIsHavePaciente}
             />

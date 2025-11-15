@@ -25,12 +25,12 @@ const SupostoDiagnostico = ({ pacienteId }) => {
   }, [criteriosPaciente, criterioParaTranstornos, diagnosticosModificados]);
 
   const buscarTranstornos = () => {
-    fetch("http://127.0.0.1:5000/transtorno")
+    fetch("https://mentechbackend.onrender.com/transtorno")
       .then((res) => res.json())
       .then((data) => {
         const map = {};
         data.forEach((item) => {
-          map[item.CD_TRANSTORNO] = item.NM_TRANSTORNO;
+          map[item.cd_transtorno] = item.nm_transtorno;
         });
         setTranstornosInfo(map);
       })
@@ -38,28 +38,28 @@ const SupostoDiagnostico = ({ pacienteId }) => {
   };
 
   const listarComportamentos = (id) => {
-    fetch(`http://127.0.0.1:5000/comportamento_paciente/por_paciente/${id}`)
+    fetch(`https://mentechbackend.onrender.com/comportamento_paciente/por_paciente/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setCriteriosPaciente(data); // salva todos os objetos com CD_TRANSTORNO e CRITERIO_DIAGNOSTICO
+        setCriteriosPaciente(data); // salva todos os objetos com cd_transtorno e criterio_diagnostico
       })
       .catch((err) => console.error(err));
   };
 
   const buscarCriterios = () => {
-    fetch("http://127.0.0.1:5000/criterio_diagnostico")
+    fetch("https://mentechbackend.onrender.com/criterio_diagnostico")
       .then((res) => res.json())
       .then((data) => {
         const criteriosPorTranstorno = {};
 
         data.forEach((item) => {
-          const { CD_TRANSTORNO, CRITERIO_DIAGNOSTICO } = item;
+          const { cd_transtorno, criterio_diagnostico } = item;
 
-          if (!criteriosPorTranstorno[CD_TRANSTORNO]) {
-            criteriosPorTranstorno[CD_TRANSTORNO] = [];
+          if (!criteriosPorTranstorno[cd_transtorno]) {
+            criteriosPorTranstorno[cd_transtorno] = [];
           }
 
-          criteriosPorTranstorno[CD_TRANSTORNO].push(CRITERIO_DIAGNOSTICO);
+          criteriosPorTranstorno[cd_transtorno].push(criterio_diagnostico);
         });
 
         setCriterioParaTranstornos(criteriosPorTranstorno);
@@ -78,7 +78,7 @@ const SupostoDiagnostico = ({ pacienteId }) => {
 
     // Normaliza os critérios do paciente
     const criteriosPacienteNormalizados = criteriosPaciente.map((item) =>
-      normalize(item.COMPORTAMENTO_PACIENTE)
+      normalize(item.comportamento_paciente)
     );
 
     // Para cada transtorno, verificar se algum critério do paciente está presente

@@ -12,10 +12,10 @@ const ManterAtividade = ({ atividade, metaID }) => {
   }, [atividadeModificada, atividade]);
 
   const [novaAtividade, setNovaAtividade] = useState({
-    NM_ATIVIDADE: "",
-    DESCRICAO_ATIVIDADE: "",
-    PARECER_TECNICO: "",
-    RESULTADO: "Não iniciado",
+    nm_atividade: "",
+    descricao_atividade: "",
+    parecer_tecnico: "",
+    resultado: "Não iniciado",
   });
 
   const formatarDataBR = (dataString) => {
@@ -28,23 +28,23 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const handleSalvarNovaAtividade = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/atividade", {
+      const response = await fetch("https://mentechbackend.onrender.com/atividade", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...novaAtividade,
-          DT_ATIVIDADE: formatarDataBR(new Date().toISOString().split("T")[0]),
-          CD_META: metaID,
+          dt_atividade: formatarDataBR(new Date().toISOString().split("T")[0]),
+          cd_meta: metaID,
         }),
       });
 
       if (!response.ok) throw new Error("Erro ao criar atividade");
       setAtividadeModificada((prev) => !prev);
       setNovaAtividade({
-        NM_ATIVIDADE: "",
-        DESCRICAO_ATIVIDADE: "",
-        PARECER_TECNICO: "",
-        RESULTADO: "Não iniciado",
+        nm_atividade: "",
+        descricao_atividade: "",
+        parecer_tecnico: "",
+        resultado: "Não iniciado",
       });
     } catch (err) {
       alert(err.message);
@@ -53,7 +53,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const deleteAtividade = async (id) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/atividade/${id}`, {
+      const response = await fetch(`https://mentechbackend.onrender.com/atividade/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const marcarConcluido = async (id) => {
     try {
-      await fetch(`http://localhost:5000/atividade/inativar/${id}`, {
+      await fetch(`https://mentechbackend.onrender.com/atividade/inativar/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       });
@@ -81,7 +81,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const reabrirAtividade = async (id) => {
     try {
-      await fetch(`http://localhost:5000/atividade/inativar/${id}`, {
+      await fetch(`https://mentechbackend.onrender.com/atividade/inativar/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       });
@@ -95,24 +95,24 @@ const ManterAtividade = ({ atividade, metaID }) => {
     const atividade = atividadeEditando;
 
     const payload = {
-      CD_META: atividade.CD_META,
-      DESCRICAO_ATIVIDADE: atividade.DESCRICAO_ATIVIDADE,
-      DT_ATIVIDADE: formatarDataBR(atividade.DT_ATIVIDADE),
-      NM_ATIVIDADE: atividade.NM_ATIVIDADE,
-      PARECER_TECNICO: atividade.PARECER_TECNICO,
-      PERCENT_CONCLUSAO: atividade.PERCENT_CONCLUSAO,
-      RESULTADO: atividade.RESULTADO,
+      cd_meta: atividade.cd_meta,
+      descricao_atividade: atividade.descricao_atividade,
+      dt_atividade: formatarDataBR(atividade.dt_atividade),
+      nm_atividade: atividade.nm_atividade,
+      parecer_tecnico: atividade.parecer_tecnico,
+      percent_conclusao: atividade.percent_conclusao,
+      resultado: atividade.resultado,
     };
 
     try {
-      await fetch(`http://localhost:5000/atividade/${id}`, {
+      await fetch(`https://mentechbackend.onrender.com/atividade/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       setAtividadeList((prev) =>
-        prev.map((a) => (a.CD_ATIVIDADE === id ? atividadeEditando : a))
+        prev.map((a) => (a.cd_atividade === id ? atividadeEditando : a))
       );
 
       setEditandoId(null);
@@ -165,11 +165,11 @@ const ManterAtividade = ({ atividade, metaID }) => {
                   <input
                     maxLength={90}
                     type="text"
-                    value={novaAtividade.NM_ATIVIDADE}
+                    value={novaAtividade.nm_atividade}
                     onChange={(e) =>
                       setNovaAtividade({
                         ...novaAtividade,
-                        NM_ATIVIDADE: e.target.value,
+                        nm_atividade: e.target.value,
                       })
                     }
                     className="F_NomeAreaTranstorno"
@@ -181,11 +181,11 @@ const ManterAtividade = ({ atividade, metaID }) => {
                   <input
                     maxLength={255}
                     type="text"
-                    value={novaAtividade.DESCRICAO_ATIVIDADE}
+                    value={novaAtividade.descricao_atividade}
                     onChange={(e) =>
                       setNovaAtividade({
                         ...novaAtividade,
-                        DESCRICAO_ATIVIDADE: e.target.value,
+                        descricao_atividade: e.target.value,
                       })
                     }
                     className="F_NomeAreaTranstorno"
@@ -198,11 +198,11 @@ const ManterAtividade = ({ atividade, metaID }) => {
                   <input
                     maxLength={255}
                     type="text"
-                    value={novaAtividade.PARECER_TECNICO}
+                    value={novaAtividade.parecer_tecnico}
                     onChange={(e) =>
                       setNovaAtividade({
                         ...novaAtividade,
-                        PARECER_TECNICO: e.target.value,
+                        parecer_tecnico: e.target.value,
                       })
                     }
                     className="F_NomeAreaTranstorno"
@@ -213,11 +213,11 @@ const ManterAtividade = ({ atividade, metaID }) => {
                 <td>0%</td>
                 <td>
                   <select
-                    value={novaAtividade.RESULTADO}
+                    value={novaAtividade.resultado}
                     onChange={(e) =>
                       setNovaAtividade({
                         ...novaAtividade,
-                        RESULTADO: e.target.value,
+                        resultado: e.target.value,
                       })
                     }
                     className="F_NomeAreaTranstorno"
@@ -229,12 +229,12 @@ const ManterAtividade = ({ atividade, metaID }) => {
                 </td>
               </tr>
               {atividadeList.map((atividades) => {
-                const isConcluido = atividades.ATIVO === "N";
-                const emEdicao = editandoId === atividades.CD_ATIVIDADE;
+                const isConcluido = atividades.ativo === "N";
+                const emEdicao = editandoId === atividades.cd_atividade;
 
                 return (
                   <tr
-                    key={atividades.CD_ATIVIDADE}
+                    key={atividades.cd_atividade}
                     style={{ fontSize: "12px" }}
                   >
                     <td className="actions">
@@ -244,7 +244,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                             <button
                               className="btn-delete"
                               onClick={() =>
-                                deleteAtividade(atividades.CD_ATIVIDADE)
+                                deleteAtividade(atividades.cd_atividade)
                               }
                               disabled={isConcluido}
                             >
@@ -255,18 +255,18 @@ const ManterAtividade = ({ atividade, metaID }) => {
                               style={{backgroundColor:"#f7dd5c"}}
                               disabled={isConcluido}
                               onClick={() => {
-                                setEditandoId(atividades.CD_ATIVIDADE);
+                                setEditandoId(atividades.cd_atividade);
                                 setAtividadeEditando({ ...atividades });
                               }}
                             >
                               ✏️
                             </button>
                             {!isConcluido &&
-                              atividades.PERCENT_CONCLUSAO === 100 && (
+                              atividades.percent_conclusao === 100 && (
                                 <button
                                   className="btn-complete"
                                   onClick={() =>
-                                    marcarConcluido(atividades.CD_ATIVIDADE)
+                                    marcarConcluido(atividades.cd_atividade)
                                   }
                                 >
                                   ✔️
@@ -276,7 +276,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                               <button
                                 className="btn-undo"
                                 onClick={() =>
-                                  reabrirAtividade(atividades.CD_ATIVIDADE)
+                                  reabrirAtividade(atividades.cd_atividade)
                                 }
                               >
                                 🔄
@@ -295,7 +295,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                             <button
                               className="btn-complete"
                               onClick={() =>
-                                handleSalvarEdicao(atividades.CD_ATIVIDADE)
+                                handleSalvarEdicao(atividades.cd_atividade)
                               }
                             >
                               💾
@@ -311,18 +311,18 @@ const ManterAtividade = ({ atividade, metaID }) => {
                         <input
                           maxLength={90}
                           type="text"
-                          value={atividadeEditando.NM_ATIVIDADE}
+                          value={atividadeEditando.nm_atividade}
                           onChange={(e) =>
                             setAtividadeEditando({
                               ...atividadeEditando,
-                              NM_ATIVIDADE: e.target.value,
+                              nm_atividade: e.target.value,
                             })
                           }
                           className="F_NomeAreaTranstorno"
                           style={{ width: "130px" }}
                         />
                       ) : (
-                        atividades.NM_ATIVIDADE
+                        atividades.nm_atividade
                       )}
                     </td>
 
@@ -331,23 +331,23 @@ const ManterAtividade = ({ atividade, metaID }) => {
                         <input
                           maxLength={255}
                           type="text"
-                          value={atividadeEditando.DESCRICAO_ATIVIDADE}
+                          value={atividadeEditando.descricao_atividade}
                           onChange={(e) =>
                             setAtividadeEditando({
                               ...atividadeEditando,
-                              DESCRICAO_ATIVIDADE: e.target.value,
+                              descricao_atividade: e.target.value,
                             })
                           }
                           className="F_NomeAreaTranstorno"
                           style={{ width: "150px" }}
                         />
                       ) : (
-                        atividades.DESCRICAO_ATIVIDADE
+                        atividades.descricao_atividade
                       )}
                     </td>
 
                     {/* Data - não editável */}
-                    <td>{formatarDataBR(atividades.DT_ATIVIDADE)}</td>
+                    <td>{formatarDataBR(atividades.dt_atividade)}</td>
 
                     {/* Parecer */}
                     <td>
@@ -355,18 +355,18 @@ const ManterAtividade = ({ atividade, metaID }) => {
                         <input
                           type="text"
                           maxLength={1000}
-                          value={atividadeEditando.PARECER_TECNICO}
+                          value={atividadeEditando.parecer_tecnico}
                           onChange={(e) =>
                             setAtividadeEditando({
                               ...atividadeEditando,
-                              PARECER_TECNICO: e.target.value,
+                              parecer_tecnico: e.target.value,
                             })
                           }
                           className="F_NomeAreaTranstorno"
                           style={{ width: "110px" }}
                         />
                       ) : (
-                        atividades.PARECER_TECNICO
+                        atividades.parecer_tecnico
                       )}
                     </td>
 
@@ -374,11 +374,11 @@ const ManterAtividade = ({ atividade, metaID }) => {
                       {emEdicao ? (
                         <input
                           type="number"
-                          value={atividadeEditando.PERCENT_CONCLUSAO}
+                          value={atividadeEditando.percent_conclusao}
                           onChange={(e) =>
                             setAtividadeEditando({
                               ...atividadeEditando,
-                              PERCENT_CONCLUSAO: e.target.value,
+                              percent_conclusao: e.target.value,
                             })
                           }
                           min="0"
@@ -387,18 +387,18 @@ const ManterAtividade = ({ atividade, metaID }) => {
                           style={{ width: "40px" }}
                         />
                       ) : (
-                        `${atividades.PERCENT_CONCLUSAO}%`
+                        `${atividades.percent_conclusao}%`
                       )}
                     </td>
 
                     <td>
                       {emEdicao ? (
                         <select
-                          value={atividadeEditando.RESULTADO}
+                          value={atividadeEditando.resultado}
                           onChange={(e) =>
                             setAtividadeEditando({
                               ...atividadeEditando,
-                              RESULTADO: e.target.value,
+                              resultado: e.target.value,
                             })
                           }
                           className="F_NomeAreaTranstorno"
@@ -409,7 +409,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                           <option value="Concluído">Concluído</option>
                         </select>
                       ) : (
-                        atividades.RESULTADO
+                        atividades.resultado
                       )}
                     </td>
                   </tr>
