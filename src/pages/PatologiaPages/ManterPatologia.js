@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../css/ManterPatologia.css";
 import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
 import { showAlert } from "../../utils/alerts.js";
+import { BASE_URL } from "../../global/GlobalContext.js";
 
 const ManterPatologia = ({ cd_paciente }) => {
   const [patologia, setPatologia] = useState([]);
@@ -26,7 +27,7 @@ const ManterPatologia = ({ cd_paciente }) => {
         return;
       }
       const response = await fetch(
-        `https://mentechbackend.onrender.com/patologia/${pacienteID}`
+        `${BASE_URL}/patologia/${pacienteID}`
       );
 
       const dataJson = await response.json();
@@ -59,7 +60,7 @@ const ManterPatologia = ({ cd_paciente }) => {
         return null;
       }
 
-      const response = await fetch("https://mentechbackend.onrender.com/patologia", {
+      const response = await fetch(`${BASE_URL}/patologia`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +97,7 @@ const ManterPatologia = ({ cd_paciente }) => {
   };
 
   const deletePatologia = async (id) => {
-    await fetch(`https://mentechbackend.onrender.com/patologia/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/patologia/${id}`, { method: "DELETE" });
     fetchPatologia();
   };
 

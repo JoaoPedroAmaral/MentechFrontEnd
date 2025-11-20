@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
-import { useGlobal } from "../../global/GlobalContext";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext";
 
 const ManterComportamento = ({ pacienteID }) => {
   const [criterios, setCriterios] = useState([]);
@@ -9,7 +9,7 @@ const ManterComportamento = ({ pacienteID }) => {
   const { criteriosModificados, setDiagnosticosModificados } = useGlobal();
 
   const buscarCriterios = () => {
-    fetch("https://mentechbackend.onrender.com/criterio_diagnostico")
+    fetch(`${BASE_URL}/criterio_diagnostico`)
       .then((res) => res.json())
       .then((data) => {
         const map = new Map();
@@ -49,7 +49,7 @@ const ManterComportamento = ({ pacienteID }) => {
   };
 
   const listarComportamentos = (id) => {
-    fetch(`https://mentechbackend.onrender.com/comportamento_paciente/por_paciente/${id}`)
+    fetch(`${BASE_URL}/comportamento_paciente/por_paciente/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setCriterios(data);
@@ -60,7 +60,7 @@ const ManterComportamento = ({ pacienteID }) => {
   const adicionarComportamento = async (comportamento) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/comportamento_paciente`,
+        `${BASE_URL}/comportamento_paciente`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -83,7 +83,7 @@ const ManterComportamento = ({ pacienteID }) => {
   const deleteComportamento = async (cdComportamento) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/comportamento_paciente/${cdComportamento}`,
+        `${BASE_URL}/comportamento_paciente/${cdComportamento}`,
         {
           method: "DELETE",
         }

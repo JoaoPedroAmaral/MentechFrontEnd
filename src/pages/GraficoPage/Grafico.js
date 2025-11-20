@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 
 export const Grafico = ({ pacienteID }) => {
   const [metas, setMetas] = useState([]);
@@ -111,7 +111,7 @@ export const Grafico = ({ pacienteID }) => {
   const carregarAtividades = async (metaID) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/atividade/por_meta/${metaID}`
+        `${BASE_URL}/atividade/por_meta/${metaID}`
       );
       if (!response.ok) throw new Error("Erro ao buscar atividades");
       const data = await response.json();
@@ -130,7 +130,7 @@ export const Grafico = ({ pacienteID }) => {
   const carregarMetas = async (id) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/meta/por_paciente/${id}`
+        `${BASE_URL}/meta/por_paciente/${id}`
       );
       if (!response.ok) throw new Error("Erro ao buscar metas");
       const data = await response.json();
@@ -152,7 +152,7 @@ export const Grafico = ({ pacienteID }) => {
 
   const carregarHistoricoAtividade = async (atividadeId) => {
     const resp = await fetch(
-      `https://mentechbackend.onrender.com/percent_atividade/porAtividade/${atividadeId}`
+      `${BASE_URL}/percent_atividade/porAtividade/${atividadeId}`
     );
     const historico = await resp.json();
     return historico;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
 import { showAlert, confirmDelete } from "../../utils/alerts.js";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 
 const ManterHistorico = ({ pacienteID, pacientData }) => {
   const [anamneseState, setAnamneseState] = useState("none");
@@ -87,7 +87,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
         showAlert.warning("Anamnese não pode ser vazio");
       }
       const response = await fetch(
-        `https://mentechbackend.onrender.com/anamnese/por_paciente/${id}`,
+        `${BASE_URL}/anamnese/por_paciente/${id}`,
         {
           method: "GET",
           headers: {
@@ -165,7 +165,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
 
   const getPerfil = async () => {
     try {
-      const response = await fetch(`https://mentechbackend.onrender.com/anamnese/perfis`);
+      const response = await fetch(`${BASE_URL}/anamnese/perfis`);
 
       if (!response.ok) {
         showAlert.error("Erro ao carregar perfis");
@@ -184,7 +184,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
   const getAlternative = async (cdQuestao) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/anamnese/alternativas/${cdQuestao}`
+        `${BASE_URL}/anamnese/alternativas/${cdQuestao}`
       );
       if (!response.ok) {
         console.error(
@@ -207,7 +207,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
   const handleDelete = async (id) => {
     await confirmDelete("este prontuário?", async () => {
       try {
-        const response = await fetch(`https://mentechbackend.onrender.com/prontuario/${id}`, {
+        const response = await fetch(`${BASE_URL}/prontuario/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -239,7 +239,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
       return;
     }
     setIsEditing(false);
-    fetch(`https://mentechbackend.onrender.com/prontuario/${id}`, {
+    fetch(`${BASE_URL}/prontuario/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -275,7 +275,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
   const hasProntuario = async (id) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/prontuario/por_paciente/${id}`,
+        `${BASE_URL}/prontuario/por_paciente/${id}`,
         {
           method: "GET",
           headers: {
@@ -337,7 +337,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
           }
 
           const response = await fetch(
-            "https://mentechbackend.onrender.com/anamnese/resposta",
+            `${BASE_URL}/anamnese/resposta`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -376,7 +376,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
       return;
     }
     try {
-      const response = await fetch(`https://mentechbackend.onrender.com/prontuario`, {
+      const response = await fetch(`${BASE_URL}/prontuario`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -411,7 +411,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
     try {
       if (cd_anamnese) {
         const deleteResponse = await fetch(
-          `https://mentechbackend.onrender.com/anamnese/${cd_anamnese}`,
+          `${BASE_URL}/anamnese/${cd_anamnese}`,
           {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -425,7 +425,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
       }
 
       const createResponse = await fetch(
-        `https://mentechbackend.onrender.com/anamnese/gerar_por_perfil`,
+        `${BASE_URL}/anamnese/gerar_por_perfil`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

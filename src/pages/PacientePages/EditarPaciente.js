@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import iconTrash from "../../Images/Trash.png";
 import { showAlert } from "../../utils/alerts.js";
 import TelefoneGrid from "./pacienteComponents/TelefoneGrid.js";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 import {carregarMensagemNegativa} from "../../InitialPage.js";
 
 const EditarPaciente = ({
@@ -160,7 +160,7 @@ const EditarPaciente = ({
 
   const fetchGeneros = async () => {
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/genero");
+      const response = await fetch(`${BASE_URL}/genero`);
       if (!response.ok) {
         throw new Error("Erro ao buscar gêneros");
       }
@@ -205,7 +205,7 @@ const EditarPaciente = ({
       const { cd_paciente, ...pacienteData } = pacientePayload;
 
       const response = await fetch(
-        `https://mentechbackend.onrender.com/paciente/${pacientePayload.cd_paciente}`,
+        `${BASE_URL}/paciente/${pacientePayload.cd_paciente}`,
         {
           method: "PUT",
           headers: {
@@ -238,7 +238,7 @@ const EditarPaciente = ({
   const alterarResponsavel = async (pacienteID) => {
     try {
       const resposta = await fetch(
-        `https://mentechbackend.onrender.com/responsavel/${pacienteID}`
+        `${BASE_URL}/responsavel/${pacienteID}`
       );
 
       let dados;
@@ -252,7 +252,7 @@ const EditarPaciente = ({
       }
       if (dados.length > 0) {
         const deleteResponse = await fetch(
-          `https://mentechbackend.onrender.com/responsavel/paciente/${pacienteID}`,
+          `${BASE_URL}/responsavel/paciente/${pacienteID}`,
           {
             method: "DELETE",
           }
@@ -284,7 +284,7 @@ const EditarPaciente = ({
         };
         console.log("Enviando responsável:", responsavelParaEnviar);
 
-        const response = await fetch("https://mentechbackend.onrender.com/responsavel", {
+        const response = await fetch(`${BASE_URL}/responsavel`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -317,7 +317,7 @@ const EditarPaciente = ({
       const telefonesParaCadastrar = [];
 
       // 🔁 Etapa 1: apagar telefones existentes (do paciente e dos responsáveis)
-      await fetch(`https://mentechbackend.onrender.com/telefone/${pacienteID}`, {
+      await fetch(`${BASE_URL}/telefone/${pacienteID}`, {
         method: "DELETE",
       });
 
@@ -352,7 +352,7 @@ const EditarPaciente = ({
 
       // 📨 Cadastrando novamente via POST
       for (const tel of telefonesParaCadastrar) {
-        const response = await fetch("https://mentechbackend.onrender.com/telefone", {
+        const response = await fetch(`${BASE_URL}/telefone`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -379,14 +379,14 @@ const EditarPaciente = ({
   const alterarEndereco = async (pacienteID = "", responsavelIDs = []) => {
     try {
       const resposta = await fetch(
-        `https://mentechbackend.onrender.com/endereco/${pacienteID}`
+        `${BASE_URL}/endereco/${pacienteID}`
       );
       if (!resposta.ok) throw new Error("Erro ao buscar responsa");
       const dados = await resposta.json();
 
       if (dados) {
         const deleteResponse = await fetch(
-          `https://mentechbackend.onrender.com/endereco/${pacienteID}`,
+          `${BASE_URL}/endereco/${pacienteID}`,
           {
             method: "DELETE",
           }
@@ -440,7 +440,7 @@ const EditarPaciente = ({
 
       // 4. Criar todos os endereços com POST
       for (const endereco of enderecosParaCriar) {
-        const postResponse = await fetch("https://mentechbackend.onrender.com/endereco", {
+        const postResponse = await fetch(`${BASE_URL}/endereco`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(endereco),

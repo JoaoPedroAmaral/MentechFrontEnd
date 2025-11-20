@@ -24,7 +24,7 @@ import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
 import PerfilPhoto from "../../Images/PerfilPhoto.png";
 import Seta from "../../Images/seta.png";
 import calendar from "../../Images/calendar.png";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 import ManterHistorico from "../HistoricoPage/ManterHistorico.js";
 import { Grafico } from "../GraficoPage/Grafico.js";
 
@@ -102,7 +102,7 @@ const SegundoAcesso = ({
 
   const PUTStatusAtivo = async (id) => {
     const response = await fetch(
-      `https://mentechbackend.onrender.com/paciente/toggle/${id}`,
+      `${BASE_URL}/paciente/toggle/${id}`,
       {
         method: "PUT",
       }
@@ -633,7 +633,7 @@ const SegundoAcesso = ({
             </button>
           </div>
           <div className="FlexCenterMid">
-            <ManterAgenda cd_paciente={pacienteID} />
+            <ManterAgenda cd_paciente={pacienteID} cd_usuario={userData.cd_usuario} />
           </div>
         </div>
       </div>

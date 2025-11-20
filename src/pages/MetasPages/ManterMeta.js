@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 import AdicionarMetas from "./AdicionarMetas.js";
 import Slider from "react-slick";
 import iconTrash from "../../Images/Trash.png";
@@ -61,7 +61,7 @@ const ManterMeta = ({ pacienteID }) => {
   const carregarAtividades = async (metaID) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/atividade/por_meta/${metaID}`
+        `${BASE_URL}/atividade/por_meta/${metaID}`
       );
       if (!response.ok) throw new Error("Erro ao buscar atividades");
       const data = await response.json();
@@ -85,7 +85,7 @@ const ManterMeta = ({ pacienteID }) => {
   const carregarMetas = async (pacienteID) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/meta/por_paciente/${pacienteID}`
+        `${BASE_URL}/meta/por_paciente/${pacienteID}`
       );
       if (!response.ok) throw new Error("Erro ao buscar metas");
       const data = await response.json();
@@ -100,7 +100,7 @@ const ManterMeta = ({ pacienteID }) => {
   const toggleAtivoMeta = async (id) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/meta/alternar/${id}`,
+        `${BASE_URL}/meta/alternar/${id}`,
         {
           method: "PUT",
           headers: {
@@ -130,7 +130,7 @@ const ManterMeta = ({ pacienteID }) => {
 
   const handleRemoverMeta = async (id) => {
     try {
-      const response = await fetch(`https://mentechbackend.onrender.com/meta/${id}`, {
+      const response = await fetch(`${BASE_URL}/meta/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +147,7 @@ const ManterMeta = ({ pacienteID }) => {
   const concluirMeta = async (id) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/paciente_meta/${id}`,
+        `${BASE_URL}/paciente_meta/${id}`,
         {
           method: "PUT",
           headers: {

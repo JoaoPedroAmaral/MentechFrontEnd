@@ -1153,3 +1153,14 @@ input[type="checkbox"]:checked + .simple-switch::after {
   border-color: #b399d4 !important; 
   box-shadow: none !important; 
 }
+
+.ant-modal-content{
+    background-color: #f5f5f5 !important;
+    border: 3px solid #caa7f8 !important;
+    border-radius: 0 !important;
+}
+
+.ant-modal-title{
+  background-color: #f5f5f5 !important ;
+  text-align: center !important;
+}
