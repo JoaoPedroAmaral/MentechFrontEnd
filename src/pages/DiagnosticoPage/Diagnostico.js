@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useGlobal } from "../../global/GlobalContext";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext";
 
 const SupostoDiagnostico = ({ pacienteId }) => {
   const [criteriosPaciente, setCriteriosPaciente] = useState([]);
@@ -25,7 +25,7 @@ const SupostoDiagnostico = ({ pacienteId }) => {
   }, [criteriosPaciente, criterioParaTranstornos, diagnosticosModificados]);
 
   const buscarTranstornos = () => {
-    fetch("https://mentechbackend.onrender.com/transtorno")
+    fetch(`${BASE_URL}/transtorno`)
       .then((res) => res.json())
       .then((data) => {
         const map = {};
@@ -38,7 +38,7 @@ const SupostoDiagnostico = ({ pacienteId }) => {
   };
 
   const listarComportamentos = (id) => {
-    fetch(`https://mentechbackend.onrender.com/comportamento_paciente/por_paciente/${id}`)
+    fetch(`${BASE_URL}/comportamento_paciente/por_paciente/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setCriteriosPaciente(data); // salva todos os objetos com cd_transtorno e criterio_diagnostico
@@ -47,7 +47,7 @@ const SupostoDiagnostico = ({ pacienteId }) => {
   };
 
   const buscarCriterios = () => {
-    fetch("https://mentechbackend.onrender.com/criterio_diagnostico")
+    fetch(`${BASE_URL}/criterio_diagnostico`)
       .then((res) => res.json())
       .then((data) => {
         const criteriosPorTranstorno = {};

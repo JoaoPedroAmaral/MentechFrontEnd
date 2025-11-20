@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import iconTrash from "../../Images/Trash.png";
 import "../../css/SpecificStyle.css";
 import { showAlert, confirmDelete } from "../../utils/alerts.js";
-import { useGlobal } from "../../global/GlobalContext";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext";
 
 import "../../css/OrganizeCSS/base.css";
 import "../../css/OrganizeCSS/components.css";
@@ -63,7 +63,7 @@ const ManterTranstorno = () => {
         return;
       }
 
-      const response = await fetch("https://mentechbackend.onrender.com/transtorno", {
+      const response = await fetch(`${BASE_URL}/transtorno`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +110,7 @@ const ManterTranstorno = () => {
           grav_descricao: gravidade.grav_descricao,
         };
 
-        const response = await fetch("https://mentechbackend.onrender.com/gravidade", {
+        const response = await fetch(`${BASE_URL}/gravidade`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -151,7 +151,7 @@ const ManterTranstorno = () => {
         };
 
         const response = await fetch(
-          "https://mentechbackend.onrender.com/criterio_diagnostico",
+          `${BASE_URL}/criterio_diagnostico`,
           {
             method: "POST",
             headers: {
@@ -196,7 +196,7 @@ const ManterTranstorno = () => {
         };
 
         const response = await fetch(
-          "https://mentechbackend.onrender.com/subtipo_transtorno",
+          `${BASE_URL}/subtipo_transtorno`,
           {
             method: "POST",
             headers: {
@@ -228,7 +228,7 @@ const ManterTranstorno = () => {
 
   const fetchTranstornos = async () => {
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/transtorno");
+      const response = await fetch(`${BASE_URL}/transtorno`);
       const dataJson = await response.json();
 
       if (!Array.isArray(dataJson)) {
@@ -245,7 +245,7 @@ const ManterTranstorno = () => {
     setLoadingTranstorno(true);
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/transtorno_PorIdTranstorno/${id}`
+        `${BASE_URL}/transtorno_PorIdTranstorno/${id}`
       );
       const dataJson = await response.json();
 
@@ -265,7 +265,7 @@ const ManterTranstorno = () => {
     setcriterioDiagnostico(null);
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/criterio_diagnostico_PorIdTranstorno/${cdTranstorno}`
+        `${BASE_URL}/criterio_diagnostico_PorIdTranstorno/${cdTranstorno}`
       );
       const dataJson = await response.json();
 
@@ -285,7 +285,7 @@ const ManterTranstorno = () => {
     setGravidade([]);
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/gravidade_PorIdTranstorno/${cdTranstorno}`
+        `${BASE_URL}/gravidade_PorIdTranstorno/${cdTranstorno}`
       );
       const dataJson = await response.json();
 
@@ -303,7 +303,7 @@ const ManterTranstorno = () => {
     setSubTipo([]);
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/subtipo_transtorno_PorIdTranstorno/${cdTranstorno}`
+        `${BASE_URL}/subtipo_transtorno_PorIdTranstorno/${cdTranstorno}`
       );
       const dataJson = await response.json();
 
@@ -319,7 +319,7 @@ const ManterTranstorno = () => {
   };
 
   const deleteTranstorno = async (id) => {
-    await fetch(`https://mentechbackend.onrender.com/transtorno/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/transtorno/${id}`, { method: "DELETE" });
     setCriteriosModificados((prev) => !prev);
     fetchTranstornos();
   };
@@ -416,7 +416,7 @@ const ManterTranstorno = () => {
       }
 
       const response = await fetch(
-        `https://mentechbackend.onrender.com/transtorno/${transtornoSelect.cd_transtorno}`,
+        `${BASE_URL}/transtorno/${transtornoSelect.cd_transtorno}`,
         {
           method: "PUT",
           headers: {
@@ -476,7 +476,7 @@ const ManterTranstorno = () => {
 
   const updateRelatedData = async (endpoint, cdTranstorno, items, fields) => {
     await fetch(
-      `https://mentechbackend.onrender.com/${endpoint}/deletarPorTranstorno/${cdTranstorno}`,
+      `${BASE_URL}/${endpoint}/deletarPorTranstorno/${cdTranstorno}`,
       {
         method: "DELETE",
       }
@@ -493,7 +493,7 @@ const ManterTranstorno = () => {
       });
 
       if (Object.keys(payload).length > 1) {
-        await fetch(`https://mentechbackend.onrender.com/${endpoint}`, {
+        await fetch(`${BASE_URL}/${endpoint}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

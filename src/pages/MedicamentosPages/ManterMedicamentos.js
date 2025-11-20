@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../../global/GlobalContext";
 
 const ManterMedicamentos = ({ cd_paciente }) => {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -6,8 +7,11 @@ const ManterMedicamentos = ({ cd_paciente }) => {
     nm_medicamento: "",
     dose: "",
     dias_ministracao: "",
+    dosagem: "",
+    forma_farmaceutica: "",
+    principio_ativo: "",
+    fabricante: "",
   });
-
 
   useEffect(() => {
     fetchMedicamentos(cd_paciente);
@@ -15,7 +19,9 @@ const ManterMedicamentos = ({ cd_paciente }) => {
 
   const fetchMedicamentos = async (cd_paciente) => {
     try {
-      const response = await fetch(`https://mentechbackend.onrender.com/medicamento/por_paciente/${cd_paciente}`);
+      const response = await fetch(
+        `${BASE_URL}/medicamento/por_paciente/${cd_paciente}`
+      );
       if (!response.ok) {
         throw new Error("Erro ao buscar medicamentos");
       }
@@ -26,10 +32,9 @@ const ManterMedicamentos = ({ cd_paciente }) => {
     }
   };
 
-
   const createMedicamento = async (medicamentoData) => {
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/medicamento", {
+      const response = await fetch(`${BASE_URL}/medicamento`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +47,7 @@ const ManterMedicamentos = ({ cd_paciente }) => {
       const data = await response.json();
       setMedicamentos((prevMedicamentos) => [...prevMedicamentos, data]);
 
-      const responseRelation = await fetch(`https://mentechbackend.onrender.com/paciente_medicamento`, {
+      const responseRelation = await fetch(`${BASE_URL}/paciente_medicamento`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,15 +63,16 @@ const ManterMedicamentos = ({ cd_paciente }) => {
       }
       await responseRelation.json();
       fetchMedicamentos(cd_paciente);
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
   const deleteMedicamento = async (cd_medicamento) => {
     try {
-      const response = await fetch(`https://mentechbackend.onrender.com/medicamento/${cd_medicamento}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${BASE_URL}/medicamento/${cd_medicamento}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
         throw new Error("Erro ao deletar medicamento");
       }
@@ -95,31 +101,51 @@ const ManterMedicamentos = ({ cd_paciente }) => {
                   color: "rgb(245, 245, 245)",
                 }}
               >
-                <div className="FlexCenterBetween actions " style={{ width: "90%" }}>
+                <div
+                  className="FlexCenterBetween actions "
+                  style={{ width: "90%" }}
+                >
                   <p>{`${medicamento.nm_medicamento} (${medicamento.dose}) - Durante ${medicamento.dias_ministracao} dias`}</p>
-                  <button className="btn-delete" onClick={() => deleteMedicamento(medicamento.cd_medicamento)}>🗑️</button>
+                  <button
+                    className="btn-delete"
+                    onClick={() =>
+                      deleteMedicamento(medicamento.cd_medicamento)
+                    }
+                  >
+                    🗑️
+                  </button>
                 </div>
               </li>
             </ul>
           ))
         ) : (
-          <p className="FlexCenterMid" style={{ color: "rgb(245, 245, 245)", marginTop: "10px" }}>Nenhum medicamento encontrado.</p>
+          <p
+            className="FlexCenterMid"
+            style={{ color: "rgb(245, 245, 245)", marginTop: "10px" }}
+          >
+            Nenhum medicamento encontrado.
+          </p>
         )}
       </div>
-      <div className="F_CadastrarMedicamento">
-        <div
-          className="FlexCenterBetween F_CriarTranstornoInputObrigatorio "
-          style={{ marginTop: "10%"}}
-        >
+      <div
+        className="F_CadastrarMedicamento ScrollBar"
+        style={{ marginTop: "5%", height: "200px" }}
+      >
+        <div className="FlexCenterBetween F_CriarTranstornoInputObrigatorio ">
           <p>Nome do Medicamento:</p>
           <input
             type="text"
             maxLength={90}
-            placeholder="Nome do Medicamento"
+            placeholder="ex: Paracetamol"
             className="F_NomeAreaTranstorno"
-            style={{ width : "250px" }}
+            style={{ width: "250px" }}
             value={medicamentosData.nm_medicamento}
-            onChange={(e) => setMedicamentosData({ ...medicamentosData, nm_medicamento: e.target.value })}
+            onChange={(e) =>
+              setMedicamentosData({
+                ...medicamentosData,
+                nm_medicamento: e.target.value,
+              })
+            }
           />
         </div>
         <div
@@ -129,11 +155,13 @@ const ManterMedicamentos = ({ cd_paciente }) => {
           <p>Dosagem do Medicamento:</p>
           <input
             type="text"
-            placeholder="Dosagem do Medicamento"
+            placeholder="ex: 500mg"
             className="F_NomeAreaTranstorno"
-            style={{ width : "250px" }}
+            style={{ width: "250px" }}
             value={medicamentosData.dose}
-            onChange={(e) => setMedicamentosData({ ...medicamentosData, dose: e.target.value })}
+            onChange={(e) =>
+              setMedicamentosData({ ...medicamentosData, dose: e.target.value, dosagem: e.target.value })
+            }
           />
         </div>
         <div
@@ -144,15 +172,80 @@ const ManterMedicamentos = ({ cd_paciente }) => {
           <input
             type="text"
             maxLength={3}
-            placeholder="Dias"
+            placeholder="ex: 10"
             className="F_NomeAreaTranstorno"
-            style={{ width : "250px" }}
+            style={{ width: "250px" }}
             value={medicamentosData.dias_ministracao}
-            onChange={(e) => setMedicamentosData({ ...medicamentosData, dias_ministracao: e.target.value })}
+            onChange={(e) =>
+              setMedicamentosData({
+                ...medicamentosData,
+                dias_ministracao: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div
+          className="FlexCenterBetween F_CriarTranstornoInputObrigatorio "
+          style={{ marginTop: "10px" }}
+        >
+          <p>Forma Farmaceutica:</p>
+          <input
+            type="text"
+            maxLength={255}
+            placeholder="ex: Comprimido"
+            className="F_NomeAreaTranstorno"
+            style={{ width: "250px" }}
+            value={medicamentosData.forma_farmaceutica}
+            onChange={(e) =>
+              setMedicamentosData({
+                ...medicamentosData,
+                forma_farmaceutica: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div
+          className="FlexCenterBetween F_CriarTranstornoInputObrigatorio "
+          style={{ marginTop: "10px" }}
+        >
+          <p>Principio Ativo:</p>
+          <input
+            type="text"
+            maxLength={255}
+            placeholder="ex: N-acetil-p-aminofenol"
+            className="F_NomeAreaTranstorno"
+            style={{ width: "250px" }}
+            value={medicamentosData.principio_ativo}
+            onChange={(e) =>
+              setMedicamentosData({
+                ...medicamentosData,
+                principio_ativo: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div
+          className="FlexCenterBetween F_CriarTranstornoInputObrigatorio "
+          style={{ marginTop: "10px" }}
+        >
+          <p>Fabricante:</p>
+          <input
+            type="text"
+            maxLength={255}
+            placeholder="ex: Laboratório XYZ"
+            className="F_NomeAreaTranstorno"
+            style={{ width: "250px" }}
+            value={medicamentosData.fabricante}
+            onChange={(e) =>
+              setMedicamentosData({
+                ...medicamentosData,
+                fabricante: e.target.value,
+              })
+            }
           />
         </div>
       </div>
-      <div className="F_AdicionarArea" style={{ marginTop: "10%" }}>
+      <div className="F_AdicionarArea" style={{ marginTop: "5%" }}>
         <button
           className="F_btnTranstornos"
           onClick={() => {
@@ -161,6 +254,10 @@ const ManterMedicamentos = ({ cd_paciente }) => {
               nm_medicamento: "",
               dose: "",
               dias_ministracao: "",
+              dosagem: "",
+              forma_farmaceutica: "",
+              principio_ativo: "",
+              fabricante: "",
             });
           }}
         >

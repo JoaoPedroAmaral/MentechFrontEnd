@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useGlobal } from "../../global/GlobalContext";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext";
 import { showAlert } from "../../utils/alerts.js";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
@@ -20,7 +20,7 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
       return;
     }
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/meta", {
+      const response = await fetch(`${BASE_URL}/meta`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +42,7 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
   const handleSubmit = async () => {
     const MetaID = await handleMeta();
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/paciente_meta", {
+      const response = await fetch(`${BASE_URL}/paciente_meta`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

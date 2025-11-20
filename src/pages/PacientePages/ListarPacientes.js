@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import logo from "../../Images/Logo.svg";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 import { Tooltip } from "antd";
 
 const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
@@ -22,7 +22,7 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
   const fetchPaciente = async (id) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/paciente/por_usuario/${id}`
+        `${BASE_URL}/paciente/por_usuario/${id}`
       );
       const dataJson = await response.json();
 

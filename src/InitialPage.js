@@ -3,6 +3,8 @@ import "./css/OrganizeCSS/base.css";
 import "./css/OrganizeCSS/components.css";
 import "./css/OrganizeCSS/layout.css";
 import "./css/OrganizeCSS/utils.css";
+import { BASE_URL } from "./global/GlobalContext.js";
+
 
 import HomePage from "./pages/HomePage.js";
 import Logo from "./Images/Logo.svg";
@@ -27,7 +29,7 @@ export const LOADING_SCREEN = () =>  (
 export const carregarMensagemNegativa = async (nomeMensagem) => {
   try {
     const response = await fetch(
-      `https://mentechbackend.onrender.com/mensagemNegativa?msg=${encodeURIComponent(
+      `${BASE_URL}/mensagemNegativa?msg=${encodeURIComponent(
         nomeMensagem
       )}`
     );
@@ -118,7 +120,7 @@ const InitialPage = () => {
 
   const handleLoginAutomatico = async (email, senha) => {
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/usuario");
+      const response = await fetch(`${BASE_URL}/usuario`);
       const data = await response.json();
 
       let user = null;
@@ -134,7 +136,7 @@ const InitialPage = () => {
       if (user) {
         try {
           await fetch(
-            `https://mentechbackend.onrender.com/definir_usuario/${user.cd_usuario}`,
+            `${BASE_URL}/definir_usuario/${user.cd_usuario}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -158,7 +160,7 @@ const InitialPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/usuario");
+      const response = await fetch(`${BASE_URL}/usuario`);
       const data = await response.json();
 
       let user = null;
@@ -187,7 +189,7 @@ const InitialPage = () => {
 
       /*try {
         await fetch(
-          `https://mentechbackend.onrender.com/definir_usuario/${user.cd_usuario}`,
+          `${BASE_URL}/definir_usuario/${user.cd_usuario}`,
           {
             method: "POST",
             headers: {
@@ -226,7 +228,7 @@ const InitialPage = () => {
 
   const registrarUsuario = async () => {
     try {
-      const getResponse = await fetch("https://mentechbackend.onrender.com/usuario");
+      const getResponse = await fetch(`${BASE_URL}/usuario`);
       const data = await getResponse.json();
 
       if (
@@ -248,7 +250,7 @@ const InitialPage = () => {
         }
       }
 
-      const response = await fetch("https://mentechbackend.onrender.com/usuario", {
+      const response = await fetch(`${BASE_URL}/usuario`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -299,7 +301,7 @@ const InitialPage = () => {
       let user = null;
 
       try {
-        const response = await fetch("https://mentechbackend.onrender.com/usuario");
+        const response = await fetch(`${BASE_URL}/usuario`);
         const data = await response.json();
 
         for (let i = 0; i < data.length; i++) {
@@ -320,7 +322,7 @@ const InitialPage = () => {
       }
 
       // Usa a variável `user`, não o estado
-      const response2 = await fetch("https://mentechbackend.onrender.com/alterar_senha", {
+      const response2 = await fetch(`${BASE_URL}/alterar_senha`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cd_usuario: user.cd_usuario, email: email }),
