@@ -1,7 +1,7 @@
 import { createContext, useState, useContext } from "react";
 
 const GlobalContext = createContext();
-
+export const BASE_URL = "http://127.0.0.1:5000";
 export const GlobalProvider = ({ children }) => {
   const [criteriosModificados, setCriteriosModificados] = useState(false);
   const [pacientesModificados, setPacientesModificados] = useState(false);

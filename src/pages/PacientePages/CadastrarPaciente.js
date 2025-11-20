@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import iconTrash from "../../Images/Trash.png";
 import { showAlert } from "../../utils/alerts.js";
 import TelefoneGrid from "./pacienteComponents/TelefoneGrid.js";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal,BASE_URL } from "../../global/GlobalContext.js";
 import { carregarMensagemNegativa } from "../../InitialPage.js";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
@@ -49,7 +49,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
 
   const getPerfil = async () => {
     try {
-      const response = await fetch(`https://mentechbackend.onrender.com/anamnese/perfis`);
+      const response = await fetch(`${BASE_URL}/anamnese/perfis`);
 
       if (!response.ok) {
         showAlert.error("Erro ao carregar perfis");
@@ -93,7 +93,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
 
   const fetchGeneros = async () => {
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/genero");
+      const response = await fetch(`${BASE_URL}/genero`);
       if (!response.ok) {
         throw new Error("Erro ao buscar gêneros");
       }
@@ -120,7 +120,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
         return null;
       }
 
-      const response = await fetch("https://mentechbackend.onrender.com/paciente", {
+      const response = await fetch(`${BASE_URL}/paciente`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -173,7 +173,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
           dt_nascimento: formatarDataParaMySQL(responsavel.dt_nascimento),
         };
 
-        const response = await fetch("https://mentechbackend.onrender.com/responsavel", {
+        const response = await fetch(`${BASE_URL}/responsavel`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -233,7 +233,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
       }
 
       for (const tel of telefonesParaCadastrar) {
-        const response = await fetch("https://mentechbackend.onrender.com/telefone", {
+        const response = await fetch(`${BASE_URL}/telefone`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -301,7 +301,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
       }
 
       for (const endereco of enderecosParaCadastrar) {
-        const response = await fetch("https://mentechbackend.onrender.com/endereco", {
+        const response = await fetch(`${BASE_URL}/endereco`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

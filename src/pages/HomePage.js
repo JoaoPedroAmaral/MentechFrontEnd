@@ -10,7 +10,7 @@ import SegundoAcesso from "./AcessoPage/SegundoAcesso.js";
 
 import "../css/OrganizeCSS/sweetalert-custom.css";
 
-import { useGlobal } from "../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../global/GlobalContext.js";
 import { LOADING_SCREEN } from "../InitialPage.js";
 
 const HomePage = ({ onLogout, userData }) => {
@@ -84,7 +84,7 @@ const HomePage = ({ onLogout, userData }) => {
   const verificarSeTemPaciente = async (id) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/paciente/por_usuario/${id}`
+        `${BASE_URL}/paciente/por_usuario/${id}`
       );
       const data = await response.json();
 
@@ -103,7 +103,7 @@ const HomePage = ({ onLogout, userData }) => {
   const carregarEnderecoPaciente = async (pacienteID) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/endereco/${pacienteID}`
+        `${BASE_URL}/endereco/${pacienteID}`
       );
       const data = await response.json();
       if (data) {
@@ -117,7 +117,7 @@ const HomePage = ({ onLogout, userData }) => {
   const carregarResponsaveis = async (pacienteID) => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/responsavel/${pacienteID}`
+        `${BASE_URL}/responsavel/${pacienteID}`
       );
       const data = await response.json();
       if (data) {
@@ -134,11 +134,11 @@ const HomePage = ({ onLogout, userData }) => {
   const carregarTelefonePaciente = async (pacienteID, responsavelID) => {
     try {
       const responsePaciente = await fetch(
-        `https://mentechbackend.onrender.com/telefone/por_paciente/${pacienteID}`
+        `${BASE_URL}/telefone/por_paciente/${pacienteID}`
       );
 
       const responseResponsavel = await fetch(
-        `https://mentechbackend.onrender.com/telefone/por_responsavel/${responsavelID}`
+        `${BASE_URL}/telefone/por_responsavel/${responsavelID}`
       );
 
       const dataPaciente = responsePaciente.ok
@@ -165,7 +165,7 @@ const HomePage = ({ onLogout, userData }) => {
       localStorage.setItem("ultimoPaciente", pacienteID);
 
       const response = await fetch(
-        `https://mentechbackend.onrender.com/paciente/${pacienteID}`
+        `${BASE_URL}/paciente/${pacienteID}`
       );
       const data = await response.json();
       setDadosPaciente(data);

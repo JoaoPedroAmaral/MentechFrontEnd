@@ -8,28 +8,100 @@ import {
   Button,
   message,
   Badge,
+  List,
+  Card,
 } from "antd";
 import dayjs from "dayjs";
+import { BASE_URL } from "../../global/GlobalContext";
 
 const { Option } = Select;
 
-const ManterAgenda = ({ cd_paciente }) => {
+const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetalhesModalOpen, setIsDetalhesModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [horarioInicio, setHorarioInicio] = useState(null);
+  const [horario_fim, setHorario_fim] = useState(null);
   const [isRepetir, setIsRepetir] = useState(false);
   const [prazo, setPrazo] = useState("");
   const [feriados, setFeriados] = useState({});
   const [anosBuscados, setAnosBuscados] = useState(new Set());
+  const [agendamentos, setAgendamentos] = useState([]);
+  const [agendamentosDoDia, setAgendamentosDoDia] = useState([]);
+  const [pacientes, setPacientes] = useState({});
+
+  // Buscar dados do paciente
+  const fetchPaciente = async (cd_paciente) => {
+    if (pacientes[cd_paciente]) {
+      return pacientes[cd_paciente];
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/paciente`);
+      if (!response.ok) {
+        throw new Error("Erro ao buscar dados do paciente");
+      }
+      const data = await response.json();
+      setPacientes((prev) => ({ ...prev, [cd_paciente]: data }));
+      return data;
+    } catch (error) {
+      console.error("Erro ao buscar paciente:", error);
+      return null;
+    }
+  };
+
+  // Buscar agendamentos do usuário
+  const fetchAgendamentos = async () => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/agendamento/por_usuario/${cd_usuario}`
+      );
+      if (!response.ok) {
+        throw new Error("Erro ao buscar agendamentos");
+      }
+      const data = await response.json();
+      setAgendamentos(data);
+
+      // Buscar dados de todos os pacientes dos agendamentos
+      const pacientesIds = [...new Set(data.map((ag) => ag.cd_paciente))];
+      pacientesIds.forEach((id) => fetchPaciente(id));
+    } catch (error) {
+      console.error("Erro ao buscar agendamentos:", error);
+      message.error("Não foi possível carregar os agendamentos.");
+    }
+  };
+
+  useEffect(() => {
+    if (cd_usuario) {
+      fetchAgendamentos();
+    }
+  }, [cd_usuario]);
 
   const onSelect = (date, { source }) => {
     if (source === "date") {
       setSelectedDate(date);
-      setIsModalOpen(true);
-      setHorarioInicio(null);
-      setIsRepetir(false);
-      setPrazo("");
+      
+      // Buscar agendamentos do dia selecionado
+      const dataString = date.format("YYYY-MM-DD");
+      const agendamentosEncontrados = agendamentos.filter(
+        (ag) => ag.dt_agendamento === dataString
+      );
+
+      if (agendamentosEncontrados.length > 0) {
+        setAgendamentosDoDia(agendamentosEncontrados);
+        setIsDetalhesModalOpen(true);
+      } else {
+        abrirModalCadastro();
+      }
     }
+  };
+
+  const abrirModalCadastro = () => {
+    setIsModalOpen(true);
+    setHorarioInicio(null);
+    setHorario_fim(null);
+    setIsRepetir(false);
+    setPrazo("");
   };
 
   const fetchFeriados = async (ano) => {
@@ -65,36 +137,58 @@ const ManterAgenda = ({ cd_paciente }) => {
 
   const handlePanelChange = (value, mode) => {
     const ano = value.year();
-    fetchFeriados(ano); // Busca feriados do ano selecionado
+    fetchFeriados(ano);
   };
 
   const dateCellRender = (value) => {
     const dataString = value.format("YYYY-MM-DD");
     const nomeFeriado = feriados[dataString];
+    
+    // Contar agendamentos do dia
+    const agendamentosDia = agendamentos.filter(
+      (ag) => ag.dt_agendamento === dataString
+    );
 
-    if (nomeFeriado) {
-      return (
-        <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+    return (
+      <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+        {nomeFeriado && (
           <li>
             <Badge status="success" text={nomeFeriado} />
           </li>
-        </ul>
-      );
-    }
-
-    return null; 
+        )}
+        {agendamentosDia.length > 0 && (
+          <li>
+            <Badge
+              status="processing"
+              text={`${agendamentosDia.length} agendamento(s)`}
+            />
+          </li>
+        )}
+      </ul>
+    );
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setHorarioInicio(null);
+    setHorario_fim(null);
     setIsRepetir(false);
     setPrazo("");
   };
 
-  const handleSubmit = () => {
+  const handleDetalhesCancel = () => {
+    setIsDetalhesModalOpen(false);
+    setAgendamentosDoDia([]);
+  };
+
+  const handleSubmit = async () => {
     if (!horarioInicio) {
       message.error("Por favor, selecione o horário de início");
+      return;
+    }
+
+    if (!horario_fim) {
+      message.error("Por favor, selecione o horário de fim");
       return;
     }
 
@@ -104,31 +198,73 @@ const ManterAgenda = ({ cd_paciente }) => {
     }
 
     const payload = {
-      dia: selectedDate.format("YYYY-MM-DD"), 
-      horario_inicio: horarioInicio.format("HH:mm"), 
-      repetir: isRepetir, 
+      cd_usuario: cd_usuario,
+      cd_paciente: Number(cd_paciente),
+      dt_agendamento: selectedDate.format("YYYY-MM-DD"),
+      hora_inicio: horarioInicio.format("HH:mm"),
+      hora_fim: horario_fim.format("HH:mm"),
       prazo: isRepetir && prazo ? prazo : "",
     };
 
-    console.log("Payload a ser enviado:", payload);
+    try {
+      const response = await fetch(`${BASE_URL}/agendamento`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    // Exemplo de como enviar para API:
-    // fetch('https://sua-api.com/programacao', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload)
-    // }).then(response => response.json())
-    //   .then(data => console.log(data));
+      const data = await response.json();
 
-    message.success("Programação salva com sucesso!");
-    handleCancel();
+      if (response.ok) {
+        message.success("Agendamento salvo com sucesso!");
+        handleCancel();
+        handleDetalhesCancel();
+        fetchAgendamentos(); // Recarregar agendamentos
+      } else {
+        message.error(data.MSG200 || data.MSG260 || data.MSG248 || data.MSG249 || "Erro ao salvar agendamento");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar agendamento:", error);
+      message.error("Erro ao salvar agendamento");
+    }
   };
 
   const handleCheckboxChange = (e) => {
     const checked = e.target.checked;
     setIsRepetir(checked);
     if (!checked) {
-      setPrazo(""); 
+      setPrazo("");
+    }
+  };
+
+  const handleDeletarAgendamento = async (cd_agendamento) => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/agendamento/${cd_agendamento}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        message.success("Agendamento deletado com sucesso!");
+        fetchAgendamentos();
+        
+        // Atualizar lista do modal
+        const novaLista = agendamentosDoDia.filter(
+          (ag) => ag.cd_agendamento !== cd_agendamento
+        );
+        setAgendamentosDoDia(novaLista);
+        
+        if (novaLista.length === 0) {
+          handleDetalhesCancel();
+        }
+      } else {
+        message.error("Erro ao deletar agendamento");
+      }
+    } catch (error) {
+      console.error("Erro ao deletar agendamento:", error);
+      message.error("Erro ao deletar agendamento");
     }
   };
 
@@ -150,7 +286,6 @@ const ManterAgenda = ({ cd_paciente }) => {
         </h2>
       </div>
 
-      {/* Calendário */}
       <div
         style={{
           maxHeight: "78vh",
@@ -170,25 +305,123 @@ const ManterAgenda = ({ cd_paciente }) => {
         />
       </div>
 
-      {/* Modal com Formulário */}
+      {/* Modal de Detalhes dos Agendamentos */}
       <Modal
-        title={`Programação para ${
+        title={`Agendamentos de ${
+          selectedDate ? selectedDate.format("DD/MM/YYYY") : ""
+        }`}
+        open={isDetalhesModalOpen}
+        onCancel={handleDetalhesCancel}
+        footer={[
+          <Button
+            className="BTNPurple"
+            style={{
+              height: "30px",
+              width: "150px",
+              fontSize: "12px",
+              margin: "10px 5px",
+            }}
+            key="add"
+            type="primary"
+            onClick={() => {
+              setIsDetalhesModalOpen(false);
+              abrirModalCadastro();
+            }}
+          >
+            Adicionar Horário
+          </Button>,
+          <Button
+            className="BTNPurple"
+            style={{
+              height: "30px",
+              width: "120px",
+              fontSize: "12px",
+              margin: "10px 5px",
+            }}
+            key="close"
+            onClick={handleDetalhesCancel}
+          >
+            Fechar
+          </Button>,
+        ]}
+        width={600}
+      >
+        <List
+          dataSource={agendamentosDoDia}
+          renderItem={(item) => (
+            <Card
+              style={{
+                marginBottom: "10px",
+                backgroundColor: "#f5f5f5",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <p style={{ margin: 0, fontWeight: "bold" }}>
+                    Horário: {item.hora_inicio} - {item.hora_fim}
+                  </p>
+                  <p style={{ margin: 0, fontSize: "12px", color: "#666" }}>
+                    Paciente: {pacientes[item.cd_paciente]?.nm_paciente || `ID: ${item.cd_paciente}`}
+                  </p>
+                </div>
+                <Button
+                  danger
+                  size="small"
+                  onClick={() => handleDeletarAgendamento(item.cd_agendamento)}
+                >
+                  🗑️ Deletar
+                </Button>
+              </div>
+            </Card>
+          )}
+        />
+      </Modal>
+
+      {/* Modal de Cadastro */}
+      <Modal
+        title={`Novo Agendamento para ${
           selectedDate ? selectedDate.format("DD/MM/YYYY") : ""
         }`}
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button
+            className="BTNPurple"
+            style={{
+              height: "30px",
+              width: "120px",
+              fontSize: "12px",
+              margin: "10px 5px",
+            }}
+            key="cancel"
+            onClick={handleCancel}
+          >
             Cancelar
           </Button>,
-          <Button key="submit" type="primary" onClick={handleSubmit}>
+          <Button
+            className="BTNPurple"
+            style={{
+              height: "30px",
+              width: "120px",
+              fontSize: "12px",
+              margin: "10px 5px",
+            }}
+            key="submit"
+            type="primary"
+            onClick={handleSubmit}
+          >
             Salvar
           </Button>,
         ]}
         width={500}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {/* Campo de Horário de Início */}
           <div>
             <label
               style={{ display: "block", marginBottom: "8px", fontWeight: 500 }}
@@ -196,6 +429,7 @@ const ManterAgenda = ({ cd_paciente }) => {
               Horário de Início <span style={{ color: "red" }}>*</span>
             </label>
             <TimePicker
+              className="F_NomeAreaTranstorno"
               value={horarioInicio}
               onChange={setHorarioInicio}
               format="HH:mm"
@@ -204,15 +438,29 @@ const ManterAgenda = ({ cd_paciente }) => {
               minuteStep={15}
             />
           </div>
+          <div>
+            <label
+              style={{ display: "block", marginBottom: "8px", fontWeight: 500 }}
+            >
+              Horário de Fim <span style={{ color: "red" }}>*</span>
+            </label>
+            <TimePicker
+              className="F_NomeAreaTranstorno"
+              value={horario_fim}
+              onChange={setHorario_fim}
+              format="HH:mm"
+              placeholder="Selecione o horário"
+              style={{ width: "100%" }}
+              minuteStep={15}
+            />
+          </div>
 
-          {/* Checkbox de Repetir */}
           <div>
             <Checkbox checked={isRepetir} onChange={handleCheckboxChange}>
-              Repetir programação
+              Repetir dia da semana
             </Checkbox>
           </div>
 
-          {/* Select de Prazo (visível apenas se checkbox marcado) */}
           {isRepetir && (
             <div>
               <label
@@ -225,10 +473,11 @@ const ManterAgenda = ({ cd_paciente }) => {
                 Prazo de Repetição <span style={{ color: "red" }}>*</span>
               </label>
               <Select
+                className="F_NomeAreaTranstorno select-cinza"
                 value={prazo || undefined}
                 onChange={setPrazo}
                 placeholder="Selecione o prazo"
-                style={{ width: "100%" }}
+                style={{ width: "100%", padding: "0%" }}
               >
                 <Option value="1_mes">1 mês</Option>
                 <Option value="6_meses">6 meses</Option>
@@ -236,33 +485,6 @@ const ManterAgenda = ({ cd_paciente }) => {
               </Select>
             </div>
           )}
-
-          {/* Preview do Payload (para teste) */}
-          <div
-            style={{
-              marginTop: "24px",
-              padding: "12px",
-              background: "#f5f5f5",
-              borderRadius: "4px",
-              fontSize: "12px",
-            }}
-          >
-            <strong>Preview do Payload:</strong>
-            <pre style={{ marginTop: "8px", fontSize: "11px", margin: 0 }}>
-              {JSON.stringify(
-                {
-                  dia: selectedDate ? selectedDate.format("YYYY-MM-DD") : "",
-                  horario_inicio: horarioInicio
-                    ? horarioInicio.format("HH:mm")
-                    : "",
-                  repetir: isRepetir,
-                  prazo: isRepetir && prazo ? prazo : "",
-                },
-                null,
-                2
-              )}
-            </pre>
-          </div>
         </div>
       </Modal>
     </div>

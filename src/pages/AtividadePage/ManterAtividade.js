@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useGlobal } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 
 const ManterAtividade = ({ atividade, metaID }) => {
   const { setAtividadeModificada, atividadeModificada } = useGlobal();
@@ -28,7 +28,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const handleSalvarNovaAtividade = async () => {
     try {
-      const response = await fetch("https://mentechbackend.onrender.com/atividade", {
+      const response = await fetch(`${BASE_URL}/atividade`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,7 +53,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const deleteAtividade = async (id) => {
     try {
-      const response = await fetch(`https://mentechbackend.onrender.com/atividade/${id}`, {
+      const response = await fetch(`${BASE_URL}/atividade/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const marcarConcluido = async (id) => {
     try {
-      await fetch(`https://mentechbackend.onrender.com/atividade/inativar/${id}`, {
+      await fetch(`${BASE_URL}/atividade/inativar/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       });
@@ -81,7 +81,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const reabrirAtividade = async (id) => {
     try {
-      await fetch(`https://mentechbackend.onrender.com/atividade/inativar/${id}`, {
+      await fetch(`${BASE_URL}/atividade/inativar/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       });
@@ -105,7 +105,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
     };
 
     try {
-      await fetch(`https://mentechbackend.onrender.com/atividade/${id}`, {
+      await fetch(`${BASE_URL}/atividade/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

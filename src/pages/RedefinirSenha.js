@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import EyeOpen from "../Images/EyeOpen.png";
 import EyeClose from "../Images/eyeClose.png";
 import { useParams } from "react-router-dom";
+import { BASE_URL } from "../global/GlobalContext.js";
 
 function RedefinirSenha() {
   const [novaSenha, setNovaSenha] = useState("");
@@ -22,7 +23,7 @@ function RedefinirSenha() {
   const redefinir = async () => {
     try {
       const response = await fetch(
-        `https://mentechbackend.onrender.com/alterar_senha/${CD_ALTERAR_SENHA}`,
+        `${BASE_URL}/alterar_senha/${CD_ALTERAR_SENHA}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
