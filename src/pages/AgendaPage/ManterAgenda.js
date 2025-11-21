@@ -201,8 +201,8 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
       cd_usuario: cd_usuario,
       cd_paciente: Number(cd_paciente),
       dt_agendamento: selectedDate.format("YYYY-MM-DD"),
-      hora_inicio: horarioInicio.format("HH:mm"),
-      hora_fim: horario_fim.format("HH:mm"),
+      hora_inicio: horarioInicio.format("HH:mm") + ":00",
+      hora_fim: horario_fim.format("HH:mm") + ":00",
       prazo: isRepetir && prazo ? prazo : "",
     };
 

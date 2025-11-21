@@ -6,7 +6,6 @@ const ManterMedicamentos = ({ cd_paciente }) => {
   const [medicamentosData, setMedicamentosData] = useState({
     nm_medicamento: "",
     dose: "",
-    dias_ministracao: "",
     dosagem: "",
     forma_farmaceutica: "",
     principio_ativo: "",
@@ -105,7 +104,7 @@ const ManterMedicamentos = ({ cd_paciente }) => {
                   className="FlexCenterBetween actions "
                   style={{ width: "90%" }}
                 >
-                  <p>{`${medicamento.nm_medicamento} (${medicamento.dose}) - Durante ${medicamento.dias_ministracao} dias`}</p>
+                  <p>{`${medicamento.nm_medicamento} (${medicamento.dose})`}</p>
                   <button
                     className="btn-delete"
                     onClick={() =>
@@ -161,26 +160,6 @@ const ManterMedicamentos = ({ cd_paciente }) => {
             value={medicamentosData.dose}
             onChange={(e) =>
               setMedicamentosData({ ...medicamentosData, dose: e.target.value, dosagem: e.target.value })
-            }
-          />
-        </div>
-        <div
-          className="FlexCenterBetween F_CriarTranstornoInputObrigatorio "
-          style={{ marginTop: "10px" }}
-        >
-          <p>Dias:</p>
-          <input
-            type="text"
-            maxLength={3}
-            placeholder="ex: 10"
-            className="F_NomeAreaTranstorno"
-            style={{ width: "250px" }}
-            value={medicamentosData.dias_ministracao}
-            onChange={(e) =>
-              setMedicamentosData({
-                ...medicamentosData,
-                dias_ministracao: e.target.value,
-              })
             }
           />
         </div>
@@ -253,7 +232,6 @@ const ManterMedicamentos = ({ cd_paciente }) => {
             setMedicamentosData({
               nm_medicamento: "",
               dose: "",
-              dias_ministracao: "",
               dosagem: "",
               forma_farmaceutica: "",
               principio_ativo: "",
