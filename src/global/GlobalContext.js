@@ -1,7 +1,7 @@
 import { createContext, useState, useContext } from "react";
 
 const GlobalContext = createContext();
-export const BASE_URL = "http://mentechbackend.onrender.com";
+export const BASE_URL = "https://mentechbackend.onrender.com";
 export const GlobalProvider = ({ children }) => {
   const [criteriosModificados, setCriteriosModificados] = useState(false);
   const [pacientesModificados, setPacientesModificados] = useState(false);
