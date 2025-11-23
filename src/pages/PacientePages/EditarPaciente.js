@@ -4,7 +4,11 @@ import iconTrash from "../../Images/Trash.png";
 import { showAlert } from "../../utils/alerts.js";
 import TelefoneGrid from "./pacienteComponents/TelefoneGrid.js";
 import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
-import {carregarMensagemNegativa} from "../../InitialPage.js";
+import { carregarMensagemNegativa } from "../../InitialPage.js";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
 const EditarPaciente = ({
   dadosPaciente,
@@ -34,7 +38,8 @@ const EditarPaciente = ({
     numero: "",
   });
   const carregouPaciente = useRef(false);
-  const { pacienteEditado, setPacientesModificados, setPacienteEditado } = useGlobal();
+  const { pacienteEditado, setPacientesModificados, setPacienteEditado } =
+    useGlobal();
 
   useEffect(() => {
     if (dadosPaciente) {
@@ -112,7 +117,7 @@ const EditarPaciente = ({
     telefoneDados,
     enderecoPaciente,
     responsaveisDados,
-    pacienteEditado
+    pacienteEditado,
   ]);
 
   useEffect(() => {
@@ -131,7 +136,6 @@ const EditarPaciente = ({
       }
     }
   }, [paciente.nm_genero, generos]);
-
 
   const handleChangeFormulario = (e) => {
     const { name, value } = e.target;
@@ -237,9 +241,7 @@ const EditarPaciente = ({
   };
   const alterarResponsavel = async (pacienteID) => {
     try {
-      const resposta = await fetch(
-        `${BASE_URL}/responsavel/${pacienteID}`
-      );
+      const resposta = await fetch(`${BASE_URL}/responsavel/${pacienteID}`);
 
       let dados;
 
@@ -316,12 +318,11 @@ const EditarPaciente = ({
     try {
       const telefonesParaCadastrar = [];
 
-      // 🔁 Etapa 1: apagar telefones existentes (do paciente e dos responsáveis)
+
       await fetch(`${BASE_URL}/telefone/${pacienteID}`, {
         method: "DELETE",
       });
 
-      // 👦 Telefones do paciente
       telefonesPaciente.forEach((tel) => {
         telefonesParaCadastrar.push({
           cd_paciente: pacienteID,
@@ -332,7 +333,6 @@ const EditarPaciente = ({
         });
       });
 
-      // 👨‍👩‍👧 Telefones dos responsáveis
       telefonesResponsavel.forEach((listaTel, index) => {
         listaTel.forEach((tel) => {
           telefonesParaCadastrar.push({
@@ -378,9 +378,7 @@ const EditarPaciente = ({
 
   const alterarEndereco = async (pacienteID = "", responsavelIDs = []) => {
     try {
-      const resposta = await fetch(
-        `${BASE_URL}/endereco/${pacienteID}`
-      );
+      const resposta = await fetch(`${BASE_URL}/endereco/${pacienteID}`);
       if (!resposta.ok) throw new Error("Erro ao buscar responsa");
       const dados = await resposta.json();
 
@@ -461,7 +459,11 @@ const EditarPaciente = ({
       return false;
     }
   };
-
+  const formatarDataParaExibir = (dataISO) => {
+    if (!dataISO) return "--";
+    const [ano, mes, dia] = dataISO.split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
   const handleSubmitEditPaciente = async () => {
     const pacienteId = await alterarPaciente();
     if (pacienteId) {
@@ -579,20 +581,25 @@ const EditarPaciente = ({
                   justifyContent: "center",
                 }}
               >
-                <input
-                  className="F_NomeAreaTranstorno"
-                  placeholder="Ex: XX/XX/XXXX"
-                  type="Date"
-                  name="dt_nasc"
-                  value={paciente.dt_nascimento || ""}
-                  onChange={(e) =>
+                <DatePicker
+                  className="F_NomeAreaTranstorno datepicker-sem-foco"
+                  placeholder="dd/mm/yyyy"
+                  format="DD/MM/YYYY"
+                  name="dt_nascimento"
+                  value={
+                    paciente.dt_nascimento
+                      ? dayjs(formatarDataParaExibir(paciente.dt_nascimento), "DD/MM/YYYY")
+                      : null
+                  }
+                  onChange={(date, dateString) => {
                     setPaciente({
                       ...paciente,
-                      dt_nasc: e.target.value,
-                    })
-                  }
-                  style={{ width: "120px", color: "#000" }}
-                ></input>
+                      dt_nascimento: dateString
+                    });
+                  }}
+                  style={{ width: "140px" }}
+                  maxLength={10}
+                />
               </div>
             </div>
           </div>
@@ -616,7 +623,7 @@ const EditarPaciente = ({
                 className="F_NomeAreaTranstorno"
                 name="cd_genero"
                 style={{ width: "180px" }}
-                value={paciente.cd_genero || 1}
+                value={paciente.cd_genero || ""}
                 onChange={handleChangeFormulario}
               >
                 <option value="" disabled>
@@ -648,11 +655,11 @@ const EditarPaciente = ({
               }}
             >
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p style={{ textAlign: "start" }}>cep*</p>
+                <p style={{ textAlign: "start" }}>CEP*</p>
                 <input
                   className="F_NomeAreaTranstorno"
                   placeholder="Ex: 72871-581"
-                  name="cep"
+                  name="CEP"
                   value={enderecos?.cep || ""}
                   onChange={(e) =>
                     setEnderecos({
@@ -666,7 +673,7 @@ const EditarPaciente = ({
               </div>
 
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p style={{ textAlign: "start" }}>uf</p>
+                <p style={{ textAlign: "start" }}>UF</p>
                 <input
                   className="F_GravidadeAreaTranstorno"
                   placeholder="Ex: DF"
@@ -767,7 +774,6 @@ const EditarPaciente = ({
                   style={{ width: "440px" }}
                   maxLength={90}
                 ></input>
-                
               </div>
             </div>
           </div>
@@ -816,21 +822,26 @@ const EditarPaciente = ({
                       style={{ marginLeft: "50px" }}
                     >
                       <p style={{ textAlign: "start" }}>Data de nascimento*</p>
-                      <input
-                        className="F_GravidadeAreaTranstorno"
-                        placeholder="Ex: XX/XX/XXXX"
-                        type="Date"
+                      <DatePicker
+                        className="F_NomeAreaTranstorno datepicker-sem-foco"
+                        placeholder="dd/mm/yyyy"
+                        format="DD/MM/YYYY"
                         name="dt_nascimento"
-                        value={item.dt_nascimento}
-                        onChange={(e) => {
+                        value={
+                          item.dt_nascimento
+                            ? dayjs(
+                                formatarDataParaExibir(item.dt_nascimento),
+                                "DD/MM/YYYY"
+                              )
+                            : null
+                        }
+                        onChange={(date, dateString) => {
                           const novosResponsaveis = [...responsavel];
-                          novosResponsaveis[index].dt_nascimento =
-                            e.target.value;
+                          novosResponsaveis[index].dt_nascimento = dateString;
                           setResponsavel(novosResponsaveis);
                         }}
                         style={{ width: "120px", color: "#000" }}
-
-                      ></input>
+                      />
                     </div>
                   </div>
                   <div
@@ -900,7 +911,7 @@ const EditarPaciente = ({
           onClick={async (e) => {
             e.preventDefault();
             await handleSubmitEditPaciente();
-            setPacienteEditado(prev => !prev)
+            setPacienteEditado((prev) => !prev);
           }}
         >
           Editar Paciente

@@ -137,20 +137,12 @@ const HomePage = ({ onLogout, userData }) => {
         `${BASE_URL}/telefone/por_paciente/${pacienteID}`
       );
 
-      const responseResponsavel = await fetch(
-        `${BASE_URL}/telefone/por_responsavel/${responsavelID}`
-      );
-
       const dataPaciente = responsePaciente.ok
         ? await responsePaciente.json()
         : [];
-      const dataResponsavel = responseResponsavel.ok
-        ? await responseResponsavel.json()
-        : [];
 
       const telefonesUnificados = [
-        ...(Array.isArray(dataPaciente) ? dataPaciente : []),
-        ...(Array.isArray(dataResponsavel) ? dataResponsavel : []),
+        ...(Array.isArray(dataPaciente) ? dataPaciente : [])
       ];
 
       setTelefoneDados(telefonesUnificados);

@@ -39,11 +39,11 @@ const SegundoAcesso = ({
 }) => {
   const [statusAtivo, setStatusAtivo] = useState(true);
   const [listName, setListName] = useState("");
-  const { setPacienteEditado, setMetasModificadas } = useGlobal();
+  const { setPacienteEditado, setMetasModificadas, setPacientesModificados } = useGlobal();
 
   useEffect(() => {
     if (dadosPaciente?.ativo) {
-      setStatusAtivo(dadosPaciente.ativo !== "S");
+      setStatusAtivo(dadosPaciente.ativo !== "S" && dadosPaciente.ativo !== "s");
       toggleActiveStatusArea(!true);
       if (dadosPaciente?.ativo === "N") {
         toggleActiveStatusArea(true);
@@ -244,6 +244,7 @@ const SegundoAcesso = ({
                     setStatusAtivo(isChecked);
                     PUTStatusAtivo(pacienteID);
                     toggleActiveStatusArea(isChecked);
+                    setPacientesModificados((prev) => !prev);
                     const div = document.getElementById("DivLists");
 
                     if (!div.classList.contains("Hidden") && isChecked) {

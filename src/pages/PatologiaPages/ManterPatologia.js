@@ -211,7 +211,7 @@ const ManterPatologia = ({ cd_paciente }) => {
                       </div>
 
                       <div className="F_CriarTranstornoInputObrigatorio TextCenter">
-                        <p>cid11*</p>
+                        <p>CID11*</p>
                         <input
                           className="F_CIDAreaTranstorno"
                           name="cid11"

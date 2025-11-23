@@ -47,7 +47,9 @@ export const carregarMensagemNegativa = async (nomeMensagem) => {
 
 const InitialPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [animate, setAnimate] = useState(false);
+  const [animateConfirm, setAnimateConfirm] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [formLogin, setFormLogin] = useState({
     email: "",
@@ -57,6 +59,7 @@ const InitialPage = () => {
     nm_usuario: "",
     email: "",
     senha: "",
+    confirmarSenha: "",
     cip: "",
   });
   const [userData, setUserData] = useState(null);
@@ -108,6 +111,27 @@ const InitialPage = () => {
     const limpo = cip.replace(/\D/g, "");
     return limpo.replace(/(\d{2})(\d{5})/, "$1/$2");
   }
+
+  const validarSenha = (senha, confirmarSenha) => {
+    const erros = [];
+
+    if (senha.length < 6) {
+      erros.push("A senha deve ter no mínimo 6 caracteres");
+    }else if (!/[A-Z]/.test(senha)) {
+      erros.push("A senha deve conter pelo menos uma letra maiúscula");
+    }else if (!/[a-z]/.test(senha)) {
+      erros.push("A senha deve conter pelo menos uma letra minúscula");
+    }else if (!/[0-9]/.test(senha)) {
+      erros.push("A senha deve conter pelo menos um número");
+    }else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha)) {
+      erros.push("A senha deve conter pelo menos um caractere especial");
+    }else if (senha !== confirmarSenha) {
+      erros.push("As senhas não coincidem");
+    }
+
+    return erros;
+  };
+
   const handleLogout = () => {
     setIsLoggedIn(false);
 
@@ -235,27 +259,44 @@ const InitialPage = () => {
         !formRegister.email ||
         !formRegister.cip ||
         !formRegister.nm_usuario ||
-        !formRegister.senha
+        !formRegister.senha ||
+        !formRegister.confirmarSenha
       ) {
-        await showAlert.error("CAMPOS VAZIOS");
+        await showAlert.error("Todos os campos são obrigatórios!");
         return;
       }
+
+      // Validar senha
+      const errosSenha = validarSenha(formRegister.senha, formRegister.confirmarSenha);
+      if (errosSenha.length > 0) {
+        await showAlert.error(errosSenha.join("\n"));
+        return;
+      }
+
+      // Verificar se as senhas coincidem
+      if (formRegister.senha !== formRegister.confirmarSenha) {
+        await showAlert.error("As senhas não coincidem!");
+        return;
+      }
+
       for (let i = 0; i < data.length; i++) {
         if (
           data[i][4] === formRegister.cip ||
           data[i][3] === formRegister.email
         ) {
-          await showAlert.error("REGISTRO EXISTENTE");
+          await showAlert.error("E-mail ou CIP já cadastrado!");
           return;
         }
       }
+
+      const { confirmarSenha, ...dadosRegistro } = formRegister;
 
       const response = await fetch(`${BASE_URL}/usuario`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formRegister),
+        body: JSON.stringify(dadosRegistro),
       });
 
       const rawResponse = await response.text();
@@ -263,6 +304,7 @@ const InitialPage = () => {
       if (response.ok) {
         try {
           const data = JSON.parse(rawResponse);
+          await showAlert.success("Usuário registrado com sucesso!");
         } catch (e) {
           console.error("Resposta não é JSON:", rawResponse);
           throw new Error("Resposta da API não é JSON válido");
@@ -294,6 +336,13 @@ const InitialPage = () => {
     setShowPassword((prev) => !prev);
 
     setTimeout(() => setAnimate(false), 300);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setAnimateConfirm(true);
+    setShowConfirmPassword((prev) => !prev);
+
+    setTimeout(() => setAnimateConfirm(false), 300);
   };
 
   const enviarSolicitacao = async () => {
@@ -482,8 +531,8 @@ const InitialPage = () => {
               )}
               {stateLogin === "R" && (
                 <div
-                  className="BoxLoginPage"
-                  style={{ height: "50vh", paddingTop: "4vh" }}
+                  className="BoxLoginPage ScrollBar"
+                  style={{ height: "60vh", paddingTop: "3vh", overflowY: "auto" }}
                 >
                   <div style={{ margin: "10px 50px" }}>
                     <p className="TextBold">Nome</p>
@@ -560,9 +609,38 @@ const InitialPage = () => {
                       </button>
                     </div>
                   </div>
+                  <div style={{ margin: "10px 50px" }}>
+                    <p className="TextBold">Confirmar Senha</p>
+                    <div className="FlexCenterMid">
+                      <input
+                        maxLength={90}
+                        value={formRegister.confirmarSenha}
+                        onChange={(e) =>
+                          setFormRegister({
+                            ...formRegister,
+                            confirmarSenha: e.target.value,
+                          })
+                        }
+                        type={showConfirmPassword ? "text" : "password"}
+                        className="InputLogin"
+                        style={{ width: 85 + "%" }}
+                      />
+                      <button
+                        className="VerSenha"
+                        onClick={toggleConfirmPasswordVisibility}
+                      >
+                        <img
+                          src={showConfirmPassword ? EyeClose : EyeOpen}
+                          alt="Toggle visibility"
+                          className={animateConfirm ? "LG_pisca" : ""}
+                          style={{ width: "25px", height: "25px" }}
+                        />
+                      </button>
+                    </div>
+                  </div>
                   <div
                     className="TextCenter"
-                    style={{ width: "100%", fontWeight: "500" }}
+                    style={{ width: "100%", fontWeight: "500", marginTop: "20px" }}
                   >
                     <div>
                       <button className="BTNPurple" onClick={registrarUsuario}>

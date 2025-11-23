@@ -1090,8 +1090,8 @@ input[type="checkbox"]:checked + .simple-switch::after {
   color: #333;
 }
 
-.select-cinza {
-  color: #959a90; 
+.select-cinza:checked {
+  color: #959a90;
 }
 .select-cinza:not(:has(option:checked:disabled)) {
   color: black;
@@ -1163,4 +1163,9 @@ input[type="checkbox"]:checked + .simple-switch::after {
 .ant-modal-title{
   background-color: #f5f5f5 !important ;
   text-align: center !important;
+}
+.ant-input-data-count {
+  position: absolute !important;
+  bottom: 0 !important;
+  right: 5px !important;
 }

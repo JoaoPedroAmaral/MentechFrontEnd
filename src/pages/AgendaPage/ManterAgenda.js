@@ -42,7 +42,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
         throw new Error("Erro ao buscar dados do paciente");
       }
       const data = await response.json();
-      setPacientes((prev) => ({ ...prev, [cd_paciente]: data }));
+      setPacientes(data);
       return data;
     } catch (error) {
       console.error("Erro ao buscar paciente:", error);
@@ -73,6 +73,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
 
   useEffect(() => {
     if (cd_usuario) {
+      fetchPaciente(cd_paciente);
       fetchAgendamentos();
     }
   }, [cd_usuario]);
@@ -367,15 +368,26 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
                     Horário: {item.hora_inicio} - {item.hora_fim}
                   </p>
                   <p style={{ margin: 0, fontSize: "12px", color: "#666" }}>
-                    Paciente: {pacientes[item.cd_paciente]?.nm_paciente || `ID: ${item.cd_paciente}`}
+                    Paciente: {pacientes[item.cd_paciente]?.nm_paciente || "Carregando..."}
                   </p>
                 </div>
+                
+              </div>
+              <div style={{marginTop:"10px"}}>
                 <Button
                   danger
                   size="small"
                   onClick={() => handleDeletarAgendamento(item.cd_agendamento)}
+                  style={{marginRight:"10px"}}
                 >
-                  🗑️ Deletar
+                  🗑️ Desmarcar
+                </Button>
+                 <Button
+                  danger
+                  size="small"
+                  onClick={() => handleDeletarAgendamento(item.cd_agendamento)}
+                >
+                  🗑️ Desmarcar Sequencialmente
                 </Button>
               </div>
             </Card>

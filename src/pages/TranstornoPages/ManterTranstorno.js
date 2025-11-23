@@ -584,7 +584,7 @@ const ManterTranstorno = () => {
                 ></input>
               </div>
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p>cid11*</p>
+                <p>CID11*</p>
                 <input
                   className="F_CIDAreaTranstorno"
                   name="cid11"
@@ -833,7 +833,7 @@ const ManterTranstorno = () => {
                       />
                     </div>
                     <div>
-                      <p>cid11</p>
+                      <p>CID11</p>
                       <input
                         className="F_CID11SubtipoTranstorno"
                         name="cid11"
@@ -988,7 +988,7 @@ const ManterTranstorno = () => {
                       />
                       <div className="F_EditGrid">
                         <div>
-                          <strong>cid11:</strong>
+                          <strong>CID11:</strong>
                           <input
                             className="F_EditInput"
                             value={editingTranstorno.cid11}
@@ -1077,7 +1077,7 @@ const ManterTranstorno = () => {
                         {transtornoSelect.nm_transtorno}
                       </h3>
                       <p>
-                        <strong>cid11:</strong> {transtornoSelect.cid11}
+                        <strong>CID11:</strong> {transtornoSelect.cid11}
                       </p>
                       <p>
                         <strong>Apoio Diagnóstico:</strong>{" "}
@@ -1288,7 +1288,7 @@ const ManterTranstorno = () => {
                             />
                           </div>
                           <div className="F_EditingRow">
-                            <label>cid11*</label>
+                            <label>CID11*</label>
                             <input
                               value={subtipo.cid11}
                               onChange={(e) => {
@@ -1356,7 +1356,7 @@ const ManterTranstorno = () => {
                             <strong>{subtipoLI.nm_subtipo}</strong>
                           </p>
                           <p>
-                            <strong>cid11:</strong> {subtipoLI.cid11}
+                            <strong>CID11:</strong> {subtipoLI.cid11}
                           </p>
                           {subtipoLI.obs && (
                             <p>

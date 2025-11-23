@@ -435,13 +435,13 @@ const CadastrarPaciente = ({ cd_usuario }) => {
                 }}
               >
                 <select
-                  className="F_NomeAreaTranstorno"
+                  className="F_GravidadeAreaTranstorno"
                   name="tip_sang"
                   style={{ width: "100px" }}
                   value={paciente.tip_sang}
                   onChange={handleChangeFormulario}
                 >
-                  <option value="" disabled></option>
+                  <option value="">n/a</option>
                   <option value="A+" style={{ color: "#000" }}>
                     A+
                   </option>
@@ -472,14 +472,14 @@ const CadastrarPaciente = ({ cd_usuario }) => {
             <div className="F_CriarTranstornoInputObrigatorio">
               <p style={{ textAlign: "start" }}>Sexo*</p>
               <select
-                className="F_NomeAreaTranstorno select-cinza"
+                className="F_GravidadeAreaTranstorno select-cinza"
                 name="sexo"
                 style={{ width: "118px" }}
                 value={paciente.sexo}
                 onChange={handleChangeFormulario}
                 defaultValue=""
               >
-                <option value="" disabled>
+                <option value="">
                   Selecione
                 </option>
                 <option value="M" style={{ color: "#000" }}>
@@ -605,12 +605,12 @@ const CadastrarPaciente = ({ cd_usuario }) => {
               }}
             >
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p style={{ textAlign: "start" }}>cep*</p>
+                <p style={{ textAlign: "start" }}>CEP*</p>
                 <input
                   className="F_NomeAreaTranstorno"
                   maxLength={9}
                   placeholder="Ex: 72871-581"
-                  name="cep"
+                  name="CEP"
                   value={enderecos.cep}
                   onChange={(e) =>
                     setEnderecos({
@@ -623,7 +623,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
               </div>
 
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p style={{ textAlign: "start" }}>uf</p>
+                <p style={{ textAlign: "start" }}>UF</p>
                 <input
                   className="F_NomeAreaTranstorno"
                   placeholder="Ex: DF"
@@ -773,7 +773,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
                     >
                       <p style={{ textAlign: "start" }}>Data de nascimento*</p>
                       <DatePicker
-                        className="F_NomeAreaTranstorno datepicker-sem-foco"
+                        className="F_GravidadeAreaTranstorno datepicker-sem-foco"
                         name="dt_nasc"
                         placeholder="dd/mm/yyyy"
                         format="DD/MM/YYYY"
@@ -820,7 +820,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
                   </div>
                   <div style={{ margin: "10px" }}>
                     <TelefoneGrid
-                      label="Telefone do Paciente"
+                      label="Telefone do Responsavel"
                       telefones={telefonesResponsavel[index] || []}
                       setTelefones={(novosTelefones) => {
                         const novasListas = [...telefonesResponsavel];
