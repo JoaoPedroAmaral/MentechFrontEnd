@@ -55,10 +55,10 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
         resultado = resultado.filter((p) => p.nm_genero === "Feminino");
         break;
       case "ativos":
-        resultado = resultado.filter((p) => p.ativo === "S");
+        resultado = resultado.filter((p) => p.ativo === "S" || p.ativo == "s");
         break;
       case "inativos":
-        resultado = resultado.filter((p) => p.ativo === "N");
+        resultado = resultado.filter((p) => p.ativo === "N" || p.ativo == "n");
         break;
       case "az":
         resultado.sort((a, b) => a.nm_paciente.localeCompare(b.nm_paciente));

@@ -41,22 +41,26 @@ export const Grafico = ({ pacienteID }) => {
     "#2ECC71",
   ];
 
+  // Reseta tudo quando o paciente muda
   useEffect(() => {
-    carregarMetas(pacienteID);
-    if (metas[indiceAtual]?.cd_meta) {
-      carregarAtividades(metas[indiceAtual]?.cd_meta).then((data) => {
-        setHistoricoAtividades(data);
-      });
+    setMetas([]);
+    setHistoricoAtividades([]);
+    setIndiceAtual(0);
+    setAtividadesSelecionadas([]);
+    setDadosGrafico([]);
+    
+    if (pacienteID) {
+      carregarMetas(pacienteID);
     }
-  }, [metasModificadas, pacienteID, atividadeModificada]);
+  }, [pacienteID]);
 
   useEffect(() => {
-    if (metas[indiceAtual]?.cd_meta) {
+    if (metas.length > 0 && metas[indiceAtual]?.cd_meta) {
       carregarAtividades(metas[indiceAtual]?.cd_meta).then((data) => {
         setHistoricoAtividades(data);
       });
     }
-  }, [metas, indiceAtual]);
+  }, [metas, indiceAtual, metasModificadas, atividadeModificada]);
 
   useEffect(() => {
     const fetchHistoricos = async () => {
@@ -105,6 +109,8 @@ export const Grafico = ({ pacienteID }) => {
 
     if (atividadesSelecionadas.length > 0) {
       fetchHistoricos();
+    } else {
+      setDadosGrafico([]);
     }
   }, [atividadesSelecionadas, atividadeModificada]);
 
@@ -144,10 +150,12 @@ export const Grafico = ({ pacienteID }) => {
 
   const proximaMeta = () => {
     setIndiceAtual((prev) => (prev + 1) % metas.length);
+    setAtividadesSelecionadas([]); // Limpa seleção ao trocar meta
   };
 
   const metaAnterior = () => {
     setIndiceAtual((prev) => (prev - 1 + metas.length) % metas.length);
+    setAtividadesSelecionadas([]); // Limpa seleção ao trocar meta
   };
 
   const carregarHistoricoAtividade = async (atividadeId) => {
@@ -175,6 +183,7 @@ export const Grafico = ({ pacienteID }) => {
               borderRadius: "4px",
               marginLeft: "10px",
             }}
+            disabled={metas.length === 0}
           >
             <p>{"<"}</p>
           </button>
@@ -184,10 +193,10 @@ export const Grafico = ({ pacienteID }) => {
               className="texto-truncado"
               style={{ color: "white", margin: "0" }}
             >
-              {metas.length > 0 ? metas[indiceAtual].meta : "Nenhuma meta"}
+              {metas.length > 0 ? metas[indiceAtual]?.meta : "Nenhuma meta"}
             </div>
             <div className="tooltip">
-              {metas.length > 0 ? metas[indiceAtual].meta : "Nenhuma meta"}
+              {metas.length > 0 ? metas[indiceAtual]?.meta : "Nenhuma meta"}
             </div>
           </div>
 
@@ -201,6 +210,7 @@ export const Grafico = ({ pacienteID }) => {
               borderRadius: "4px",
               marginRight: "10px",
             }}
+            disabled={metas.length === 0}
           >
             <p>{">"}</p>
           </button>
@@ -237,7 +247,7 @@ export const Grafico = ({ pacienteID }) => {
               </tr>
             </thead>
             <tbody>
-              {historicoAtividades?.atividades?.length > 0 ? (
+              {metas.length > 0 && historicoAtividades?.atividades?.length > 0 ? (
                 historicoAtividades.atividades.map((atividade, index) => {
                   const isChecked = atividadesSelecionadas.includes(
                     atividade.cd_atividade
@@ -284,9 +294,9 @@ export const Grafico = ({ pacienteID }) => {
           </table>
         </div>
       </div>
-      <div className="FlexCenterStart   " style={{ width: "100%" }}>
+      <div className="FlexCenterStart" style={{ width: "100%" }}>
         <ResponsiveContainer width="90%" height={250}>
-          <LineChart connectNulls={true} data={dadosParaGrafico}>
+          <LineChart connectNulls={true} data={metas.length > 0 ? dadosParaGrafico : []}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="dt_atualizacao" tick={false} />
 
@@ -338,7 +348,7 @@ export const Grafico = ({ pacienteID }) => {
             />
 
             {atividadesSelecionadas.map((id, i) => {
-              const atividade = historicoAtividades.atividades.find(
+              const atividade = historicoAtividades.atividades?.find(
                 (a) => a.cd_atividade === id
               );
               const nomeAtividade =

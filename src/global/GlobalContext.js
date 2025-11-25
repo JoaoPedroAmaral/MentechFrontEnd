@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, use } from "react";
 
 const GlobalContext = createContext();
 export const BASE_URL = "http://127.0.0.1:5000";
