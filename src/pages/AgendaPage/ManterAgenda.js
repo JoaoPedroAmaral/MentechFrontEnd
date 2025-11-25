@@ -13,6 +13,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { BASE_URL } from "../../global/GlobalContext";
+import { showAlert } from "../../utils/alerts";
 
 const { Option } = Select;
 
@@ -42,7 +43,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
         throw new Error("Erro ao buscar dados do paciente");
       }
       const data = await response.json();
-      setPacientes((prev) => ({ ...prev, [cd_paciente]: data }));
+      setPacientes(data);
       return data;
     } catch (error) {
       console.error("Erro ao buscar paciente:", error);
@@ -50,7 +51,6 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
     }
   };
 
-  // Buscar agendamentos do usuário
   const fetchAgendamentos = async () => {
     try {
       const response = await fetch(
@@ -73,6 +73,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
 
   useEffect(() => {
     if (cd_usuario) {
+      fetchPaciente(cd_paciente);
       fetchAgendamentos();
     }
   }, [cd_usuario]);
@@ -80,8 +81,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
   const onSelect = (date, { source }) => {
     if (source === "date") {
       setSelectedDate(date);
-      
-      // Buscar agendamentos do dia selecionado
+
       const dataString = date.format("YYYY-MM-DD");
       const agendamentosEncontrados = agendamentos.filter(
         (ag) => ag.dt_agendamento === dataString
@@ -143,8 +143,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
   const dateCellRender = (value) => {
     const dataString = value.format("YYYY-MM-DD");
     const nomeFeriado = feriados[dataString];
-    
-    // Contar agendamentos do dia
+
     const agendamentosDia = agendamentos.filter(
       (ag) => ag.dt_agendamento === dataString
     );
@@ -214,14 +213,24 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
       });
 
       const data = await response.json();
-
+      if (data.MSG260) {
+        showAlert.error("Agendamento não pode ser feito no passado!");
+        return;
+      }
       if (response.ok) {
-        message.success("Agendamento salvo com sucesso!");
+        showAlert.success("Agendamento salvo com sucesso!");
         handleCancel();
         handleDetalhesCancel();
-        fetchAgendamentos(); // Recarregar agendamentos
+        fetchAgendamentos();
       } else {
-        message.error(data.MSG200 || data.MSG260 || data.MSG248 || data.MSG249 || "Erro ao salvar agendamento");
+        showAlert.error("Erro ao salvar agendamento");
+        message.error(
+          data.MSG200 ||
+            data.MSG260 ||
+            data.MSG248 ||
+            data.MSG249 ||
+            "Erro ao salvar agendamento"
+        );
       }
     } catch (error) {
       console.error("Erro ao enviar agendamento:", error);
@@ -245,26 +254,45 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
           method: "DELETE",
         }
       );
-
       if (response.ok) {
-        message.success("Agendamento deletado com sucesso!");
+        showAlert.success("Agendamento deletado com sucesso!");
         fetchAgendamentos();
-        
-        // Atualizar lista do modal
+
         const novaLista = agendamentosDoDia.filter(
           (ag) => ag.cd_agendamento !== cd_agendamento
         );
         setAgendamentosDoDia(novaLista);
-        
+
         if (novaLista.length === 0) {
           handleDetalhesCancel();
         }
       } else {
-        message.error("Erro ao deletar agendamento");
+        showAlert.error("Erro ao deletar agendamento");
       }
     } catch (error) {
       console.error("Erro ao deletar agendamento:", error);
-      message.error("Erro ao deletar agendamento");
+      showAlert.error("Erro ao deletar agendamento");
+    }
+  };
+
+  const handleDeleteAgendamentoSequencial = async (cd_agendamento) => {
+    try {
+      const response = await fetch(`${BASE_URL}/agendamento/em_serie`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cd_agendamento: cd_agendamento,
+          prazo: "1_ano",
+        }),
+      });
+      if (response.ok) {
+        showAlert.success("Agendamentos deletados com sucesso!");
+        fetchAgendamentos();
+        handleDetalhesCancel();
+      }
+    } catch (error) {
+      showAlert.error("Erro ao deletar agendamentos sequenciais:");
+      message.error("Erro ao deletar agendamentos sequenciais");
     }
   };
 
@@ -367,15 +395,29 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
                     Horário: {item.hora_inicio} - {item.hora_fim}
                   </p>
                   <p style={{ margin: 0, fontSize: "12px", color: "#666" }}>
-                    Paciente: {pacientes[item.cd_paciente]?.nm_paciente || `ID: ${item.cd_paciente}`}
+                    Paciente:{" "}
+                    {pacientes[item.cd_paciente]?.nm_paciente ||
+                      "Carregando..."}
                   </p>
                 </div>
+              </div>
+              <div style={{ marginTop: "10px" }}>
                 <Button
                   danger
                   size="small"
                   onClick={() => handleDeletarAgendamento(item.cd_agendamento)}
+                  style={{ marginRight: "10px" }}
                 >
-                  🗑️ Deletar
+                  🗑️ Desmarcar
+                </Button>
+                <Button
+                  danger
+                  size="small"
+                  onClick={() =>
+                    handleDeleteAgendamentoSequencial(item.cd_agendamento)
+                  }
+                >
+                  🗑️ Desmarcar Sequencialmente
                 </Button>
               </div>
             </Card>

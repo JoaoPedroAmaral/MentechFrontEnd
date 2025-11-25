@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, use } from "react";
 
 const GlobalContext = createContext();
 export const BASE_URL = "https://mentechbackend.onrender.com";

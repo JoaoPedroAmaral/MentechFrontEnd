@@ -17,7 +17,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
     txt_prontuario: "",
   });
   const [respostasAnamnese, setRespostasAnamnese] = useState({});
-  const [perfilSelecionado, setPerfilSelecionado] = useState(""); // NOVO
+  const [perfilSelecionado, setPerfilSelecionado] = useState("");
 
   const [formIsOpen, setFormIsOpen] = useState(false);
   const [prontuarioList, setProntuarioList] = useState([]);
@@ -69,6 +69,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
         setPerfilSelecionado(anamnese.ANAMNESE[0].cd_perfil);
       }
     }
+    console.log(anamnese)
   }, [anamneseState, anamnese?.ANAMNESE?.length]);
 
   useEffect(() => {
@@ -86,23 +87,25 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
       if (anamnese === "") {
         showAlert.warning("Anamnese não pode ser vazio");
       }
-      const response = await fetch(
-        `${BASE_URL}/anamnese/por_paciente/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/anamnese/por_paciente/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
-        showAlert.error("Erro ao verificar anamnese");
-        throw new Error("Erro ao verificar anamnese");
+        return
       }
 
       const data = await response.json();
-      if (data && data.length > 0) {
+
+      const isAnamneseValida = data && 
+                              data.length > 0 && 
+                              data[0].cd_questao !== null && 
+                              data[0].txt_questao !== null;
+
+      if (isAnamneseValida) {
         setAnamnese({ ANAMNESE: data });
         setAnamneseState(formIsOpen ? "new" : "exist");
       } else {
@@ -309,61 +312,66 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
         return;
       }
 
-      // Validação: verifica se há respostas
       if (Object.keys(respostasAnamnese).length === 0) {
         showAlert.warning("Preencha pelo menos uma resposta!");
         return;
       }
 
-      const promises = Object.values(respostasAnamnese).map(
-        async (resposta) => {
-          const payload = {
-            cd_anamnese: cdAnamnese,
-            cd_questao: resposta.cd_questao,
-          };
+      const cd_questao = [];
+      const cd_alternativa = [];
+      const txt_resposta = [];
 
-          // Múltipla Escolha e Verdadeiro ou Falso enviam como array
-          if (
-            resposta.tipo_questao === "Múltipla Escolha" ||
-            resposta.tipo_questao === "Verdadeiro ou Falso"
-          ) {
-            // Garante que sempre seja um array
-            payload.cd_alternativa = Array.isArray(resposta.cd_alternativa)
+      anamnese.ANAMNESE.forEach((questao) => {
+        const resposta = respostasAnamnese[questao.cd_questao];
+
+        cd_questao.push(questao.cd_questao);
+
+        if (questao.tipo_questao === "Dissertativa") {
+          txt_resposta.push(resposta?.txt_resposta || "");
+          cd_alternativa.push([]);
+        } else if (
+          questao.tipo_questao === "Múltipla Escolha" ||
+          questao.tipo_questao === "Verdadeiro ou Falso"
+        ) {
+          txt_resposta.push("");
+
+          if (resposta?.cd_alternativa) {
+            const alternativas = Array.isArray(resposta.cd_alternativa)
               ? resposta.cd_alternativa
               : [resposta.cd_alternativa];
+            cd_alternativa.push(alternativas);
           } else {
-            // Dissertativa envia como texto
-            payload.txt_resposta = resposta.txt_resposta;
+            cd_alternativa.push([]);
           }
-
-          const response = await fetch(
-            `${BASE_URL}/anamnese/resposta`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(
-              `Erro ao salvar resposta da questão ${resposta.cd_questao}`
-            );
-          }
-
-          return response.json();
         }
-      );
+      });
 
-      await Promise.all(promises);
+      const payload = {
+        cd_anamnese: cdAnamnese,
+        cd_questao: cd_questao,
+        cd_alternativa: cd_alternativa,
+        txt_resposta: txt_resposta,
+      };
+
+      console.log("Payload enviado:", payload);
+
+      const response = await fetch(`${BASE_URL}/anamnese/resposta`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao salvar anamnese");
+      }
 
       showAlert.success("Anamnese salva com sucesso!");
 
-      // CORREÇÃO: Atualiza estados ANTES de recarregar
-      await hasAnamnese(pacienteID); // Aguarda o reload
+      await hasAnamnese(pacienteID);
       setRespostasAnamnese({});
       setFormIsOpen(false);
-      setAnamneseState("exist"); // Agora muda para exist
+      setAnamneseState("exist");
     } catch (error) {
       console.error("Erro:", error);
       showAlert.error("Erro ao salvar anamnese: " + error.message);
@@ -470,7 +478,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
           style={{
             borderRight: "2px solid white",
             width: "50%",
-            height: "100%",
+            height: "70vh",
           }}
         >
           <div className="F_Title">
@@ -481,7 +489,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
               Anamnese
             </h2>
           </div>
-          {anamneseState === "exist" ? (
+          {(anamneseState === "exist") ? (
             <div
               className="FlexCenterMid"
               style={{ width: "100%", height: "100%" }}
@@ -892,9 +900,9 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
                     >
                       {prontuarioList
                         .filter((p) =>
-                          p.dt_prontuario?.toLowerCase().includes(
-                            search.toLowerCase()
-                          )
+                          p.dt_prontuario
+                            ?.toLowerCase()
+                            .includes(search.toLowerCase())
                         )
                         .map((p) => (
                           <li
@@ -915,9 +923,9 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
                           </li>
                         ))}
                       {prontuarioList.filter((p) =>
-                        p.dt_prontuario?.toLowerCase().includes(
-                          search.toLowerCase()
-                        )
+                        p.dt_prontuario
+                          ?.toLowerCase()
+                          .includes(search.toLowerCase())
                       ).length === 0 && (
                         <p className="F_NoResults">
                           Nenhum prontuário encontrado

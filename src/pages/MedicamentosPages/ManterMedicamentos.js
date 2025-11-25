@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../global/GlobalContext";
+import { showAlert } from "../../utils/alerts";
 
 const ManterMedicamentos = ({ cd_paciente }) => {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -40,7 +41,12 @@ const ManterMedicamentos = ({ cd_paciente }) => {
         },
         body: JSON.stringify(medicamentoData),
       });
-      if (!response.ok) {
+      if(response.status === 400) {
+        showAlert.error("Campos incorretos ou faltando! Verifique os dados e tente novamente.");
+        throw new Error("Campos incorretos");
+      }
+      else if (!response.ok) {
+        showAlert.error("Erro ao criar medicamento! Tente novamente mais tarde.");
         throw new Error("Erro ao criar medicamento");
       }
       const data = await response.json();

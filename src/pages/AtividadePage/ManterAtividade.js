@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
+import TextArea from "antd/es/input/TextArea.js";
+import { showAlert } from "../../utils/alerts.js";
 
 const ManterAtividade = ({ atividade, metaID }) => {
   const { setAtividadeModificada, atividadeModificada } = useGlobal();
@@ -20,20 +22,40 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   const formatarDataBR = (dataString) => {
     if (!dataString) return "";
+
+    if (dataString instanceof Date) {
+      const dia = String(dataString.getDate()).padStart(2, "0");
+      const mes = String(dataString.getMonth() + 1).padStart(2, "0");
+      const ano = dataString.getFullYear();
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    if (typeof dataString === "string" && dataString.includes("-")) {
+      const [ano, mes, dia] = dataString.split("-");
+      return `${dia}/${mes}/${ano}`;
+    }
+
     const d = new Date(dataString);
-    return `${String(d.getDate()).padStart(2, "0")}/${String(
-      d.getMonth() + 1
-    ).padStart(2, "0")}/${d.getFullYear()}`;
+    const dia = String(d.getDate()).padStart(2, "0");
+    const mes = String(d.getMonth() + 1).padStart(2, "0");
+    const ano = d.getFullYear();
+    return `${dia}/${mes}/${ano}`;
   };
 
   const handleSalvarNovaAtividade = async () => {
     try {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      const dia = String(hoje.getDate()).padStart(2, "0");
+      const dataISO = `${dia}/${mes}/${ano}`;
+
       const response = await fetch(`${BASE_URL}/atividade`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...novaAtividade,
-          dt_atividade: formatarDataBR(new Date().toISOString().split("T")[0]),
+          dt_atividade: dataISO,
           cd_meta: metaID,
         }),
       });
@@ -46,6 +68,9 @@ const ManterAtividade = ({ atividade, metaID }) => {
         parecer_tecnico: "",
         resultado: "Não iniciado",
       });
+      if (response.ok) {
+        showAlert.success("Atividade criada com sucesso!");
+      }
     } catch (err) {
       alert(err.message);
     }
@@ -105,7 +130,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
     };
 
     try {
-      await fetch(`${BASE_URL}/atividade/${id}`, {
+      const response = await fetch(`${BASE_URL}/atividade/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -114,6 +139,14 @@ const ManterAtividade = ({ atividade, metaID }) => {
       setAtividadeList((prev) =>
         prev.map((a) => (a.cd_atividade === id ? atividadeEditando : a))
       );
+
+      if (!response.ok){
+        showAlert.error("Erro ao salvar edição da atividade!");
+        return;
+      }
+      if(response.ok){
+        showAlert.success("Edição da atividade salva com sucesso!");
+      }
 
       setEditandoId(null);
       setAtividadeEditando(null);
@@ -162,7 +195,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                   </div>
                 </td>
                 <td>
-                  <input
+                  <TextArea
                     maxLength={90}
                     type="text"
                     value={novaAtividade.nm_atividade}
@@ -172,14 +205,21 @@ const ManterAtividade = ({ atividade, metaID }) => {
                         nm_atividade: e.target.value,
                       })
                     }
+                    showCount
                     className="F_NomeAreaTranstorno"
-                    style={{ width: "130px" }}
+                    style={{
+                      width: "140px",
+                      height: "100px",
+                      resize: "none",
+                      paddingBottom: "30px",
+                    }}
                     placeholder="Nome da atividade"
                   />
                 </td>
                 <td>
-                  <input
+                  <TextArea
                     maxLength={255}
+                    showCount
                     type="text"
                     value={novaAtividade.descricao_atividade}
                     onChange={(e) =>
@@ -189,14 +229,19 @@ const ManterAtividade = ({ atividade, metaID }) => {
                       })
                     }
                     className="F_NomeAreaTranstorno"
-                    style={{ width: "150px" }}
+                    style={{
+                      width: "100%",
+                      height: "200px",
+                      resize: "none",
+                      paddingBottom: "30px",
+                    }}
                     placeholder="Descrição"
                   />
                 </td>
                 <td>{formatarDataBR(new Date())}</td>
                 <td>
-                  <input
-                    maxLength={255}
+                  <TextArea
+                    maxLength={5000}
                     type="text"
                     value={novaAtividade.parecer_tecnico}
                     onChange={(e) =>
@@ -205,8 +250,14 @@ const ManterAtividade = ({ atividade, metaID }) => {
                         parecer_tecnico: e.target.value,
                       })
                     }
+                    showCount
                     className="F_NomeAreaTranstorno"
-                    style={{ width: "110px" }}
+                    style={{
+                      width: "200px",
+                      height: "200px",
+                      resize: "none",
+                      paddingBottom: "30px",
+                    }}
                     placeholder="Parecer técnico"
                   />
                 </td>
@@ -252,7 +303,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                             </button>
                             <button
                               className="btn-edit"
-                              style={{backgroundColor:"#f7dd5c"}}
+                              style={{ backgroundColor: "#f7dd5c" }}
                               disabled={isConcluido}
                               onClick={() => {
                                 setEditandoId(atividades.cd_atividade);
@@ -308,7 +359,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                     {/* Nome */}
                     <td>
                       {emEdicao ? (
-                        <input
+                        <TextArea
                           maxLength={90}
                           type="text"
                           value={atividadeEditando.nm_atividade}
@@ -318,8 +369,14 @@ const ManterAtividade = ({ atividade, metaID }) => {
                               nm_atividade: e.target.value,
                             })
                           }
+                          showCount
                           className="F_NomeAreaTranstorno"
-                          style={{ width: "130px" }}
+                          style={{
+                            width: "140px",
+                            height: "100px",
+                            resize: "none",
+                            paddingBottom: "30px",
+                          }}
                         />
                       ) : (
                         atividades.nm_atividade
@@ -328,7 +385,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
                     <td>
                       {emEdicao ? (
-                        <input
+                        <TextArea
                           maxLength={255}
                           type="text"
                           value={atividadeEditando.descricao_atividade}
@@ -338,8 +395,14 @@ const ManterAtividade = ({ atividade, metaID }) => {
                               descricao_atividade: e.target.value,
                             })
                           }
+                          showCount
                           className="F_NomeAreaTranstorno"
-                          style={{ width: "150px" }}
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            resize: "none",
+                            paddingBottom: "30px",
+                          }}
                         />
                       ) : (
                         atividades.descricao_atividade
@@ -352,9 +415,9 @@ const ManterAtividade = ({ atividade, metaID }) => {
                     {/* Parecer */}
                     <td>
                       {emEdicao ? (
-                        <input
+                        <TextArea
                           type="text"
-                          maxLength={1000}
+                          maxLength={5000}
                           value={atividadeEditando.parecer_tecnico}
                           onChange={(e) =>
                             setAtividadeEditando({
@@ -362,8 +425,14 @@ const ManterAtividade = ({ atividade, metaID }) => {
                               parecer_tecnico: e.target.value,
                             })
                           }
+                          showCount
                           className="F_NomeAreaTranstorno"
-                          style={{ width: "110px" }}
+                          style={{
+                            width: "200px",
+                            height: "200px",
+                            resize: "none",
+                            paddingBottom: "30px",
+                          }}
                         />
                       ) : (
                         atividades.parecer_tecnico
@@ -384,7 +453,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
                           min="0"
                           max="100"
                           className="F_NomeAreaTranstorno"
-                          style={{ width: "40px" }}
+                          style={{ width: "50px" }}
                         />
                       ) : (
                         `${atividades.percent_conclusao}%`
