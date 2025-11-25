@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import iconTrash from "../../Images/Trash.png";
 import { showAlert } from "../../utils/alerts.js";
 import TelefoneGrid from "./pacienteComponents/TelefoneGrid.js";
-import { useGlobal,BASE_URL } from "../../global/GlobalContext.js";
+import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 import { carregarMensagemNegativa } from "../../InitialPage.js";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
@@ -41,6 +41,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
   const [generos, setGeneros] = useState([]);
   const { setPacientesModificados } = useGlobal();
   const [perfil, setPerfil] = useState(null);
+  const [loadingCep, setLoadingCep] = useState(false); // NOVO
 
   useEffect(() => {
     fetchGeneros();
@@ -75,20 +76,69 @@ const CadastrarPaciente = ({ cd_usuario }) => {
   };
 
   const formatarCPF = (value) => {
-    value = value.replace(/\D/g, ""); // Remove tudo que não for número
-    value = value.slice(0, 11); // Limita a 11 dígitos
+    value = value.replace(/\D/g, "");
+    value = value.slice(0, 11);
 
-    // Aplica a formatação: 000.000.000-00
     return value
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   };
+
   const formatarCEP = (value) => {
     value = value.replace(/\D/g, "");
     value = value.slice(0, 8);
 
     return value.replace(/(\d{5})(\d)/, "$1-$2");
+  };
+
+  // NOVA FUNÇÃO: Buscar CEP na API ViaCEP
+  const buscarCEP = async (cep) => {
+    const cepLimpo = cep.replace(/\D/g, "");
+
+    // Valida se o CEP tem 8 dígitos
+    if (cepLimpo.length !== 8) {
+      return;
+    }
+
+    setLoadingCep(true);
+
+    try {
+      const response = await fetch(
+        `https://viacep.com.br/ws/${cepLimpo}/json/`
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar CEP");
+      }
+
+      const data = await response.json();
+
+      // Verifica se o CEP foi encontrado
+      if (data.erro) {
+        showAlert.warning("CEP não encontrado!");
+        setLoadingCep(false);
+        return;
+      }
+
+      // Preenche os campos automaticamente
+      setEnderecos((prev) => ({
+        ...prev,
+        cep: formatarCEP(cepLimpo),
+        uf: data.uf || "",
+        bairro: data.bairro || "",
+        cidade: data.localidade || "",
+        logradouro: data.logradouro || "",
+        complemento: data.complemento || prev.complemento, // Mantém o complemento se não vier da API
+      }));
+
+      showAlert.success("CEP encontrado!");
+    } catch (error) {
+      console.error("Erro ao buscar CEP:", error);
+      showAlert.error("Erro ao buscar CEP. Verifique sua conexão.");
+    } finally {
+      setLoadingCep(false);
+    }
   };
 
   const fetchGeneros = async () => {
@@ -200,6 +250,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
       return false;
     }
   };
+
   const adicionarTelefone = async (pacienteID = "", responsavelIDs = []) => {
     try {
       const telefonesParaCadastrar = [];
@@ -261,7 +312,6 @@ const CadastrarPaciente = ({ cd_usuario }) => {
     try {
       const enderecosParaCadastrar = [];
 
-      // 👉 Endereço do paciente
       if (enderecos.cep) {
         enderecosParaCadastrar.push({
           cd_paciente: pacienteID,
@@ -278,7 +328,6 @@ const CadastrarPaciente = ({ cd_usuario }) => {
         });
       }
 
-      // 👉 Endereços dos responsáveis
       if (Array.isArray(responsavelIDs) && responsavelIDs.length > 0) {
         responsavelIDs.forEach((id) => {
           enderecosParaCadastrar.push({
@@ -479,9 +528,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
                 onChange={handleChangeFormulario}
                 defaultValue=""
               >
-                <option value="">
-                  Selecione
-                </option>
+                <option value="">Selecione</option>
                 <option value="M" style={{ color: "#000" }}>
                   Masculino
                 </option>
@@ -605,20 +652,35 @@ const CadastrarPaciente = ({ cd_usuario }) => {
               }}
             >
               <div className="F_CriarTranstornoInputObrigatorio">
-                <p style={{ textAlign: "start" }}>CEP*</p>
+                <p style={{ textAlign: "start" }}>
+                  CEP*{" "}
+                  {loadingCep && (
+                    <span style={{ fontSize: "12px", color: "#FFB347" }}>
+                      (Buscando...)
+                    </span>
+                  )}
+                </p>
                 <input
                   className="F_NomeAreaTranstorno"
                   maxLength={9}
                   placeholder="Ex: 72871-581"
                   name="CEP"
                   value={enderecos.cep}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const cepFormatado = formatarCEP(e.target.value);
                     setEnderecos({
                       ...enderecos,
-                      cep: formatarCEP(e.target.value),
-                    })
-                  }
+                      cep: cepFormatado,
+                    });
+                  }}
+                  onBlur={(e) => {
+                    const cep = e.target.value;
+                    if (cep.replace(/\D/g, "").length === 8) {
+                      buscarCEP(cep);
+                    }
+                  }}
                   style={{ width: "150px" }}
+                  disabled={loadingCep}
                 ></input>
               </div>
 
@@ -783,7 +845,6 @@ const CadastrarPaciente = ({ cd_usuario }) => {
                             : null
                         }
                         onChange={(date, dateString) => {
-
                           const novosResponsaveis = [...responsavel];
                           novosResponsaveis[index].dt_nascimento = dateString;
                           setResponsavel(novosResponsaveis);
@@ -791,7 +852,6 @@ const CadastrarPaciente = ({ cd_usuario }) => {
                         style={{ width: "140px" }}
                         maxLength={10}
                       />
-                      
                     </div>
                   </div>
                   <div
@@ -866,5 +926,4 @@ const CadastrarPaciente = ({ cd_usuario }) => {
     </div>
   );
 };
-
 export default CadastrarPaciente;

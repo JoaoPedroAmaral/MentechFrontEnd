@@ -27,9 +27,10 @@ import calendar from "../../Images/calendar.png";
 import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 import ManterHistorico from "../HistoricoPage/ManterHistorico.js";
 import { Grafico } from "../GraficoPage/Grafico.js";
+import { LOADING_SCREEN } from "../../InitialPage.js";
 
 const SegundoAcesso = ({
-  userData, //VOU USAR PARA PUXAR O nome E cip DO USUÁRIO
+  userData,
   pacienteID,
   onLogout,
   dadosPaciente,
@@ -39,17 +40,41 @@ const SegundoAcesso = ({
 }) => {
   const [statusAtivo, setStatusAtivo] = useState(true);
   const [listName, setListName] = useState("");
-  const { setPacienteEditado, setMetasModificadas, setPacientesModificados } = useGlobal();
+  const [isLoading, setIsLoading] = useState(true); // NOVO
+  const { setPacienteEditado, setMetasModificadas, setPacientesModificados } =
+    useGlobal();
 
   useEffect(() => {
     if (dadosPaciente?.ativo) {
-      setStatusAtivo(dadosPaciente.ativo !== "S" && dadosPaciente.ativo !== "s");
+      setStatusAtivo(
+        dadosPaciente.ativo !== "S" && dadosPaciente.ativo !== "s"
+      );
       toggleActiveStatusArea(!true);
       if (dadosPaciente?.ativo === "N") {
         toggleActiveStatusArea(true);
       }
     }
   }, [dadosPaciente]);
+
+  // NOVO: Controla o loading
+  useEffect(() => {
+    // Verifica se todos os dados essenciais foram carregados
+    if (
+      userData &&
+      dadosPaciente &&
+      enderecoPaciente !== null &&
+      telefoneDados !== null &&
+      responsaveisDados !== null
+    ) {
+      setIsLoading(false);
+    }
+  }, [
+    userData,
+    dadosPaciente,
+    enderecoPaciente,
+    telefoneDados,
+    responsaveisDados,
+  ]);
 
   const handleFechar = () => {
     window.electronClose.fecharApp();
@@ -71,7 +96,9 @@ const SegundoAcesso = ({
   const ddd = telefoneDados?.[0]?.ddd ?? "";
   const numeroTel = telefoneDados?.[0]?.nr_telefone ?? "";
   const primeiroTelefone =
-    ddd && numeroTel ? `(${ddd}) ${numeroTel.slice(0, 5)}-${numeroTel.slice(5)}` : "--";
+    ddd && numeroTel
+      ? `(${ddd}) ${numeroTel.slice(0, 5)}-${numeroTel.slice(5)}`
+      : "--";
 
   const primeiroResponsavel = !responsaveisDados
     ? "carregando..."
@@ -101,12 +128,9 @@ const SegundoAcesso = ({
   };
 
   const PUTStatusAtivo = async (id) => {
-    const response = await fetch(
-      `${BASE_URL}/paciente/toggle/${id}`,
-      {
-        method: "PUT",
-      }
-    );
+    const response = await fetch(`${BASE_URL}/paciente/toggle/${id}`, {
+      method: "PUT",
+    });
 
     if (!response.ok) {
       console.error("Erro ao atualizar status do paciente");
@@ -118,6 +142,16 @@ const SegundoAcesso = ({
     const [ano, mes, dia] = dataISO.split("-");
     return `${dia}/${mes}/${ano}`;
   };
+
+  if (isLoading) {
+    return (
+      <div
+        style={{ width: "100%", height: "100%", backgroundColor: "#49a0ad" }}
+      >
+        <LOADING_SCREEN />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -634,7 +668,10 @@ const SegundoAcesso = ({
             </button>
           </div>
           <div className="FlexCenterMid">
-            <ManterAgenda cd_paciente={pacienteID} cd_usuario={userData.cd_usuario} />
+            <ManterAgenda
+              cd_paciente={pacienteID}
+              cd_usuario={userData.cd_usuario}
+            />
           </div>
         </div>
       </div>

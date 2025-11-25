@@ -21,8 +21,9 @@ const HomePage = ({ onLogout, userData }) => {
   const [responsaveisDados, setResponsaveisDados] = useState([]);
   const [telefoneDados, setTelefoneDados] = useState([]);
   const [pacienteSalvo, setPacienteSalvo] = useState(() =>
-    localStorage.getItem("ultimoPaciente")
+    localStorage.getItem(`ultimoPaciente_${userData.cd_usuario}`)
   );
+  const [jaCarregouAgenda, setJaCarregouAgenda] = useState(false);
   const { pacienteEditado, setMetasModificadas, setProntuarioEdited } =
     useGlobal();
 
@@ -57,13 +58,22 @@ const HomePage = ({ onLogout, userData }) => {
     };
 
     if (isHavePaciente === true) {
-      const pacienteId = localStorage.getItem(
-        `ultimoPaciente_${userData.cd_usuario}`
-      );
-      const idParaCarregar = pacienteId || primeiroPacienteID;
+      if (!jaCarregouAgenda) {
+        determinarPacienteParaCarregar(userData.cd_usuario).then((idParaCarregar) => {
+          if (idParaCarregar) {
+            carregarDadosEssenciais(idParaCarregar);
+            setJaCarregouAgenda(true);
+          }
+        });
+      } else {
+        const pacienteId = localStorage.getItem(
+          `ultimoPaciente_${userData.cd_usuario}`
+        );
+        const idParaCarregar = pacienteId || primeiroPacienteID;
 
-      if (idParaCarregar) {
-        carregarDadosEssenciais(idParaCarregar);
+        if (idParaCarregar) {
+          carregarDadosEssenciais(idParaCarregar);
+        }
       }
     }
   }, [isHavePaciente, primeiroPacienteID, pacienteSalvo, pacienteEditado]);
@@ -79,7 +89,57 @@ const HomePage = ({ onLogout, userData }) => {
     window.addEventListener("atualizarUltimoPaciente", handleAtualizacao);
     return () =>
       window.removeEventListener("atualizarUltimoPaciente", handleAtualizacao);
-  }, []);
+  }, [userData.cd_usuario]);
+
+  const determinarPacienteParaCarregar = async (cd_usuario) => {
+    try {
+      
+      const response = await fetch(
+        `${BASE_URL}/paciente/proximo/${cd_usuario}`
+      );
+
+      if (response.ok) {
+        const proximoPaciente = await response.json();
+        
+        if (proximoPaciente && proximoPaciente.cd_paciente) {
+          console.log("✅ Paciente da agenda encontrado:", proximoPaciente.cd_paciente);
+          
+          // Salva no localStorage para próximas trocas
+          localStorage.setItem(
+            `ultimoPaciente_${cd_usuario}`,
+            proximoPaciente.cd_paciente
+          );
+          
+          return proximoPaciente.cd_paciente;
+        }
+      }
+
+      const ultimoPacienteLocalStorage = localStorage.getItem(
+        `ultimoPaciente_${cd_usuario}`
+      );
+
+      if (ultimoPacienteLocalStorage) {
+        return ultimoPacienteLocalStorage;
+      }
+
+
+      if (primeiroPacienteID) {
+        localStorage.setItem(
+          `ultimoPaciente_${cd_usuario}`,
+          primeiroPacienteID
+        );
+        return primeiroPacienteID;
+      }
+
+      return null;
+    } catch (error) {
+      const fallbackPaciente = localStorage.getItem(
+        `ultimoPaciente_${cd_usuario}`
+      ) || primeiroPacienteID;
+      
+      return fallbackPaciente;
+    }
+  };
 
   const verificarSeTemPaciente = async (id) => {
     try {
@@ -154,7 +214,10 @@ const HomePage = ({ onLogout, userData }) => {
 
   const carregarPaciente = async (pacienteID) => {
     try {
-      localStorage.setItem("ultimoPaciente", pacienteID);
+      localStorage.setItem(
+        `ultimoPaciente_${userData.cd_usuario}`,
+        pacienteID
+      );
 
       const response = await fetch(
         `${BASE_URL}/paciente/${pacienteID}`
@@ -181,7 +244,7 @@ const HomePage = ({ onLogout, userData }) => {
       ) : (
         <SegundoAcesso
           userData={userData}
-          pacienteID={localStorage.getItem("ultimoPaciente")}
+          pacienteID={localStorage.getItem(`ultimoPaciente_${userData.cd_usuario}`)}
           onLogout={onLogout}
           dadosPaciente={dadosPaciente}
           enderecoPaciente={enderecoPaciente}

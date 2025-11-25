@@ -225,7 +225,6 @@ const InitialPage = () => {
         console.error("Erro ao definir usuário:", error);
       }*/
 
-      console.log("Checkbox marcado:", manterConectado);
       if (manterConectado) {
         console.log("Salvando login no localStorage...");
         localStorage.setItem(

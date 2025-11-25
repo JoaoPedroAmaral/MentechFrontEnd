@@ -15,38 +15,71 @@ const Toast = Swal.mixin({
   }
 });
 
+
+const sanitizeText = (text) => {
+  if (!text) return '';
+  return String(text).normalize('NFC');
+};
+
 export const showAlert = {
   success: (message, title = 'Sucesso!') => 
-    Toast.fire(title, message, 'success'),
+    Toast.fire({
+      title: sanitizeText(title),
+      html: sanitizeText(message),
+      icon: 'success'
+    }),
 
   error: (message, title = 'Erro!') => 
-    Toast.fire(title, message, 'error'),
+    Toast.fire({
+      title: sanitizeText(title),
+      html: sanitizeText(message),
+      icon: 'error'
+    }),
 
   warning: (message, title = 'Aviso!') => 
-    Toast.fire(title, message, 'warning'),
+    Toast.fire({
+      title: sanitizeText(title),
+      html: sanitizeText(message),
+      icon: 'warning'
+    }),
 
   info: (message, title = 'Informação') => 
-    Toast.fire(title, message, 'info'),
+    Toast.fire({
+      title: sanitizeText(title),
+      html: sanitizeText(message),
+      icon: 'info'
+    }),
 
-  // Confirmação
   confirm: (message, title = 'Confirmar') => 
     Toast.fire({
-      title,
-      text: message,
+      title: sanitizeText(title),
+      html: sanitizeText(message),
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar'
     }),
 
-  // Personalizado
-  custom: (options) => Toast.fire(options)
+  custom: (options) => {
+    const sanitizedOptions = { ...options };
+    if (sanitizedOptions.title) {
+      sanitizedOptions.title = sanitizeText(sanitizedOptions.title);
+    }
+    if (sanitizedOptions.text) {
+      sanitizedOptions.html = sanitizeText(sanitizedOptions.text);
+      delete sanitizedOptions.text;
+    }
+    if (sanitizedOptions.html) {
+      sanitizedOptions.html = sanitizeText(sanitizedOptions.html);
+    }
+    return Toast.fire(sanitizedOptions);
+  }
 };
 
 export const confirmDelete = async (itemName, deleteFunction) => {
   const result = await Toast.fire({
     title: 'Confirmar Exclusão',
-    html: `Você tem certeza que deseja deletar <strong>${itemName}</strong>?`,
+    html: `Você tem certeza que deseja deletar <strong>${sanitizeText(itemName)}</strong>?`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sim, deletar',

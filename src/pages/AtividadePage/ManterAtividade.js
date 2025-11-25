@@ -122,7 +122,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
     const payload = {
       cd_meta: atividade.cd_meta,
       descricao_atividade: atividade.descricao_atividade,
-      dt_atividade: atividade.dt_atividade,
+      dt_atividade: formatarDataBR(atividade.dt_atividade),
       nm_atividade: atividade.nm_atividade,
       parecer_tecnico: atividade.parecer_tecnico,
       percent_conclusao: atividade.percent_conclusao,
