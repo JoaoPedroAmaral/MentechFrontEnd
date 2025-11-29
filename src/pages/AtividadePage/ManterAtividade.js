@@ -168,7 +168,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
           Gerenciador de Atividades
         </h2>
       </div>
-      <div className=" FlexUpMid Border ScrollBar" style={{ height: "60vh" }}>
+      <div className=" FlexUpMid Border ScrollBar" style={{ height: "550px" }}>
         <div style={{ width: "100%", overflowX: "auto" }}>
           <table className="atividade-table">
             <thead>

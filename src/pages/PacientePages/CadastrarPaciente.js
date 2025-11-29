@@ -160,7 +160,6 @@ const CadastrarPaciente = ({ cd_usuario }) => {
       if (
         !paciente.nm_paciente ||
         !paciente.dt_nasc ||
-        !paciente.sexo ||
         !paciente.dt_nasc ||
         !paciente.cd_genero ||
         !paciente.cd_perfil ||
@@ -177,7 +176,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
         },
         body: JSON.stringify({
           ...paciente,
-          dt_nasc: formatarDataParaMySQL(paciente.dt_nasc),
+          dt_nasc: paciente.dt_nasc,
           cd_usuario: cd_usuario || Number(localStorage.getItem("cd_usuario")),
         }),
       });
