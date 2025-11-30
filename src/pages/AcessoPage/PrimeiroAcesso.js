@@ -7,6 +7,7 @@ import "../../css/OrganizeCSS/base.css";
 import "../../css/OrganizeCSS/components.css";
 import "../../css/OrganizeCSS/layout.css";
 import "../../css/OrganizeCSS/utils.css";
+import {useGlobal} from "../../global/GlobalContext.js";
 
 import LogoutIcon from "../../Images/LogoutIconBK.png";
 import PsicologiaIcon from "../../Images/PsicologiaIcon.png";
@@ -18,6 +19,7 @@ import Seta from "../../Images/seta.png";
 import ListarPacientes from "../PacientePages/ListarPacientes.js";
 
 const PrimeiroAcesso = ({ onLogout, setIsHavePaciente, userData }) => {
+  const {setPacientesModificados} = useGlobal();
   const handleFechar = () => {
     window.electronClose.fecharApp();
   };
@@ -113,7 +115,10 @@ const PrimeiroAcesso = ({ onLogout, setIsHavePaciente, userData }) => {
                 </button>
                 <button
                   className="FlexCenterMid UserSelectNone BackgroundTransparent"
-                  onClick={() => toggleIframe("IframeListarPaciente")}
+                  onClick={() => {
+                    setPacientesModificados((prev) => !prev);
+                    toggleIframe("IframeListarPaciente")
+                  }}
                   title="Listar Pacientes"
                   style={{ border: "none" }}
                 >
