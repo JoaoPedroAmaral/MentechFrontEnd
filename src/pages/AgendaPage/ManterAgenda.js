@@ -184,22 +184,23 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
+    
     if (!horarioInicio) {
-      message.error("Por favor, selecione o horário de início");
+      showAlert.error("Por favor, selecione o horário de início");
       return;
     }
 
     if (!horario_fim) {
-      message.error("Por favor, selecione o horário de fim");
+      showAlert.error("Por favor, selecione o horário de fim");
       return;
     }
 
     if (isRepetir && !prazo) {
-      message.error("Por favor, selecione o prazo de repetição");
+      showAlert.error("Por favor, selecione o prazo de repetição");
       return;
     }
 
+    setLoading(true);
     const payload = {
       cd_usuario: cd_usuario,
       cd_paciente: Number(cd_paciente),
