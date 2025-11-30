@@ -201,7 +201,7 @@ const SegundoAcesso = ({
           <button
             className="FlexCenterMid BTNCircle UserSelectNone"
             onClick={() => toggleIframe("IframeAgenda")}
-            title="Cadastrar Paciente"
+            title="Agendamento"
           >
             <img
               className="ImgCircle FlexCenterMid BackgroundTransparent"
