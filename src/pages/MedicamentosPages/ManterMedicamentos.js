@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../global/GlobalContext";
 import { showAlert } from "../../utils/alerts";
+import LoadingOverlay from "../../global/Loading";
 
 const ManterMedicamentos = ({ cd_paciente }) => {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -12,6 +13,7 @@ const ManterMedicamentos = ({ cd_paciente }) => {
     principio_ativo: "",
     fabricante: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchMedicamentos(cd_paciente);
@@ -33,6 +35,7 @@ const ManterMedicamentos = ({ cd_paciente }) => {
   };
 
   const createMedicamento = async (medicamentoData) => {
+    setLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/medicamento`, {
         method: "POST",
@@ -68,9 +71,15 @@ const ManterMedicamentos = ({ cd_paciente }) => {
       }
       await responseRelation.json();
       fetchMedicamentos(cd_paciente);
-    } catch (error) {}
+    } catch (error) {
+      showAlert.error("Erro ao criar medicamento! Tente novamente mais tarde.");
+      console.error("Erro ao criar medicamento:", error);
+    }finally{
+      setLoading(false);
+    }
   };
   const deleteMedicamento = async (cd_medicamento) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${BASE_URL}/medicamento/${cd_medicamento}`,
@@ -84,6 +93,8 @@ const ManterMedicamentos = ({ cd_paciente }) => {
       fetchMedicamentos(cd_paciente);
     } catch (error) {
       console.error("Erro ao deletar medicamento:", error);
+    }finally{
+      setLoading(false);
     }
   };
   return (
@@ -91,6 +102,7 @@ const ManterMedicamentos = ({ cd_paciente }) => {
       className="MedicamentosContainer"
       style={{ width: "90%", height: "100%" }}
     >
+      <LoadingOverlay isLoading={loading} />
       <div className="F_Title">
         <h2 className="F_CadastrarTitle">Medicamentos</h2>
       </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
 import { showAlert, confirmDelete } from "../../utils/alerts.js";
 import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
+import LoadingOverlay from "../../global/Loading.js";
 
 const ManterHistorico = ({ pacienteID, pacientData }) => {
   const [anamneseState, setAnamneseState] = useState("none");
@@ -21,9 +22,11 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
 
   const [formIsOpen, setFormIsOpen] = useState(false);
   const [prontuarioList, setProntuarioList] = useState([]);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (anamneseState === "new" && anamnese?.ANAMNESE) {
+      setLoading(true)
       const respostasExistentes = {};
       const carregarAlternativas = async () => {
         const anamneseComAlternativas = await Promise.all(
@@ -59,6 +62,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
             };
           }
         });
+        setLoading(false)
 
         setRespostasAnamnese(respostasExistentes);
       };
@@ -78,9 +82,6 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
     getPerfil();
   }, [pacienteID, prontuarioEdited]);
 
-  useEffect(() => {
-    console.log(formIsOpen);
-  }, [formIsOpen]);
 
   const hasAnamnese = async (id) => {
     try {
@@ -208,6 +209,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
     setIsEditing(true);
   };
   const handleDelete = async (id) => {
+    setLoading(true)
     await confirmDelete("este prontuário?", async () => {
       try {
         const response = await fetch(`${BASE_URL}/prontuario/${id}`, {
@@ -228,12 +230,15 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
         console.error("Erro:", error);
         showAlert.error("Erro ao deletar prontuário: " + error);
         return null;
+      } finally{
+        setLoading(false)
       }
     });
     openData();
   };
 
   const handleSaveEdit = (id, data) => {
+    setLoading(true)
     if (
       !prontuarioData?.txt_prontuario ||
       prontuarioData.txt_prontuario.trim() === ""
@@ -264,6 +269,8 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
       .catch((error) => {
         console.error("Erro:", error);
         showAlert.error("Erro ao editar prontuário: " + error);
+      }).finally(()=>{
+        setLoading(false)
       });
   };
 
@@ -302,6 +309,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
   };
 
   const handleSubmitAnamnese = async (e) => {
+    setLoading(true)
     e.preventDefault();
 
     try {
@@ -375,10 +383,13 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
     } catch (error) {
       console.error("Erro:", error);
       showAlert.error("Erro ao salvar anamnese: " + error.message);
+    } finally{
+      setLoading(false)
     }
   };
 
   const handleSubmitProntuario = async () => {
+    setLoading(true)
     if (!prontuario.txt_prontuario || prontuario.txt_prontuario.trim() === "") {
       showAlert.warning("Prontuário não pode ser vazio!");
       return;
@@ -408,6 +419,8 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
       console.error("Erro:", error);
       showAlert.error("Erro ao cadastrar prontuário: " + error);
       return null;
+    } finally{
+      setLoading(false)
     }
   };
 
@@ -464,6 +477,7 @@ const ManterHistorico = ({ pacienteID, pacientData }) => {
 
   return (
     <div style={{ width: "97%" }}>
+      <LoadingOverlay isLoading={loading} />
       <div className="F_Title">
         <h2
           className="F_CadastrarTitle"

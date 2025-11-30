@@ -12,6 +12,7 @@ import {
   Card,
 } from "antd";
 import dayjs from "dayjs";
+import LoadingOverlay from "../../global/Loading";
 import { BASE_URL } from "../../global/GlobalContext";
 import { showAlert } from "../../utils/alerts";
 
@@ -30,6 +31,8 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
   const [agendamentos, setAgendamentos] = useState([]);
   const [agendamentosDoDia, setAgendamentosDoDia] = useState([]);
   const [pacientes, setPacientes] = useState({});
+  const [loading, setLoading] = useState(false); 
+
 
   // Buscar dados do paciente
   const fetchPaciente = async (cd_paciente) => {
@@ -181,6 +184,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (!horarioInicio) {
       message.error("Por favor, selecione o horário de início");
       return;
@@ -235,6 +239,8 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
     } catch (error) {
       console.error("Erro ao enviar agendamento:", error);
       message.error("Erro ao salvar agendamento");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -247,6 +253,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
   };
 
   const handleDeletarAgendamento = async (cd_agendamento) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${BASE_URL}/agendamento/${cd_agendamento}`,
@@ -272,10 +279,13 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
     } catch (error) {
       console.error("Erro ao deletar agendamento:", error);
       showAlert.error("Erro ao deletar agendamento");
+    }finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteAgendamentoSequencial = async (cd_agendamento) => {
+    setLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/agendamento/em_serie`, {
         method: "DELETE",
@@ -293,6 +303,8 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
     } catch (error) {
       showAlert.error("Erro ao deletar agendamentos sequenciais:");
       message.error("Erro ao deletar agendamentos sequenciais");
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -305,6 +317,7 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
         overflow: "auto",
       }}
     >
+      <LoadingOverlay isLoading={loading} />
       <div className="F_Title">
         <h2
           className="F_CadastrarTitle"
@@ -405,7 +418,9 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
                 <Button
                   danger
                   size="small"
-                  onClick={() => handleDeletarAgendamento(item.cd_agendamento)}
+                  onClick={() => {
+                    setIsDetalhesModalOpen(false)
+                    handleDeletarAgendamento(item.cd_agendamento)}}
                   style={{ marginRight: "10px" }}
                 >
                   🗑️ Desmarcar
@@ -413,9 +428,11 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
                 <Button
                   danger
                   size="small"
-                  onClick={() =>
+                  onClick={() =>{
+
+                  setIsDetalhesModalOpen(false)
                     handleDeleteAgendamentoSequencial(item.cd_agendamento)
-                  }
+                  }}
                 >
                   🗑️ Desmarcar Sequencialmente
                 </Button>
@@ -456,7 +473,9 @@ const ManterAgenda = ({ cd_paciente, cd_usuario }) => {
             }}
             key="submit"
             type="primary"
-            onClick={handleSubmit}
+            onClick={() => {
+              setIsModalOpen(false)
+              handleSubmit()}}
           >
             Salvar
           </Button>,

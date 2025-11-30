@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
 import { useGlobal, BASE_URL } from "../../global/GlobalContext";
+import LoadingOverlay from "../../global/Loading";
 
 const ManterComportamento = ({ pacienteID }) => {
   const [criterios, setCriterios] = useState([]);
   const [criteriosUnicos, setCriteriosUnicos] = useState([]);
   const [criterioParaTranstornos, setCriterioParaTranstornos] = useState({});
   const { criteriosModificados, setDiagnosticosModificados } = useGlobal();
+  const [loading, setLoading] = useState(false);
 
   const buscarCriterios = () => {
     fetch(`${BASE_URL}/criterio_diagnostico`)
@@ -58,6 +60,7 @@ const ManterComportamento = ({ pacienteID }) => {
   };
 
   const adicionarComportamento = async (comportamento) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${BASE_URL}/comportamento_paciente`,
@@ -77,10 +80,13 @@ const ManterComportamento = ({ pacienteID }) => {
       setDiagnosticosModificados(prev => !prev);
     } catch (error) {
       console.error(error);
+    } finally{
+      setLoading(false);
     }
   };
 
   const deleteComportamento = async (cdComportamento) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${BASE_URL}/comportamento_paciente/${cdComportamento}`,
@@ -95,6 +101,8 @@ const ManterComportamento = ({ pacienteID }) => {
       setDiagnosticosModificados(prev => !prev);
     } catch (error) {
       console.error(error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -105,6 +113,7 @@ const ManterComportamento = ({ pacienteID }) => {
 
   return (
     <div style={{ width: "98%", height: "100%" }}>
+      <LoadingOverlay isLoading={loading} />
       <div className="F_Title">
         <h2 className="F_CadastrarTitle" style={{ fontSize: "20px" }}>
           Criterio

@@ -8,6 +8,7 @@ import { carregarMensagemNegativa } from "../../InitialPage.js";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import LoadingOverlay from "../../global/Loading.js";
 dayjs.extend(customParseFormat);
 
 const EditarPaciente = ({
@@ -40,6 +41,8 @@ const EditarPaciente = ({
   const carregouPaciente = useRef(false);
   const { pacienteEditado, setPacientesModificados, setPacienteEditado } =
     useGlobal();
+  const [loading, setLoading] = useState(false);
+  const [loadingCep, setLoadingCep] = useState(false);
 
   useEffect(() => {
     if (dadosPaciente) {
@@ -144,6 +147,28 @@ const EditarPaciente = ({
       [name]: value,
     }));
   };
+  const formatarData = (data) => {
+        if (/^\d{2}\/\d{2}\/\d{4}$/.test(data)) {
+          return data;
+        }
+        
+        if (data instanceof Date) {
+          const dia = String(data.getDate()).padStart(2, '0');
+          const mes = String(data.getMonth() + 1).padStart(2, '0');
+          const ano = data.getFullYear();
+          return `${dia}/${mes}/${ano}`;
+        }
+        
+        const dateObj = new Date(data);
+        if (!isNaN(dateObj.getTime())) {
+          const dia = String(dateObj.getDate()).padStart(2, '0');
+          const mes = String(dateObj.getMonth() + 1).padStart(2, '0');
+          const ano = dateObj.getFullYear();
+          return `${dia}/${mes}/${ano}`;
+        }
+        
+        return data; 
+      };
 
   const formatarCPF = (value) => {
     value = value.replace(/\D/g, ""); // Remove tudo que não for número
@@ -155,6 +180,54 @@ const EditarPaciente = ({
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   };
+
+  const buscarCEP = async (cep) => {
+      const cepLimpo = cep.replace(/\D/g, "");
+  
+      // Valida se o CEP tem 8 dígitos
+      if (cepLimpo.length !== 8) {
+        return;
+      }
+  
+      setLoadingCep(true);
+  
+      try {
+        const response = await fetch(
+          `https://viacep.com.br/ws/${cepLimpo}/json/`
+        );
+  
+        if (!response.ok) {
+          throw new Error("Erro ao buscar CEP");
+        }
+  
+        const data = await response.json();
+  
+        // Verifica se o CEP foi encontrado
+        if (data.erro) {
+          showAlert.warning("CEP não encontrado!");
+          setLoadingCep(false);
+          return;
+        }
+  
+        // Preenche os campos automaticamente
+        setEnderecos((prev) => ({
+          ...prev,
+          cep: formatarCEP(cepLimpo),
+          uf: data.uf || "",
+          bairro: data.bairro || "",
+          cidade: data.localidade || "",
+          logradouro: data.logradouro || "",
+          complemento: data.complemento || prev.complemento, // Mantém o complemento se não vier da API
+        }));
+  
+        showAlert.success("CEP encontrado!");
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+        showAlert.error("Erro ao buscar CEP. Verifique sua conexão.");
+      } finally {
+        setLoadingCep(false);
+      }
+    };
   const formatarCEP = (value) => {
     value = value.replace(/\D/g, "");
     value = value.slice(0, 8);
@@ -198,7 +271,6 @@ const EditarPaciente = ({
       if (
         !paciente.nm_paciente ||
         !paciente.dt_nascimento ||
-        !paciente.sexo ||
         !enderecos.cep
       ) {
         await showAlert.warning("Preencha os campos obrigatórios!");
@@ -208,6 +280,11 @@ const EditarPaciente = ({
       const { ativo, ...pacientePayload } = pacienteSemNomeGenero;
       const { cd_paciente, ...pacienteData } = pacientePayload;
 
+      const pacienteFormatado = {
+        ...pacienteData,
+        dt_nascimento: formatarData(pacienteData.dt_nascimento)
+      };
+
       const response = await fetch(
         `${BASE_URL}/paciente/${pacientePayload.cd_paciente}`,
         {
@@ -215,7 +292,7 @@ const EditarPaciente = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(pacienteData),
+          body: JSON.stringify(pacienteFormatado),
         }
       );
 
@@ -231,11 +308,11 @@ const EditarPaciente = ({
         setPacientesModificados((prev) => !prev);
         return data.cd_paciente;
       } else {
-        throw new Error("Falha ao cadastrar transtorno");
+        throw new Error("Falha ao cadastrar paciente");
       }
     } catch (error) {
       console.error("Erro:", error);
-      alert("Erro ao cadastrar transtorno: " + error);
+      alert("Erro ao cadastrar paciente: " + error);
       return null;
     }
   };
@@ -464,7 +541,8 @@ const EditarPaciente = ({
     const [ano, mes, dia] = dataISO.split("-");
     return `${dia}/${mes}/${ano}`;
   };
-  const handleSubmitEditPaciente = async () => {
+  const handleSubmitEditPaciente = async () => { 
+    setLoading(true);
     const pacienteId = await alterarPaciente();
     if (pacienteId) {
       const responsavelId = await alterarResponsavel(pacienteId);
@@ -473,10 +551,12 @@ const EditarPaciente = ({
       const MSG = await carregarMensagemNegativa("MSG058");
       showAlert.success(MSG);
     }
+    setLoading(false);
   };
 
   return (
     <div style={{ width: "1200px" }}>
+      <LoadingOverlay isLoading={loading} />
       <div className="F_Title">
         <h2 className="F_CadastrarTitle">Editar Paciente</h2>
       </div>
@@ -520,7 +600,7 @@ const EditarPaciente = ({
                 }}
               >
                 <select
-                  className="F_NomeAreaTranstorno"
+                  className="F_GravidadeAreaTranstorno"
                   name="tip_sang"
                   style={{ width: "100px" }}
                   value={paciente.tip_sang}
@@ -557,7 +637,7 @@ const EditarPaciente = ({
             <div className="F_CriarTranstornoInputObrigatorio">
               <p style={{ textAlign: "start" }}>Sexo*</p>
               <select
-                className="F_NomeAreaTranstorno"
+                className="F_GravidadeAreaTranstorno"
                 name="sexo"
                 style={{ width: "118px" }}
                 value={paciente.sexo}
@@ -667,6 +747,12 @@ const EditarPaciente = ({
                       cep: formatarCEP(e.target.value),
                     })
                   }
+                  onBlur={(e) => {
+                    const cep = e.target.value;
+                    if (cep.replace(/\D/g, "").length === 8) {
+                      buscarCEP(cep);
+                    }
+                  }}
                   maxLength={9}
                   style={{ width: "150px" }}
                 ></input>
@@ -675,7 +761,7 @@ const EditarPaciente = ({
               <div className="F_CriarTranstornoInputObrigatorio">
                 <p style={{ textAlign: "start" }}>UF</p>
                 <input
-                  className="F_GravidadeAreaTranstorno"
+                  className="F_NomeAreaTranstorno"
                   placeholder="Ex: DF"
                   name="uf"
                   value={enderecos?.uf || ""}
@@ -823,7 +909,7 @@ const EditarPaciente = ({
                     >
                       <p style={{ textAlign: "start" }}>Data de nascimento*</p>
                       <DatePicker
-                        className="F_NomeAreaTranstorno datepicker-sem-foco"
+                        className="F_GravidadeAreaTranstorno datepicker-sem-foco"
                         placeholder="dd/mm/yyyy"
                         format="DD/MM/YYYY"
                         name="dt_nascimento"
