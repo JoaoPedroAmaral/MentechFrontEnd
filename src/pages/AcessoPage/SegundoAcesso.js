@@ -452,7 +452,7 @@ const SegundoAcesso = ({
             style={{ width: "100%", height: "90%" }}
           >
             <div>
-              <ManterPatologia cd_paciente={pacienteID}></ManterPatologia>
+              <ManterPatologia cd_paciente={pacienteID} userData={userData}></ManterPatologia>
             </div>
           </div>
         </div>
