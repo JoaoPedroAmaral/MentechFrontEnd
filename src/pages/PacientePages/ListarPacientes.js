@@ -12,6 +12,7 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
   const { pacientesModificados } = useGlobal();
 
   useEffect(() => {
+    console.log("cd_usuario mudou ou pacientesModificados mudou, buscando pacientes...");
     fetchPaciente(cd_usuario);
   }, [cd_usuario, pacientesModificados]);
 
@@ -77,17 +78,14 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
         );
         break;
       default:
-        // Ordenação padrão: ativos primeiro (alfabeticamente), depois inativos (alfabeticamente)
         resultado.sort((a, b) => {
           const ativoA = a.ativo === "S" || a.ativo === "s" ? 1 : 0;
           const ativoB = b.ativo === "S" || b.ativo === "s" ? 1 : 0;
           
-          // Se um é ativo e outro não, prioriza o ativo
           if (ativoA !== ativoB) {
             return ativoB - ativoA;
           }
           
-          // Se ambos têm o mesmo status, ordena alfabeticamente
           return a.nm_paciente.localeCompare(b.nm_paciente);
         });
         break;
