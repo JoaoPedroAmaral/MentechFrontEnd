@@ -3,17 +3,17 @@ import { useGlobal, BASE_URL } from "../../global/GlobalContext";
 import { showAlert } from "../../utils/alerts.js";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
+import TextArea from "antd/es/input/TextArea.js";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 
-const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
+const AdicionarMetas = ({ pacienteID, toggleIframe, setLoading }) => {
   const { setMetasModificadas } = useGlobal();
   const [novaMeta, setNovaMeta] = useState({
     dt_previsao: "",
     meta: "",
     obs_meta: "",
   });
-
   const handleMeta = async () => {
     if (!novaMeta.meta || !novaMeta.dt_previsao) {
       await showAlert.error("Nome do Transtorno e cid11 são obrigatórios!");
@@ -40,6 +40,7 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const MetaID = await handleMeta();
     try {
       const response = await fetch(`${BASE_URL}/paciente_meta`, {
@@ -64,6 +65,8 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
       await showAlert.success("Meta Criada!");
     } catch (error) {
       console.error("Erro ao buscar transtornos:", error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -135,10 +138,11 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
             style={{ marginTop: "20px" }}
           >
             <p>Observação</p>
-            <textarea
+            <TextArea
+              maxLength={255}
+              showCount
               className="F_NomeAreaTranstorno"
-              style={{ width: "320px", height: "150px" }}
-              name="obs_meta"
+              style={{ width: "100%", height: "150px", resize: "none" }}
               placeholder="Ex: Melhorar as habilidades de interação social entre os colegas da escola."
               value={novaMeta.obs_meta}
               onChange={(e) =>
@@ -147,7 +151,7 @@ const AdicionarMetas = ({ pacienteID, toggleIframe }) => {
                   obs_meta: e.target.value,
                 })
               }
-            ></textarea>
+            />
           </div>
         </div>
       </div>

@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import ManterAtividade from "../AtividadePage/ManterAtividade.js";
 import { PieChart } from "react-minimal-pie-chart";
 import activity from "../../Images/activity.png";
+import LoadingOverlay from "../../global/Loading.js";
 
 const ManterMeta = ({ pacienteID }) => {
   const [metas, setMetas] = useState([]);
@@ -21,6 +22,7 @@ const ManterMeta = ({ pacienteID }) => {
   const [atividadesMetas, setAtividadesMetas] = useState({});
   const [atividadePorMeta, setAtividadePorMeta] = useState([]);
   const [metaID, setMetaID] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +85,7 @@ const ManterMeta = ({ pacienteID }) => {
   };
 
   const carregarMetas = async (pacienteID) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${BASE_URL}/meta/por_paciente/${pacienteID}`
@@ -94,6 +97,8 @@ const ManterMeta = ({ pacienteID }) => {
     } catch (error) {
       console.error("Erro ao buscar metas:", error);
       alert(`Erro ao buscar metas: ${error.message}`);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -129,6 +134,7 @@ const ManterMeta = ({ pacienteID }) => {
   };
 
   const handleRemoverMeta = async (id) => {
+    setLoading(true)
     try {
       const response = await fetch(`${BASE_URL}/meta/${id}`, {
         method: "DELETE",
@@ -141,10 +147,13 @@ const ManterMeta = ({ pacienteID }) => {
     } catch (error) {
       console.error("Erro ao atualizar status:", error);
       alert(`Erro ao atualizar status: ${error.message}`);
+    }finally{
+      setLoading(false)
     }
   };
 
   const concluirMeta = async (id) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${BASE_URL}/paciente_meta/${id}`,
@@ -160,6 +169,8 @@ const ManterMeta = ({ pacienteID }) => {
     } catch (error) {
       console.error("Erro ao concluir meta:", error);
       alert(`Erro ao concluir meta: ${error.message}`);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -174,6 +185,7 @@ const ManterMeta = ({ pacienteID }) => {
           width: "97%",
         }}
       >
+        <LoadingOverlay isLoading={loading} />
         <div className="F_Title">
           <h2
             className="F_CadastrarTitle"
@@ -186,7 +198,7 @@ const ManterMeta = ({ pacienteID }) => {
           {metas.map((meta) => (
             <div
               key={meta.cd_meta}
-              className={`meta-card ${meta.ativo === "S" ? "" : "inactive"}`}
+              className={`meta-card ${(meta.ativo === "S" || meta.ativo === "s") ? "" : "inactive"}`}
             >
               <div className="FlexCenterBetween">
                 <h3 style={{ height: "30px", margin: "10px 0" }}>
@@ -197,7 +209,7 @@ const ManterMeta = ({ pacienteID }) => {
                   <button
                     id={`btnDelete-${meta.cd_meta}`}
                     className={`F_BtnGravidade ${
-                      meta.ativo === "S" ? "Hidden" : ""
+                      (meta.ativo === "S" || meta.ativo === "s") ? "Hidden" : ""
                     }`}
                     onClick={() => handleRemoverMeta(meta.cd_meta)}
                   >
@@ -206,7 +218,7 @@ const ManterMeta = ({ pacienteID }) => {
                   <input
                     type="checkbox"
                     id={`toggle-meta-${meta.cd_meta}`}
-                    checked={meta.ativo === "S" || metasModificadas}
+                    checked={(meta.ativo === "S" || meta.ativo === "s")}
                     onChange={() => {
                       setMetasModificadas((prev) => !prev);
                       toggleIframe(`btnDelete-${meta.cd_meta}`);
@@ -353,6 +365,7 @@ const ManterMeta = ({ pacienteID }) => {
             <AdicionarMetas
               pacienteID={pacienteID}
               toggleIframe={toggleIframe}
+              setLoading={setLoading}
             />
           </div>
         </div>

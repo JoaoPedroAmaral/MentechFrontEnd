@@ -58,11 +58,9 @@ const SegundoAcesso = ({
 
   // NOVO: Controla o loading
   useEffect(() => {
-    // Verifica se todos os dados essenciais foram carregados
     if (
       userData &&
       dadosPaciente &&
-      enderecoPaciente !== null &&
       telefoneDados !== null &&
       responsaveisDados !== null
     ) {
