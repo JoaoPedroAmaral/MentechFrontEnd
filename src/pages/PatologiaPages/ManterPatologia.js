@@ -6,7 +6,7 @@ import { BASE_URL } from "../../global/GlobalContext.js";
 import TextArea from "antd/es/input/TextArea.js";
 import LoadingOverlay from "../../global/Loading.js";
 
-const ManterPatologia = ({ cd_paciente }) => {
+const ManterPatologia = ({ cd_paciente, userData }) => {
   const [patologia, setPatologia] = useState([]);
   const [patologiaVazia, setPatologiaVazia] = useState(false);
   const [newPatologia, setNewPatologia] = useState({
@@ -23,7 +23,7 @@ const ManterPatologia = ({ cd_paciente }) => {
 
   const fetchPatologia = async () => {
     try {
-      const pacienteID = localStorage.getItem("ultimoPaciente") || cd_paciente;
+      const pacienteID = localStorage.getItem(`ultimoPaciente_${userData.cd_usuario}`) || cd_paciente;
 
       if (!pacienteID) {
         console.error("Nenhum paciente selecionado.");
