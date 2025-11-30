@@ -7,6 +7,7 @@ import { carregarMensagemNegativa } from "../../InitialPage.js";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import LoadingOverlay from "../../global/Loading.js";
 dayjs.extend(customParseFormat);
 
 const CadastrarPaciente = ({ cd_usuario }) => {
@@ -42,6 +43,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
   const { setPacientesModificados } = useGlobal();
   const [perfil, setPerfil] = useState(null);
   const [loadingCep, setLoadingCep] = useState(false); // NOVO
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchGeneros();
@@ -374,6 +376,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
   };
 
   const handleSubmitCadastroPaciente = async () => {
+    setLoading(true);
     const pacienteId = await adicionarPaciente();
     if (pacienteId) {
       const responsavelId = await adicionarResponsavel(pacienteId);
@@ -409,6 +412,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
       const MSG = await carregarMensagemNegativa("MSG057");
       showAlert.success(MSG);
     }
+    setLoading(false);
   };
 
   const handleAddResponsavel = () => {
@@ -440,6 +444,7 @@ const CadastrarPaciente = ({ cd_usuario }) => {
 
   return (
     <div style={{ width: "1200px" }}>
+      <LoadingOverlay isLoading={loading} />
       <div className="F_Title">
         <h2 className="F_CadastrarTitle">Adicionar Paciente</h2>
       </div>

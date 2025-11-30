@@ -49,16 +49,16 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
 
     switch (filtroSelecionado) {
       case "masculino":
-        resultado = resultado.filter((p) => p.nm_genero === "Masculino");
+        resultado = resultado.filter((p) => p.sexo === "M");
         break;
       case "feminino":
-        resultado = resultado.filter((p) => p.nm_genero === "Feminino");
+        resultado = resultado.filter((p) => p.sexo === "F");
         break;
       case "ativos":
-        resultado = resultado.filter((p) => p.ativo === "S" || p.ativo == "s");
+        resultado = resultado.filter((p) => p.ativo === "S" || p.ativo === "s");
         break;
       case "inativos":
-        resultado = resultado.filter((p) => p.ativo === "N" || p.ativo == "n");
+        resultado = resultado.filter((p) => p.ativo === "N" || p.ativo === "n");
         break;
       case "az":
         resultado.sort((a, b) => a.nm_paciente.localeCompare(b.nm_paciente));
@@ -77,6 +77,19 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
         );
         break;
       default:
+        // Ordenação padrão: ativos primeiro (alfabeticamente), depois inativos (alfabeticamente)
+        resultado.sort((a, b) => {
+          const ativoA = a.ativo === "S" || a.ativo === "s" ? 1 : 0;
+          const ativoB = b.ativo === "S" || b.ativo === "s" ? 1 : 0;
+          
+          // Se um é ativo e outro não, prioriza o ativo
+          if (ativoA !== ativoB) {
+            return ativoB - ativoA;
+          }
+          
+          // Se ambos têm o mesmo status, ordena alfabeticamente
+          return a.nm_paciente.localeCompare(b.nm_paciente);
+        });
         break;
     }
 
@@ -87,6 +100,11 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
     setBusca("");
     setFiltroSelecionado("todos");
     setMostrarFiltro(false);
+  };
+
+  // Função para verificar se o paciente está ativo
+  const isPacienteAtivo = (p) => {
+    return p.ativo === "S" || p.ativo === "s";
   };
 
   return (
@@ -341,7 +359,10 @@ const ListarPacientes = ({ cd_usuario, toggleIframe, setIsHavePaciente }) => {
                   setIsHavePaciente(true);
                 }
               }}
-              style={{ cursor: "pointer" }}
+              style={{ 
+                cursor: "pointer",
+                opacity: isPacienteAtivo(p) ? 1 : 0.5
+              }}
             >
               <div
                 className="card-paciente FlexCenterMid"

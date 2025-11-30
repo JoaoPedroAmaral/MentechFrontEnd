@@ -3,6 +3,8 @@ import "../../css/ManterPatologia.css";
 import AdicionarPacienteIcon from "../../Images/AdicionarPacienteIcon.png";
 import { showAlert } from "../../utils/alerts.js";
 import { BASE_URL } from "../../global/GlobalContext.js";
+import TextArea from "antd/es/input/TextArea.js";
+import LoadingOverlay from "../../global/Loading.js";
 
 const ManterPatologia = ({ cd_paciente }) => {
   const [patologia, setPatologia] = useState([]);
@@ -13,6 +15,7 @@ const ManterPatologia = ({ cd_paciente }) => {
     obs_doenca: "",
     cid11: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchPatologia();
@@ -20,7 +23,7 @@ const ManterPatologia = ({ cd_paciente }) => {
 
   const fetchPatologia = async () => {
     try {
-      const pacienteID = localStorage.getItem("ultimoPaciente");
+      const pacienteID = localStorage.getItem("ultimoPaciente") || cd_paciente;
 
       if (!pacienteID) {
         console.error("Nenhum paciente selecionado.");
@@ -31,7 +34,7 @@ const ManterPatologia = ({ cd_paciente }) => {
       );
 
       const dataJson = await response.json();
-
+      console.log("Dados da patologia:", dataJson);
       if (dataJson.Warning === "Paciente sem patologia") {
         setPatologia([]);
         setPatologiaVazia(true);
@@ -54,6 +57,7 @@ const ManterPatologia = ({ cd_paciente }) => {
   };
 
   const handleAddPatologia = async () => {
+    setLoading(true);
     try {
       if (!newPatologia.doenca || !newPatologia.cid11) {
         await showAlert.warning("requisitos obrigatorios!");
@@ -79,12 +83,14 @@ const ManterPatologia = ({ cd_paciente }) => {
             obs_doenca: "",
             cid11: "",
           });
+          setLoading(false);
            await showAlert.success("Patologia cadastrado com sucesso!");
         } catch (e) {
           const rawResponse = await response.text();
           console.error("Resposta não é JSON:", rawResponse);
           throw new Error("Resposta da API não é JSON válido");
         }
+        
         return data.cd_paciente;
       } else {
         throw new Error("Falha ao cadastrar patologia");
@@ -93,16 +99,21 @@ const ManterPatologia = ({ cd_paciente }) => {
       console.error("Erro:", error);
       alert("Erro ao cadastrar patologia: " + error);
       return null;
+    } finally{
+      setLoading(false);
     }
   };
 
   const deletePatologia = async (id) => {
+    setLoading(true);
     await fetch(`${BASE_URL}/patologia/${id}`, { method: "DELETE" });
     fetchPatologia();
+    setLoading(false);
   };
 
   return (
     <div className="MP_ManterPatologia">
+      <LoadingOverlay isLoading={loading} />
       <div className="MP_PatologiaArea">
         <button
           className="MP_btnCriarPatologia"
@@ -229,18 +240,21 @@ const ManterPatologia = ({ cd_paciente }) => {
 
                       <div className="F_CriarTranstornoInputObrigatorio TextCenter">
                         <p>Observação</p>
-                        <textarea
+                        <TextArea
+                          showCount
+                          maxLength={255}
                           className="F_SecAreaTranstorno"
                           name="obs_doenca"
                           placeholder="Ex: Dores consecutivas em um curto periodo de tempo"
                           value={newPatologia.obs_doenca}
+                          style={{resize:"none", marginBottom:"10px"}}
                           onChange={(e) =>
                             setNewPatologia({
                               ...newPatologia,
                               obs_doenca: e.target.value,
                             })
                           }
-                        ></textarea>
+                        />
                       </div>
                     </div>
                   </div>

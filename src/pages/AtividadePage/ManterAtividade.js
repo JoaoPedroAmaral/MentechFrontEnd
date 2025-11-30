@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useGlobal, BASE_URL } from "../../global/GlobalContext.js";
 import TextArea from "antd/es/input/TextArea.js";
 import { showAlert } from "../../utils/alerts.js";
+import LoadingOverlay from "../../global/Loading.js";
 
 const ManterAtividade = ({ atividade, metaID }) => {
   const { setAtividadeModificada, atividadeModificada } = useGlobal();
   const [atividadeList, setAtividadeList] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
-  const [atividadeEditando, setAtividadeEditando] = useState(null);
+  const [atividadeEditando, setAtividadeEditando, setMetasModificadas] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     setAtividadeList(atividade);
@@ -43,6 +46,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
   };
 
   const handleSalvarNovaAtividade = async () => {
+    setIsLoading(true);
     try {
       const hoje = new Date();
       const ano = hoje.getFullYear();
@@ -73,10 +77,14 @@ const ManterAtividade = ({ atividade, metaID }) => {
       }
     } catch (err) {
       alert(err.message);
+    } finally {
+      setIsLoading(false);
     }
+    
   };
 
   const deleteAtividade = async (id) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/atividade/${id}`, {
         method: "DELETE",
@@ -89,10 +97,13 @@ const ManterAtividade = ({ atividade, metaID }) => {
     } catch (error) {
       console.error("Erro ao deletar atividade:", error);
       alert(`Erro ao deletar atividade: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const marcarConcluido = async (id) => {
+    setIsLoading(true);
     try {
       await fetch(`${BASE_URL}/atividade/inativar/${id}`, {
         method: "PUT",
@@ -101,10 +112,13 @@ const ManterAtividade = ({ atividade, metaID }) => {
       setAtividadeModificada((prev) => !prev);
     } catch (error) {
       console.error("Erro ao concluir atividade:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const reabrirAtividade = async (id) => {
+    setIsLoading(true);
     try {
       await fetch(`${BASE_URL}/atividade/inativar/${id}`, {
         method: "PUT",
@@ -113,6 +127,8 @@ const ManterAtividade = ({ atividade, metaID }) => {
       setAtividadeModificada((prev) => !prev);
     } catch (error) {
       console.error("Erro ao reabrir atividade:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -128,7 +144,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
       percent_conclusao: atividade.percent_conclusao,
       resultado: atividade.resultado,
     };
-
+    setIsLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/atividade/${id}`, {
         method: "PUT",
@@ -151,8 +167,11 @@ const ManterAtividade = ({ atividade, metaID }) => {
       setEditandoId(null);
       setAtividadeEditando(null);
       setAtividadeModificada((prev) => !prev);
+      setMetasModificadas((prev) => !prev);
     } catch (error) {
       console.error("Erro ao salvar edição:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -163,6 +182,7 @@ const ManterAtividade = ({ atividade, metaID }) => {
 
   return (
     <div style={{ width: "96%", height: "100%" }}>
+      <LoadingOverlay isLoading={isLoading} />
       <div className="F_Title">
         <h2 className="F_CadastrarTitle" style={{ fontSize: "20px" }}>
           Gerenciador de Atividades

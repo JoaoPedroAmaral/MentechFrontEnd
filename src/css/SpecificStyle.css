@@ -869,7 +869,8 @@ input[type="checkbox"]:checked + .simple-switch::after {
   border-radius: 8px;
   border: solid 2px #6cc5ab;
   transition: opacity 0.3s ease;
-  min-height: 200px;
+  height: 210px;
+  overflow-y: auto;
   width: 95% !important;
 }
 
@@ -1168,4 +1169,64 @@ input[type="checkbox"]:checked + .simple-switch::after {
   position: absolute !important;
   bottom: 0 !important;
   right: 5px !important;
+}
+
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, rgba(73, 160, 173, 0.75), rgba(0, 14, 12, 0.75));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.loading-spinner {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.loading-spinner::before,
+.loading-spinner::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #eaa666 0%, #9c2ad1 100%);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-spinner::before {
+  animation-delay: 0s;
+}
+
+.loading-spinner::after {
+  animation-delay: 0.3s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
 }
