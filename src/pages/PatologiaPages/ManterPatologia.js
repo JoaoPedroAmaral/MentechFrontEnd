@@ -57,13 +57,12 @@ const ManterPatologia = ({ cd_paciente, userData }) => {
   };
 
   const handleAddPatologia = async () => {
-    setLoading(true);
     try {
       if (!newPatologia.doenca || !newPatologia.cid11) {
         await showAlert.warning("requisitos obrigatorios!");
         return null;
       }
-
+      setLoading(true);
       const response = await fetch(`${BASE_URL}/patologia`, {
         method: "POST",
         headers: {
