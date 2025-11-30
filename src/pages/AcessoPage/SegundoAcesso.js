@@ -56,7 +56,6 @@ const SegundoAcesso = ({
     }
   }, [dadosPaciente]);
 
-  // NOVO: Controla o loading
   useEffect(() => {
     if (
       userData &&
@@ -65,6 +64,7 @@ const SegundoAcesso = ({
       responsaveisDados !== null
     ) {
       setIsLoading(false);
+      toggleActiveStatusArea(statusAtivo);
     }
   }, [
     userData,
@@ -452,7 +452,10 @@ const SegundoAcesso = ({
             style={{ width: "100%", height: "90%" }}
           >
             <div>
-              <ManterPatologia cd_paciente={pacienteID} userData={userData}></ManterPatologia>
+              <ManterPatologia
+                cd_paciente={pacienteID}
+                userData={userData}
+              ></ManterPatologia>
             </div>
           </div>
         </div>
@@ -580,7 +583,10 @@ const SegundoAcesso = ({
       <div className="FlexCenterEvenly" style={{ minHeight: "10vh" }}>
         <button
           className="FlexCenterMid UserSelectNone BackgroundTransparent"
-          onClick={() => toggleIframe("IframeListarPaciente")}
+          onClick={() => {
+            setPacientesModificados((prev) => !prev);
+            toggleIframe("IframeListarPaciente");
+          }}
           title="Listar Pacientes"
           style={{ border: "none" }}
         >
